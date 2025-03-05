@@ -14,6 +14,7 @@ abstract class Routes {
   static const ADD_NOTE = _Paths.ADD_NOTE;
   static const EDIT_NOTE = _Paths.EDIT_NOTE;
   static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
+  static const RESET_PASSWORD = _Paths.RESET_PASSWORD;
   /*static const CHALLENGES = _Paths.CHALLENGES;
   static const EXERCISES = _Paths.EXERCISES;
   static const MAP = _Paths.MAP;
@@ -30,6 +31,7 @@ abstract class _Paths {
   static const ADD_NOTE = '/add-note';
   static const EDIT_NOTE = '/edit-note';
   static const FORGOT_PASSWORD = '/forgot-password';
+  static const RESET_PASSWORD = '/reset-password';
   /*static const CHALLENGES = '/challenges';
   static const EXERCISES = '/exercises';
   static const MAP = '/map';
