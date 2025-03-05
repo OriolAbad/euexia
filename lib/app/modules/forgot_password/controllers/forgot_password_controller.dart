@@ -10,7 +10,7 @@ class ForgotPasswordController extends GetxController {
   void sendPasswordResetEmail() async {
     if (email.value.isEmpty) {
       Get.snackbar(
-        'Error', 'Please enter your email',
+        'Error', 'Por favor, ingresa tu correo electrónico',
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 2),
       );
@@ -20,7 +20,7 @@ class ForgotPasswordController extends GetxController {
     // Validar formato de email
     if (!GetUtils.isEmail(email.value)) {
       Get.snackbar(
-        'Error', 'Invalid email format',
+        'Error', 'Formato de email no válido',
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 2),
       );
@@ -33,7 +33,7 @@ class ForgotPasswordController extends GetxController {
       await client.auth.resetPasswordForEmail(email.value);
 
       Get.snackbar(
-        'Success', 'Password reset email sent!',
+        'Éxito', '¡Correo de recuperación enviado!',
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 2),
       );
