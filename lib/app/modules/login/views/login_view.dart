@@ -46,17 +46,22 @@ class LoginView extends GetView<LoginController> {
                 controller: controller.emailC,
                 decoration: InputDecoration(
                   hintText: "Email",
-                  hintStyle: const TextStyle(color: Colors.black), // Texto negro
-                  prefixIcon: const Icon(Icons.email, color: Colors.black), // Icono
+                  hintStyle:
+                      const TextStyle(color: Colors.black), // Texto negro
+                  prefixIcon:
+                      const Icon(Icons.email, color: Colors.black), // Icono
                   filled: true,
                   fillColor: Colors.white, // Fondo blanco
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: Colors.white), // Borde blanco
+                    borderSide:
+                        const BorderSide(color: Colors.white), // Borde blanco
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: Colors.white, width: 2), // Borde blanco al enfocar
+                    borderSide: const BorderSide(
+                        color: Colors.white,
+                        width: 2), // Borde blanco al enfocar
                   ),
                 ),
                 style: const TextStyle(color: Colors.black), // Texto negro
@@ -77,22 +82,30 @@ class LoginView extends GetView<LoginController> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                        borderSide: const BorderSide(color: Colors.white, width: 2),
+                        borderSide:
+                            const BorderSide(color: Colors.white, width: 2),
                       ),
                       suffixIcon: IconButton(
                         onPressed: () => controller.isHidden.toggle(),
                         icon: controller.isHidden.isTrue
-                            ? const Icon(Icons.remove_red_eye, color: Colors.black)
-                            : const Icon(Icons.remove_red_eye_outlined, color: Colors.black),
+                            ? const Icon(Icons.remove_red_eye,
+                                color: Colors.black)
+                            : const Icon(Icons.remove_red_eye_outlined,
+                                color: Colors.black),
                       ),
                     ),
                     style: const TextStyle(color: Colors.black),
                   )),
               const SizedBox(height: 30),
               Obx(() => GradientButton(
-                    text: controller.isLoading.isFalse ? "SIGN IN" : "Loading...",
-                    textStyle: const TextStyle(color: Colors.white, fontSize: 16),
-                    gradientColors: const [Color.fromARGB(255, 225, 117, 15), Color(0xFFB71C1C)],
+                    text:
+                        controller.isLoading.isFalse ? "SIGN IN" : "Loading...",
+                    textStyle:
+                        const TextStyle(color: Colors.white, fontSize: 16),
+                    gradientColors: const [
+                      Color.fromARGB(255, 225, 117, 15),
+                      Color(0xFFB71C1C)
+                    ],
                     width: double.infinity,
                     height: 50,
                     borderRadius: 10.0,
@@ -110,7 +123,10 @@ class LoginView extends GetView<LoginController> {
               GradientButton(
                 text: "REGISTER",
                 textStyle: const TextStyle(color: Colors.white, fontSize: 16),
-                gradientColors: const [Color.fromARGB(255, 225, 117, 15), Color(0xFFB71C1C)],
+                gradientColors: const [
+                  Color.fromARGB(255, 225, 117, 15),
+                  Color(0xFFB71C1C)
+                ],
                 width: double.infinity,
                 height: 50,
                 borderRadius: 10.0,
@@ -124,7 +140,8 @@ class LoginView extends GetView<LoginController> {
                     final supabase = Supabase.instance.client;
                     final res = await supabase.auth.signInWithOAuth(
                       Provider.google,
-                      redirectTo: 'https://ovfxbzqxcobozjpukzfo.supabase.co/auth/v1/callback',
+                      redirectTo:
+                          'https://ovfxbzqxcobozjpukzfo.supabase.co/auth/v1/callback',
                     );
                     if (res) {
                       Get.offNamed(Routes.HOME);
@@ -139,21 +156,46 @@ class LoginView extends GetView<LoginController> {
             ],
           ),
           const SizedBox(height: 20),
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    // Navegar a la pantalla de recuperación de contraseña
-                    Get.toNamed(Routes.FORGOT_PASSWORD);
-                  },
-                  child: const Text(
-                    '¿Has olvidado tu contraseña?',
-                    style: TextStyle(
-                      color: Colors.white,
-                      decoration: TextDecoration.underline,
+          Center(
+            child: MouseRegion(
+              cursor:
+                  SystemMouseCursors.click, // Cambia el cursor al de "click"
+              onEnter: (_) => controller.isHoveringForgotPassword.value = true,
+              onExit: (_) => controller.isHoveringForgotPassword.value = false,
+              child: Obx(() => GestureDetector(
+                    onTap: () {
+                      Get.toNamed(Routes.FORGOT_PASSWORD);
+                    },
+                    child: TweenAnimationBuilder<double>(
+                      duration: const Duration(
+                          milliseconds: 300), // Hace la animación más fluida
+                      curve: Curves.easeOut,
+                      tween: Tween<double>(
+                        begin: 1.0,
+                        end: controller.isHoveringForgotPassword.value
+                            ? 1.1
+                            : 1.0,
+                      ),
+                      builder: (context, scale, child) {
+                        return Transform.scale(
+                          scale: scale,
+                          child: child,
+                        );
+                      },
+                      child: Text(
+                        '¿Has olvidado tu contraseña?',
+                        style: TextStyle(
+                          color: controller.isHoveringForgotPassword.value
+                              ? Colors.redAccent
+                              : Colors.white,
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
+                  )),
+            ),
+          )
         ],
       ),
     );

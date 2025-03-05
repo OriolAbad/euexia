@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginController extends GetxController {
+  final isHoveringForgotPassword = false.obs;
   RxBool isLoading = false.obs;
   RxBool isHidden = true.obs;
   TextEditingController emailC = TextEditingController();
