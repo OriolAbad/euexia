@@ -143,7 +143,7 @@ class LoginView extends GetView<LoginController> {
                 child: GestureDetector(
                   onTap: () {
                     // Navegar a la pantalla de recuperación de contraseña
-                    //Get.toNamed(Routes.FORGOT_PASSWORD);
+                    Get.toNamed(Routes.FORGOT_PASSWORD);
                   },
                   child: const Text(
                     '¿Has olvidado tu contraseña?',
