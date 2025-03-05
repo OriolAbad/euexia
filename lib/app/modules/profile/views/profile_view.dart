@@ -13,14 +13,12 @@ class ProfileView extends StatelessWidget {
     
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: Column(
           children: [
             Stack(
               children: [
                 Container(
-                  height: 200,
+                  height: 400,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     image: DecorationImage(
@@ -34,14 +32,6 @@ class ProfileView extends StatelessWidget {
                   top: 16,
                   child: IconButton(
                     icon: Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () {},
-                  ),
-                ),
-                Positioned(
-                  right: 16,
-                  top: 16,
-                  child: IconButton(
-                    icon: Icon(Icons.edit, color: Colors.white),
                     onPressed: () {},
                   ),
                 ),
@@ -60,9 +50,9 @@ class ProfileView extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-            _buildButton("Stats", () => Get.to(() => StatsView())),
-            _buildButton("Gallery", () => Get.to(() => GalleryView())),
-            _buildButton("Account", () => Get.to(() => AccountView())),
+            _buildButton("Stats"),//, () => Get.to(() => StatsView())),
+            _buildButton("Gallery"),//, () => Get.to(() => GalleryView())),
+            _buildButton("Account"),//, () => Get.to(() => AccountView())),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {},
@@ -73,15 +63,15 @@ class ProfileView extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
+
   }
 
-  Widget _buildButton(String text, VoidCallback onPressed) {
+  Widget _buildButton(String text){ //,VoidCallback onPressed) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
       child: GestureDetector(
-        onTap: onPressed,
+       // onTap: onPressed,
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.symmetric(vertical: 12),

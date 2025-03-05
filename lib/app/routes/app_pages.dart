@@ -15,6 +15,9 @@ import 'package:euexia/app/modules/settings/views/settings_view.dart';
 import 'package:euexia/app/modules/settings/bindings/settings_binding.dart';
 import 'package:euexia/app/modules/register/bindings/register_binding.dart';
 import 'package:euexia/app/modules/register/views/register_view.dart';
+import 'package:euexia/app/modules/profile/views/profile_view.dart';
+import 'package:euexia/app/modules/profile/bindings/profile_binding.dart';
+
 /*import 'package:euexia/app/modules/challenges/bindings/challenges_binding.dart';
 import 'package:euexia/app/modules/challenges/views/challenges_view.dart';
 import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
@@ -88,11 +91,11 @@ class AppPages {
       name: _Paths.TIPS,
       page: () => TipsView(),
       binding: TipsBinding(),
-    ),
+    ),*/
     GetPage(
       name: _Paths.PROFILE,
       page: () => ProfileView(),
       binding: ProfileBinding(),
-    ),*/
+    ),
   ];
 }

@@ -16,8 +16,8 @@ abstract class Routes {
   /*static const CHALLENGES = _Paths.CHALLENGES;
   static const EXERCISES = _Paths.EXERCISES;
   static const MAP = _Paths.MAP;
-  static const TIPS = _Paths.TIPS;
-  static const PROFILE = _Paths.PROFILE;*/
+  static const TIPS = _Paths.TIPS;*/
+  static const PROFILE = _Paths.PROFILE;
 }
 
 abstract class _Paths {
@@ -31,6 +31,6 @@ abstract class _Paths {
   /*static const CHALLENGES = '/challenges';
   static const EXERCISES = '/exercises';
   static const MAP = '/map';
-  static const TIPS = '/tips';
-  static const PROFILE = '/profile';*/
+  static const TIPS = '/tips';*/
+  static const PROFILE = '/profile';
 }

@@ -66,7 +66,7 @@ class HomeView extends GetView<HomeController> {
               leading: const Icon(Icons.person, color: Colors.black),
               title: const Text('My Profile', style: TextStyle(color: Colors.black)),
               onTap: () {
-                //Get.offNamed(Routes.MYPROFILE);
+                Get.offNamed(Routes.PROFILE);
               },
             ),
             ListTile(
