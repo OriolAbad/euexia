@@ -138,6 +138,22 @@ class LoginView extends GetView<LoginController> {
               ),
             ],
           ),
+          const SizedBox(height: 20),
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    // Navegar a la pantalla de recuperación de contraseña
+                    //Get.toNamed(Routes.FORGOT_PASSWORD);
+                  },
+                  child: const Text(
+                    '¿Has olvidado tu contraseña?',
+                    style: TextStyle(
+                      color: Colors.white,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ),
         ],
       ),
     );
