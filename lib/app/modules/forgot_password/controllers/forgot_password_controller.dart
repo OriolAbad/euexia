@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:euexia/app/routes/app_pages.dart';
 
 class ForgotPasswordController extends GetxController {
   var email = ''.obs;
@@ -37,6 +38,11 @@ class ForgotPasswordController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 2),
       );
+
+      /* HAY QUE GESTIONAR QUE CUANDO EL USUARIO HAGA CLICK EN EL LINK DE RESET CONTRASEÑA
+      SE REDIRIJA A LA PANTALLA DE RESET PASSWORD(QUE NO SE CAMBIE DE PANTALLA ANTES
+      DE QUE EL USUARIO HAGA CLICK EN EL LINK)*/
+      //Get.toNamed(Routes.RESET_PASSWORD);
     } catch (e) {
       Get.snackbar(
         'Error', e.toString(),
@@ -44,7 +50,7 @@ class ForgotPasswordController extends GetxController {
         duration: const Duration(seconds: 2),
       );
     } finally {
-      isLoading.value = false; 
+      isLoading.value = false;
     }
   }
 }
