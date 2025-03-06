@@ -1,16 +1,15 @@
 // lib/views/profile_view.dart
-import 'package:euexia/app/modules/stats/views/stats_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/profile_controller.dart';
+import '../controllers/stats_controller.dart';
 //import 'stats_view.dart';
 //import 'gallery_view.dart';
 //import 'account_view.dart';
 
-class ProfileView extends StatelessWidget {
+class StatsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final ProfileController controller = Get.find();
+    final StatsController controller = Get.put(StatsController());
     
     return Scaffold(
       backgroundColor: Colors.black,
@@ -51,9 +50,9 @@ class ProfileView extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-            _buildButton("Stats", () => Get.to(() => StatsView())),
-           // _buildButton("Gallery"),//, () => Get.to(() => GalleryView())),
-           // _buildButton("Account"),//, () => Get.to(() => AccountView())),
+            _buildButton("Stats"),//, () => Get.to(() => StatsView())),
+            _buildButton("Gallery"),//, () => Get.to(() => GalleryView())),
+            _buildButton("Account"),//, () => Get.to(() => AccountView())),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {},
@@ -68,11 +67,11 @@ class ProfileView extends StatelessWidget {
 
   }
 
-  Widget _buildButton(String text,VoidCallback onPressed) {
+  Widget _buildButton(String text){ //,VoidCallback onPressed) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
       child: GestureDetector(
-        onTap: onPressed,
+       // onTap: onPressed,
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.symmetric(vertical: 12),
