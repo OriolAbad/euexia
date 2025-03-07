@@ -1,12 +1,15 @@
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:euexia/app/routes/app_pages.dart';
+import 'package:flutter/material.dart';
 
 class ResetPasswordController extends GetxController {
   var code = ''.obs;
   var password = ''.obs;
   var confirmPassword = ''.obs;
   var isLoading = false.obs;
+  var isPasswordHidden = true.obs;
+  var isConfirmPasswordHidden = true.obs;
   late String email;
 
   @override
@@ -18,7 +21,9 @@ class ResetPasswordController extends GetxController {
   // Función para restablecer la contraseña
   Future<void> resetPassword() async {
     if (password.value != confirmPassword.value) {
-      Get.snackbar('Error', 'Passwords do not match');
+      Get.snackbar('Error', 'Passwords do not match',
+        colorText: Colors.white, // Cambiar el color del texto a blanco
+      );
       return;
     }
 
@@ -32,7 +37,9 @@ class ResetPasswordController extends GetxController {
       );
 
       if (authResponse.user == null) {
-        Get.snackbar('Error', 'Invalid or expired OTP');
+        Get.snackbar('Error', 'Invalid or expired OTP',
+          colorText: Colors.white, // Cambiar el color del texto a blanco
+        );
         return;
       }
 
@@ -42,13 +49,19 @@ class ResetPasswordController extends GetxController {
       );
 
       if (updateResponse.user != null) {
-        Get.snackbar('Success', 'Password has been reset');
+        Get.snackbar('Success', 'Password has been reset',
+          colorText: Colors.white, // Cambiar el color del texto a blanco
+        );
         Get.offAllNamed(Routes.LOGIN);
       } else {
-        Get.snackbar('Error', 'Failed to update password');
+        Get.snackbar('Error', 'Failed to update password',
+          colorText: Colors.white, // Cambiar el color del texto a blanco
+        );
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e');
+      Get.snackbar('Error', 'An error occurred: $e',
+        colorText: Colors.white, // Cambiar el color del texto a blanco
+      );
     } finally {
       isLoading.value = false;
     }

@@ -26,10 +26,12 @@ class LoginController extends GetxController {
         return true;
       } catch (e) {
         isLoading.value = false;
-        Get.snackbar("ERROR", e.toString());
+        Get.snackbar("ERROR", e.toString(),
+            colorText: Colors.white, backgroundColor: Color(0xFFB71C1C));
       }
     } else {
-      Get.snackbar("ERROR", "Email and password are required");
+      Get.snackbar("ERROR", "Email and password are required",
+          colorText: Colors.white, backgroundColor: Color(0xFFB71C1C));
     }
     return null;
   }

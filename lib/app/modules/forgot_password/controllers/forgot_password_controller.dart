@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:euexia/app/routes/app_pages.dart';
@@ -14,6 +15,7 @@ class ForgotPasswordController extends GetxController {
         'Error', 'Por favor, ingresa tu correo electrónico',
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 2),
+        colorText: Colors.white,
       );
       return;
     }
@@ -24,6 +26,7 @@ class ForgotPasswordController extends GetxController {
         'Error', 'Formato de email no válido',
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 2),
+        colorText: Colors.white,
       );
       return;
     }
@@ -37,6 +40,7 @@ class ForgotPasswordController extends GetxController {
         'Éxito', '¡Correo de recuperación enviado!',
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 2),
+        colorText: Colors.white,
       );
 
       // Redirigir a la pantalla de restablecimiento de contraseña con el email como argumento
@@ -46,6 +50,7 @@ class ForgotPasswordController extends GetxController {
         'Error', e.toString(),
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 2),
+        colorText: Colors.white,
       );
     } finally {
       isLoading.value = false;

@@ -49,23 +49,49 @@ class ResetPasswordView extends StatelessWidget {
               const SizedBox(height: 15),
 
               // Password TextField
-              TextField(
-                controller: passwordController,
-                onChanged: (value) => controller.password.value = value,
-                obscureText: true,
-                decoration: _inputDecoration("New Password"),
-                style: const TextStyle(color: Colors.black),
-              ),
+              Obx(() => TextField(
+                    controller: passwordController,
+                    onChanged: (value) => controller.password.value = value,
+                    obscureText: controller.isPasswordHidden.value,
+                    decoration: _inputDecoration("New Password").copyWith(
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          controller.isPasswordHidden.value
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          controller.isPasswordHidden.value =
+                              !controller.isPasswordHidden.value;
+                        },
+                      ),
+                    ),
+                    style: const TextStyle(color: Colors.black),
+                  )),
               const SizedBox(height: 15),
 
               // Confirm Password TextField
-              TextField(
-                controller: confirmPasswordController,
-                onChanged: (value) => controller.confirmPassword.value = value,
-                obscureText: true,
-                decoration: _inputDecoration("Confirm Password"),
-                style: const TextStyle(color: Colors.black),
-              ),
+              Obx(() => TextField(
+                    controller: confirmPasswordController,
+                    onChanged: (value) => controller.confirmPassword.value = value,
+                    obscureText: controller.isConfirmPasswordHidden.value,
+                    decoration: _inputDecoration("Confirm Password").copyWith(
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          controller.isConfirmPasswordHidden.value
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          controller.isConfirmPasswordHidden.value =
+                              !controller.isConfirmPasswordHidden.value;
+                        },
+                      ),
+                    ),
+                    style: const TextStyle(color: Colors.black),
+                  )),
               const SizedBox(height: 30),
 
               // Reset Password Button
