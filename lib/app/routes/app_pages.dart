@@ -19,6 +19,8 @@ import 'package:euexia/app/modules/forgot_password/views/forgot_password_view.da
 import 'package:euexia/app/modules/forgot_password/bindings/forgot_password_binding.dart';
 import 'package:euexia/app/modules/reset_password/views/reset_password_view.dart';
 import 'package:euexia/app/modules/reset_password/bindings/reset_password_binding.dart';
+import 'package:euexia/app/modules/gallery/views/gallery_view.dart';
+import 'package:euexia/app/modules/gallery/bindings/gallery_bindings.dart';
 /*import 'package:euexia/app/modules/challenges/bindings/challenges_binding.dart';
 import 'package:euexia/app/modules/challenges/views/challenges_view.dart';
 import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
@@ -82,6 +84,11 @@ class AppPages {
       name: _Paths.EDIT_NOTE,
       page: () => EditNoteView(),
       binding: EditNoteBinding(),
+    ),
+    GetPage(
+      name: _Paths.GALLERY,
+      page: () => GalleryView(),
+      binding: GalleryBinding(),
     ),
     /*GetPage(
       name: _Paths.CHALLENGES,
