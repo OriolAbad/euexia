@@ -39,10 +39,8 @@ class ForgotPasswordController extends GetxController {
         duration: const Duration(seconds: 2),
       );
 
-      /* HAY QUE GESTIONAR QUE CUANDO EL USUARIO HAGA CLICK EN EL LINK DE RESET CONTRASEÑA
-      SE REDIRIJA A LA PANTALLA DE RESET PASSWORD(PERMITA CAMBIAR LA CONTRASEÑA EN
-      LA PANTALLA DE RESET PASSWORD)*/
-      Get.toNamed(Routes.RESET_PASSWORD);
+      // Redirigir a la pantalla de restablecimiento de contraseña con el email como argumento
+      Get.toNamed(Routes.RESET_PASSWORD, arguments: email.value);
     } catch (e) {
       Get.snackbar(
         'Error', e.toString(),

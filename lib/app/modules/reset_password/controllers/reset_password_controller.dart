@@ -7,6 +7,13 @@ class ResetPasswordController extends GetxController {
   var password = ''.obs;
   var confirmPassword = ''.obs;
   var isLoading = false.obs;
+  late String email;
+
+  @override
+  void onInit() {
+    super.onInit();
+    email = Get.arguments; // Obtener el email pasado como argumento
+  }
 
   // Función para restablecer la contraseña
   Future<void> resetPassword() async {
@@ -19,6 +26,7 @@ class ResetPasswordController extends GetxController {
     try {
       // Verifica el código OTP
       final authResponse = await Supabase.instance.client.auth.verifyOTP(
+        email: email,
         token: code.value,
         type: OtpType.recovery,
       );
