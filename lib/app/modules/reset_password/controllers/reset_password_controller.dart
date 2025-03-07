@@ -3,41 +3,45 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:euexia/app/routes/app_pages.dart';
 
 class ResetPasswordController extends GetxController {
+  var code = ''.obs;
   var password = ''.obs;
   var confirmPassword = ''.obs;
   var isLoading = false.obs;
 
   // Función para restablecer la contraseña
   Future<void> resetPassword() async {
-    // Verificar si las contraseñas coinciden
     if (password.value != confirmPassword.value) {
       Get.snackbar('Error', 'Passwords do not match');
       return;
     }
 
-    // Activar el estado de carga
     isLoading.value = true;
-
     try {
-      // Restablecer la contraseña
-      final response = await Supabase.instance.client.auth.updateUser(
+      // Verifica el código OTP
+      final authResponse = await Supabase.instance.client.auth.verifyOTP(
+        token: code.value,
+        type: OtpType.recovery,
+      );
+
+      if (authResponse.user == null) {
+        Get.snackbar('Error', 'Invalid or expired OTP');
+        return;
+      }
+
+      // Actualiza la contraseña
+      final updateResponse = await Supabase.instance.client.auth.updateUser(
         UserAttributes(password: password.value),
       );
 
-      // Verificar la respuesta de Supabase
-      if (response.user != null) {
-        // Mostrar mensaje de éxito y redirigir al login
+      if (updateResponse.user != null) {
         Get.snackbar('Success', 'Password has been reset');
-        Get.offAllNamed(Routes.LOGIN);  // Redirigir a la pantalla de login y eliminar otras pantallas
+        Get.offAllNamed(Routes.LOGIN);
       } else {
-        // Si no hay un usuario o hay un error, mostrar el mensaje de error
-        Get.snackbar('Unknown error occurred', 'Please try again');
+        Get.snackbar('Error', 'Failed to update password');
       }
     } catch (e) {
-      // Manejo de cualquier error imprevisto
       Get.snackbar('Error', 'An error occurred: $e');
     } finally {
-      // Desactivar el estado de carga
       isLoading.value = false;
     }
   }

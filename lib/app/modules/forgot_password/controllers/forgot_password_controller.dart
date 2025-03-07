@@ -40,9 +40,9 @@ class ForgotPasswordController extends GetxController {
       );
 
       /* HAY QUE GESTIONAR QUE CUANDO EL USUARIO HAGA CLICK EN EL LINK DE RESET CONTRASEÑA
-      SE REDIRIJA A LA PANTALLA DE RESET PASSWORD(QUE NO SE CAMBIE DE PANTALLA ANTES
-      DE QUE EL USUARIO HAGA CLICK EN EL LINK)*/
-      //Get.toNamed(Routes.RESET_PASSWORD);
+      SE REDIRIJA A LA PANTALLA DE RESET PASSWORD(PERMITA CAMBIAR LA CONTRASEÑA EN
+      LA PANTALLA DE RESET PASSWORD)*/
+      Get.toNamed(Routes.RESET_PASSWORD);
     } catch (e) {
       Get.snackbar(
         'Error', e.toString(),

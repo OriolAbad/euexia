@@ -7,6 +7,10 @@ class ResetPasswordView extends StatelessWidget {
 
   final ResetPasswordController controller = Get.put(ResetPasswordController());
 
+  final TextEditingController codeController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,52 +38,71 @@ class ResetPasswordView extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
-              // Password TextField
+
+              // Code TextField
               TextField(
-                onChanged: (value) => controller.password.value = value,
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: "New Password",
-                  hintStyle: const TextStyle(color: Colors.black),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: Colors.white),
-                  ),
-                ),
+                controller: codeController,
+                onChanged: (value) => controller.code.value = value,
+                decoration: _inputDecoration("Code"),
                 style: const TextStyle(color: Colors.black),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
+
+              // Password TextField
+              TextField(
+                controller: passwordController,
+                onChanged: (value) => controller.password.value = value,
+                obscureText: true,
+                decoration: _inputDecoration("New Password"),
+                style: const TextStyle(color: Colors.black),
+              ),
+              const SizedBox(height: 15),
+
               // Confirm Password TextField
               TextField(
+                controller: confirmPasswordController,
                 onChanged: (value) => controller.confirmPassword.value = value,
                 obscureText: true,
-                decoration: InputDecoration(
-                  hintText: "Confirm Password",
-                  hintStyle: const TextStyle(color: Colors.black),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: Colors.white),
-                  ),
-                ),
+                decoration: _inputDecoration("Confirm Password"),
                 style: const TextStyle(color: Colors.black),
               ),
               const SizedBox(height: 30),
+
               // Reset Password Button
               Obx(() => controller.isLoading.value
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
-                      onPressed: () {
-                        controller.resetPassword();
-                      },
-                      child: const Text("Reset Password"),
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : () {
+                              controller.resetPassword();
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red, // Color personalizado
+                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Text("Reset Password", style: TextStyle(fontSize: 18)),
                     )),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: const TextStyle(color: Colors.black),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: const BorderSide(color: Colors.white),
       ),
     );
   }
