@@ -15,23 +15,23 @@ import 'package:euexia/app/modules/settings/views/settings_view.dart';
 import 'package:euexia/app/modules/settings/bindings/settings_binding.dart';
 import 'package:euexia/app/modules/register/bindings/register_binding.dart';
 import 'package:euexia/app/modules/register/views/register_view.dart';
-/*import 'package:euexia/app/modules/challenges/bindings/challenges_binding.dart';
-import 'package:euexia/app/modules/challenges/views/challenges_view.dart';
-import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
-import 'package:euexia/app/modules/exercises/views/exercises_view.dart';
-import 'package:euexia/app/modules/map/bindings/map_binding.dart';
-import 'package:euexia/app/modules/map/views/map_view.dart';
+// import 'package:euexia/app/modules/challenges/bindings/challenges_binding.dart';
+// import 'package:euexia/app/modules/challenges/views/challenges_view.dart';
+// import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
+// import 'package:euexia/app/modules/exercises/views/exercises_view.dart';
+// import 'package:euexia/app/modules/map/bindings/map_binding.dart';
+// import 'package:euexia/app/modules/map/views/map_view.dart';
 import 'package:euexia/app/modules/tips/bindings/tips_binding.dart';
 import 'package:euexia/app/modules/tips/views/tips_view.dart';
-import 'package:euexia/app/modules/profile/bindings/profile_binding.dart';
-import 'package:euexia/app/modules/profile/views/profile_view.dart';*/
+// import 'package:euexia/app/modules/profile/bindings/profile_binding.dart';
+// import 'package:euexia/app/modules/profile/views/profile_view.dart';
 
 part 'app_routes.dart';
 
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.SPLASH;
+  static const INITIAL = Routes.HOME;
 
   static final routes = [
     GetPage(
@@ -69,30 +69,30 @@ class AppPages {
       page: () => EditNoteView(),
       binding: EditNoteBinding(),
     ),
-    /*GetPage(
-      name: _Paths.CHALLENGES,
-      page: () => ChallengesView(),
-      binding: ChallengesBinding(),
-    ),
-    GetPage(
-      name: _Paths.EXERCISES,
-      page: () => ExercisesView(),
-      binding: ExercisesBinding(),
-    ),
-    GetPage(
-      name: _Paths.MAP,
-      page: () => MapView(),
-      binding: MapBinding(),
-    ),
+    // GetPage(
+    //   name: _Paths.CHALLENGES,
+    //   page: () => ChallengesView(),
+    //   binding: ChallengesBinding(),
+    // ),
+    // GetPage(
+    //   name: _Paths.EXERCISES,
+    //   page: () => ExercisesView(),
+    //   binding: ExercisesBinding(),
+    // ),
+    // GetPage(
+    //   name: _Paths.MAP,
+    //   page: () => MapView(),
+    //   binding: MapBinding(),
+    // ),
     GetPage(
       name: _Paths.TIPS,
       page: () => TipsView(),
       binding: TipsBinding(),
     ),
-    GetPage(
-      name: _Paths.PROFILE,
-      page: () => ProfileView(),
-      binding: ProfileBinding(),
-    ),*/
+    // GetPage(
+    //   name: _Paths.PROFILE,
+    //   page: () => ProfileView(),
+    //   binding: ProfileBinding(),
+    // ),
   ];
 }

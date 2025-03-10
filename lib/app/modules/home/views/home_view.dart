@@ -91,6 +91,13 @@ class HomeView extends GetView<HomeController> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.lightbulb, color: Colors.black),
+              title: const Text('Tips', style: TextStyle(color: Colors.black)),
+              onTap: () {
+                Get.toNamed(Routes.TIPS);
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.logout, color: Colors.black),
               title: const Text('Cerrar sesión', style: TextStyle(color: Colors.black)),
               onTap: () {

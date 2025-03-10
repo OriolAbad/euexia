@@ -24,7 +24,7 @@ void main() async {
   runApp(
     GetMaterialApp(
       title: "Application",
-      initialRoute: Routes.SPLASH, // Cambia la ruta inicial al splash
+      initialRoute: Routes.HOME, // Cambia la ruta inicial al splash
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
     ),
