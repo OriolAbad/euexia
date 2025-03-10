@@ -17,10 +17,10 @@ import 'package:euexia/app/modules/register/bindings/register_binding.dart';
 import 'package:euexia/app/modules/register/views/register_view.dart';
 import 'package:euexia/app/modules/profile/views/profile_view.dart';
 import 'package:euexia/app/modules/profile/bindings/profile_binding.dart';
-
-/*import 'package:euexia/app/modules/challenges/bindings/challenges_binding.dart';
+import 'package:euexia/app/modules/challenges/bindings/challenges_binding.dart';
 import 'package:euexia/app/modules/challenges/views/challenges_view.dart';
-import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
+
+/*import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
 import 'package:euexia/app/modules/exercises/views/exercises_view.dart';
 import 'package:euexia/app/modules/map/bindings/map_binding.dart';
 import 'package:euexia/app/modules/map/views/map_view.dart';
@@ -72,11 +72,12 @@ class AppPages {
       page: () => EditNoteView(),
       binding: EditNoteBinding(),
     ),
-    /*GetPage(
+    GetPage(
       name: _Paths.CHALLENGES,
       page: () => ChallengesView(),
       binding: ChallengesBinding(),
     ),
+      /*
     GetPage(
       name: _Paths.EXERCISES,
       page: () => ExercisesView(),
