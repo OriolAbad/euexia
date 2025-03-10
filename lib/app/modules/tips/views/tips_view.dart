@@ -42,47 +42,50 @@ class TipsView extends StatelessWidget {
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columns: const [
-                      DataColumn(label: Text('ID')),
-                      DataColumn(label: Text('Descripción')),
-                      DataColumn(label: Text('Editar')),
-                      DataColumn(label: Text('Eliminar')),
-                    ],
-                    rows: tipsController.tips.map((tip) {
-                      return DataRow(cells: [
-                        DataCell(Text(tip.idconsejo.toString())),
-                        DataCell(Text(tip.descripcion)),
-                        DataCell(
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue, // Color azul para el botón de editar
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: DataTable(
+                      columns: const [
+                        DataColumn(label: Text('ID')),
+                        DataColumn(label: Text('Descripción')),
+                        DataColumn(label: Text('Editar')),
+                        DataColumn(label: Text('Eliminar')),
+                      ],
+                      rows: tipsController.tips.map((tip) {
+                        return DataRow(cells: [
+                          DataCell(Text(tip.idconsejo.toString())),
+                          DataCell(Text(tip.descripcion)),
+                          DataCell(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue, // Color azul para el botón de editar
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
                               ),
+                              onPressed: () {
+                                _showEditModal(context, tip);
+                              },
+                              child: const Icon(Icons.edit, color: Colors.white),
                             ),
-                            onPressed: () {
-                              _showEditModal(context, tip);
-                            },
-                            child: const Icon(Icons.edit, color: Colors.white),
                           ),
-                        ),
-                        DataCell(
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red, // Color rojo para el botón de eliminar
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
+                          DataCell(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red, // Color rojo para el botón de eliminar
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
                               ),
+                              onPressed: () {
+                                _showDeleteModal(context, tip);
+                              },
+                              child: const Icon(Icons.delete, color: Colors.white),
                             ),
-                            onPressed: () {
-                              _showDeleteModal(context, tip);
-                            },
-                            child: const Icon(Icons.delete, color: Colors.white),
                           ),
-                        ),
-                      ]);
-                    }).toList(),
+                        ]);
+                      }).toList(),
+                    ),
                   ),
                 ),
               ),
