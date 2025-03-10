@@ -21,8 +21,11 @@ class GalleryController extends GetxController {
       final response = await client.storage.from('prueba').list();
 
       if (response.isNotEmpty) {
-        // Extract image names from response data
-        images.value = response.map((file) => file.name).toList();
+        // Extract public URLs from response data
+        images.value = response.map((file) {
+          final urlResponse = client.storage.from('prueba').getPublicUrl(file.name);
+          return urlResponse ?? '';
+        }).toList();
       } else {
         // Show error if response is empty
         Get.snackbar(
@@ -40,17 +43,6 @@ class GalleryController extends GetxController {
       );
     } finally {
       isLoading.value = false;
-    }
-  }
-
-  // Get public URL for an image in Supabase storage
-  String? getImageUrl(String imageName) {
-    final urlResponse = client.storage.from('prueba').getPublicUrl(imageName);
-
-    if (urlResponse != null) {
-      return urlResponse;
-    } else {
-      return null; // Return null if URL is not available
     }
   }
 }

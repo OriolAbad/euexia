@@ -78,6 +78,13 @@ class HomeView extends GetView<HomeController> {
             ),
             ListTile(
               leading: const Icon(Icons.map, color: Colors.black),
+              title: const Text('Gallery', style: TextStyle(color: Colors.black)),
+              onTap: () {
+                Get.toNamed(Routes.GALLERY);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.map, color: Colors.black),
               title: const Text('Gym Map', style: TextStyle(color: Colors.black)),
               onTap: () {
                 //Get.toNamed(Routes.GymMap);
