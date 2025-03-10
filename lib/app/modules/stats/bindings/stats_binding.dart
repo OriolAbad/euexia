@@ -1,12 +1,10 @@
+// lib/bindings/stats_binding.dart
 import 'package:get/get.dart';
-
 import '../controllers/stats_controller.dart';
 
-class SettingsBinding extends Bindings {
+class StatsBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<StatsController>(
-      () => StatsController(),
-    );
+    Get.lazyPut<StatsController>(() => StatsController());
   }
 }
