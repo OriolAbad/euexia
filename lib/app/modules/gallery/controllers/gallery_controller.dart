@@ -24,7 +24,7 @@ class GalleryController extends GetxController {
         // Extract public URLs from response data
         images.value = response.map((file) {
           final urlResponse = client.storage.from('prueba').getPublicUrl(file.name);
-          return urlResponse ?? '';
+          return urlResponse; // Extracting the public URL correctly
         }).toList();
       } else {
         // Show error if response is empty
