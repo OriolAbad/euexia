@@ -22,9 +22,9 @@ class HomeController extends GetxController {
 
     // Se obtiene el ID del usuario desde la tabla "users" filtrando por el UID de autenticación actual
     List<dynamic> res = await client
-        .from("users")
+        .from("usuarios")
         .select("id")
-        .match({"uid": currentUser.id});
+        .match({"uuid": currentUser.id});
 
     // Se extrae el primer resultado de la consulta como un mapa
     Map<String, dynamic> user = (res).first as Map<String, dynamic>;

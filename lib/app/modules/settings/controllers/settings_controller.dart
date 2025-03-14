@@ -6,8 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class SettingsController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isHidden = true.obs;
-  TextEditingController nameC = TextEditingController();
-  TextEditingController nameC2 = TextEditingController();
+  TextEditingController nombreusuarioC = TextEditingController();
+  TextEditingController nombreusuarioC2 = TextEditingController();
   TextEditingController emailC = TextEditingController();
   TextEditingController passwordC = TextEditingController();
 
@@ -20,21 +20,21 @@ class SettingsController extends GetxController {
 
   Future<void> getProfile() async {
     List<dynamic> res = await client
-        .from("users")
+        .from("usuarios")
         .select()
-        .match({"uid": client.auth.currentUser!.id});
+        .match({"uuid": client.auth.currentUser!.id});
     Map<String, dynamic> user = (res).first as Map<String, dynamic>;
-    nameC.text = user["name"];
-    nameC2.text = user["name"];
+    nombreusuarioC.text = user["nombreusuario"];
+    nombreusuarioC2.text = user["nombreusuario"];
     emailC.text = user["email"];
   }
 
   Future<void> updateProfile() async {
-    if (nameC2.text.isNotEmpty) {
+    if (nombreusuarioC2.text.isNotEmpty) {
       isLoading.value = true;
-      await client.from("users").update({
-        "name": nameC2.text,
-      }).match({"uid": client.auth.currentUser!.id});
+      await client.from("usuarios").update({
+        "nombreusuario": nombreusuarioC2.text,
+      }).match({"uuid": client.auth.currentUser!.id});
       // if user want to update password
       if (passwordC.text.isNotEmpty) {
         if (passwordC.text.length >= 6) {

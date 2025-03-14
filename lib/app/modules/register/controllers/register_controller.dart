@@ -8,6 +8,10 @@ class RegisterController extends GetxController {
   TextEditingController nameC = TextEditingController();
   TextEditingController emailC = TextEditingController();
   TextEditingController passwordC = TextEditingController();
+  TextEditingController locationC = TextEditingController();
+  TextEditingController apellido1C = TextEditingController();
+  TextEditingController apellido2C = TextEditingController();
+  TextEditingController userNameC = TextEditingController();
 
   SupabaseClient client = Supabase.instance.client;
 
@@ -22,11 +26,15 @@ class RegisterController extends GetxController {
         isLoading.value = false;
 
         // insert registered user to table users
-        await client.from("users").insert({
+        await client.from("usuarios").insert({
           "name": nameC.text,
+          "apellido1": apellido1C.text,
+          "apellido2": apellido2C.text,
+          "nombreusuario": userNameC.text,
           "email": emailC.text,
+          "location": locationC.text,
           "created_at": DateTime.now().toIso8601String(),
-          "uid": res.user!.id,
+          "uuid": res.user!.id,
         });
 
         Get.defaultDialog(
