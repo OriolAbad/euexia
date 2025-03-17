@@ -1,7 +1,6 @@
 import 'package:euexia/app/services/service_tips.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:euexia/app/data/help/response.dart' as custom_response;
 
 class LoginController extends GetxController {
@@ -20,7 +19,7 @@ class LoginController extends GetxController {
   }
 
   Future<bool?> login() async {
-    bool result;
+    bool? result;
 
     if (emailC.text.isNotEmpty && passwordC.text.isNotEmpty) {
       isLoading.value = true;
@@ -42,6 +41,7 @@ class LoginController extends GetxController {
       
       isLoading.value = false;
       return result;
+    }
+    return result;
   }
-}
 }

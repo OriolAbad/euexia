@@ -1,7 +1,6 @@
 import 'package:euexia/app/data/models/consejos.dart';
 import 'package:euexia/app/data/models/usuarios.dart';
 import 'package:euexia/app/data/help/response.dart' as custom_response;
-import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseService {
@@ -61,7 +60,6 @@ class SupabaseService {
         email: user.email,
         password: password
       );
-      final Session? session = res.session;
       final User? usuario = res.user;
 
       user.uuid = usuario?.id;
@@ -88,7 +86,6 @@ class SupabaseService {
         email: email,
         password: password
       );
-      final Session? session = res.session;
       final User? usuario = res.user;
 
       result.success = true;

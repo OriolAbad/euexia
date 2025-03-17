@@ -2,7 +2,6 @@ import 'package:euexia/app/data/models/usuarios.dart';
 import 'package:euexia/app/services/service_tips.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:euexia/app/data/help/response.dart' as custom_response;
 
 class RegisterController extends GetxController {
