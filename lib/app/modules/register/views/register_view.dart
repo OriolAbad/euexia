@@ -35,68 +35,148 @@ class RegisterView extends GetView<RegisterController> {
                 height: 100,
               ),
               const SizedBox(height: 40),
-              TextField(
-                controller: controller.nameC,
-                decoration: InputDecoration(
-                  hintText: "Name",
-                  hintStyle: const TextStyle(color: Colors.black),
-                  prefixIcon: const Icon(Icons.person, color: Colors.black),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: Colors.white),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: controller.nameC,
+                      decoration: InputDecoration(
+                        hintText: "Name",
+                        hintStyle: const TextStyle(color: Colors.black),
+                        prefixIcon: const Icon(Icons.person, color: Colors.black),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.white, width: 2),
+                        ),
+                      ),
+                      style: const TextStyle(color: Colors.black),
+                    ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: controller.apellido1,
+                      decoration: InputDecoration(
+                        hintText: "Apellido1",
+                        hintStyle: const TextStyle(color: Colors.black),
+                        prefixIcon: const Icon(Icons.badge, color: Colors.black),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.white, width: 2),
+                        ),
+                      ),
+                      style: const TextStyle(color: Colors.black),
+                    ),
                   ),
-                ),
-                style: const TextStyle(color: Colors.black),
+                ],
               ),
               const SizedBox(height: 20),
-              TextField(
-                controller: controller.emailC,
-                decoration: InputDecoration(
-                  hintText: "Email",
-                  hintStyle: const TextStyle(color: Colors.black),
-                  prefixIcon: const Icon(Icons.email, color: Colors.black),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: Colors.white),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: controller.apellido2,
+                      decoration: InputDecoration(
+                        hintText: "Apellido2",
+                        hintStyle: const TextStyle(color: Colors.black),
+                        prefixIcon: const Icon(Icons.badge, color: Colors.black),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.white, width: 2),
+                        ),
+                      ),
+                      style: const TextStyle(color: Colors.black),
+                    ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: controller.nombreusuario,
+                      decoration: InputDecoration(
+                        hintText: "User Name",
+                        hintStyle: const TextStyle(color: Colors.black),
+                        prefixIcon: const Icon(Icons.account_circle, color: Colors.black),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.white, width: 2),
+                        ),
+                      ),
+                      style: const TextStyle(color: Colors.black),
+                    ),
                   ),
-                ),
-                style: const TextStyle(color: Colors.black),
+                ],
               ),
               const SizedBox(height: 20),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Location",
-                  hintStyle:
-                      const TextStyle(color: Colors.black), // Texto negro
-                  prefixIcon: const Icon(Icons.location_on,
-                      color: Colors.black), // Icono
-                  filled: true,
-                  fillColor: Colors.white, // Fondo blanco
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide:
-                        const BorderSide(color: Colors.white), // Borde blanco
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: controller.emailC,
+                      decoration: InputDecoration(
+                        hintText: "Email",
+                        hintStyle: const TextStyle(color: Colors.black),
+                        prefixIcon: const Icon(Icons.email, color: Colors.black),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.white, width: 2),
+                        ),
+                      ),
+                      style: const TextStyle(color: Colors.black),
+                    ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(
-                        color: Colors.white,
-                        width: 2), // Borde blanco al enfocar
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: controller.location,
+                      decoration: InputDecoration(
+                        hintText: "Location",
+                        hintStyle: const TextStyle(color: Colors.black),
+                        prefixIcon: const Icon(Icons.location_on, color: Colors.black),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.white, width: 2),
+                        ),
+                      ),
+                      style: const TextStyle(color: Colors.black),
+                    ),
                   ),
-                ),
-                style: const TextStyle(color: Colors.black), // Texto negro
+                ],
               ),
               const SizedBox(height: 20),
               Obx(() => TextField(
@@ -164,7 +244,7 @@ class RegisterView extends GetView<RegisterController> {
             ],
           ),
         ],
-      ),
-    );
-  }
+     ),
+);
+}
 }

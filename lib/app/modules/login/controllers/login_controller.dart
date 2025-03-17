@@ -1,6 +1,8 @@
+import 'package:euexia/app/services/service_tips.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:euexia/app/data/help/response.dart' as custom_response;
 
 class LoginController extends GetxController {
   RxBool isLoading = false.obs;
@@ -8,28 +10,38 @@ class LoginController extends GetxController {
   TextEditingController emailC = TextEditingController();
   TextEditingController passwordC = TextEditingController();
 
-  SupabaseClient client = Supabase.instance.client;
+  SupabaseService client = SupabaseService();
+  custom_response.Response response = custom_response.Response(success: false);
+  
+
+  @override
+  void onInit() {
+    super.onInit();
+  }
 
   Future<bool?> login() async {
+    bool result;
+
     if (emailC.text.isNotEmpty && passwordC.text.isNotEmpty) {
       isLoading.value = true;
-      try {
-        await client.auth
-            .signInWithPassword(email: emailC.text, password: passwordC.text);
-        isLoading.value = false;
+
+      response = await client.login(emailC.text, passwordC.text);
+      if (response.success) {
         Get.defaultDialog(
             barrierDismissible: false,
             title: "Login success",
             middleText: "Will be redirect to Home Page",
             backgroundColor: Colors.green);
-        return true;
-      } catch (e) {
+        
+        result = true;
+      } else {
         isLoading.value = false;
-        Get.snackbar("ERROR", e.toString());
+        Get.snackbar("ERROR", response.errorMessage ?? "An unknown error occurred");
+        result = false;
       }
-    } else {
-      Get.snackbar("ERROR", "Email and password are required");
-    }
-    return null;
+      
+      isLoading.value = false;
+      return result;
   }
+}
 }

@@ -1,40 +1,59 @@
 class Usuarios {
-  int idUsuario;
+  String? uuid;
+  int? idUsuario;
   String nombre;
   String apellido1;
   String? apellido2;
-  String correoElectronico;
+  String email;
   String nombreUsuario;
-  String contrasena;
-  DateTime fechaCreacion;
+  DateTime? created_at;
   String? imagenPerfil;
   int puntos;
+  String location;
 
   Usuarios({
-    required this.idUsuario,
+    this.uuid,
+    this.idUsuario,
     required this.nombre,
     required this.apellido1,
     this.apellido2,
-    required this.correoElectronico,
+    required this.email,
     required this.nombreUsuario,
-    required this.contrasena,
-    required this.fechaCreacion,
+    this.created_at,
     this.imagenPerfil,
     this.puntos = 0,
+    required this.location,
   });
 
   factory Usuarios.fromJson(Map<String, dynamic> json) {
     return Usuarios(
-      idUsuario: json['idUsuario'],
-      nombre: json['nombre'],
+      uuid: json['uuid'],
+      idUsuario: json['idusuario'],
+      nombre: json['name'],
       apellido1: json['apellido1'],
       apellido2: json['apellido2'],
-      correoElectronico: json['correoElectronico'],
-      nombreUsuario: json['nombreUsuario'],
-      contrasena: json['contrasena'],
-      fechaCreacion: DateTime.parse(json['fechaCreacion']),
-      imagenPerfil: json['imagenPerfil'],
+      email: json['email'],
+      nombreUsuario: json['nombreusuario'],
+      created_at: DateTime.parse(json['created_at']),
+      imagenPerfil: json['imagenperfil'],
       puntos: json['puntos'] ?? 0,
+      location: json['location'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'uuid': uuid,
+      'idusuario': idUsuario,
+      'name': nombre,
+      'apellido1': apellido1,
+      'apellido2': apellido2,
+      'email': email,
+      'nombreusuario': nombreUsuario,
+      'created_at': created_at?.toIso8601String(),
+      'imagenperfil': imagenPerfil,
+      'puntos': puntos,
+      'location': location,
+    };
   }
 }
