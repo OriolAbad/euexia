@@ -78,6 +78,11 @@ class GalleryView extends StatelessWidget {
           );
         }
       }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => controller.takeAndUploadPhoto(),
+        backgroundColor: const Color(0xFFB71C1C), // Color rojo intenso
+        child: const Icon(Icons.camera_alt, color: Colors.white),
+      ),
     );
   }
 }
