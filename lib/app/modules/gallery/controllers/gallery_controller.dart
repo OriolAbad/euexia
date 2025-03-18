@@ -14,24 +14,26 @@ class GalleryController extends GetxController {
     fetchImages();
   }
 
-  // Fetch images from the Supabase storage bucket
   Future<void> fetchImages() async {
     isLoading.value = true;
     try {
-      final response = await client.storage.from('prueba').list();
+      final response = await client.storage.from('gallery').list();
+
+      print('Response from Supabase: $response'); // Depuración
 
       if (response.isNotEmpty) {
         // Extract public URLs from response data
         images.value = response.map((file) {
-          final urlResponse = client.storage.from('prueba').getPublicUrl(file.name);
-          return urlResponse; // Extracting the public URL correctly
+          final urlResponse = client.storage.from('gallery').getPublicUrl(file.name);
+          print('Generated URL: $urlResponse'); // Depuración
+          return urlResponse;
         }).toList();
       } else {
         // Show error if response is empty
         Get.snackbar(
           'Error',
           'No images found',
-          colorText: Colors.white, // Change the text color to white
+          colorText: Colors.white,
         );
       }
     } catch (e) {
@@ -39,7 +41,7 @@ class GalleryController extends GetxController {
       Get.snackbar(
         'Error',
         'An error occurred: $e',
-        colorText: Colors.white, // Change the text color to white
+        colorText: Colors.white,
       );
     } finally {
       isLoading.value = false;

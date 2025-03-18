@@ -5,7 +5,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/controllers/auth_controller.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'app/routes/app_pages.dart';
 
 void main() async {

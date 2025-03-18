@@ -11,6 +11,14 @@ class MapControllerX extends GetxController {
   Rx<LatLng?> searchLocation = Rx<LatLng?>(null); // Ubicación buscada (observable)
   RxList<LatLng> markers = <LatLng>[].obs; // Lista de marcadores (observable)
 
+  @override
+  void onInit() {
+    super.onInit();
+    
+    markers.add(LatLng(41.412422, 2.170818)); // Dir Castillejos
+    markers.add(LatLng(41.369252, 2.072708)); // Sant Joan Despí
+  }
+
   // Método para aumentar el zoom
   void zoomIn() {
     final double currentZoom = mapController.zoom;
@@ -48,7 +56,7 @@ class MapControllerX extends GetxController {
   Future<void> centerMapOnUserLocation() async {
     // Aquí puedes usar el paquete `geolocator` para obtener la ubicación actual del usuario
     // Por ahora, usaremos una ubicación fija como ejemplo
-    searchLocation.value = LatLng(40.4168, -3.7038); // Madrid, España
+    searchLocation.value = LatLng(41.382894, 2.177432); // Barcelona, España
     mapController.move(searchLocation.value!, 12.0); // Mover el mapa
   }
 }

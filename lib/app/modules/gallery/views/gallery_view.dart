@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:euexia/app/modules/gallery/controllers/gallery_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:euexia/app/modules/gallery/controllers/gallery_controller.dart';
 
 class GalleryView extends StatelessWidget {
   final GalleryController controller = Get.put(GalleryController());

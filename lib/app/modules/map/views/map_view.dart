@@ -56,13 +56,10 @@ class MapView extends StatelessWidget {
                   child: Obx(() => FlutterMap(
                         mapController: mapControllerX.mapController,
                         options: MapOptions(
-                          center: mapControllerX.searchLocation.value ?? LatLng(40.4168, -3.7038), // Madrid o ubicación buscada
+                          center: mapControllerX.searchLocation.value ?? LatLng(41.382894, 2.177432), // Barcelona o ubicación buscada
                           zoom: 10,
                           minZoom: 3,
                           maxZoom: 18,
-                          onTap: (_, LatLng point) {
-                            mapControllerX.addMarker(point); // Agregar marcador al hacer clic
-                          },
                         ),
                         children: [
                           TileLayer(
