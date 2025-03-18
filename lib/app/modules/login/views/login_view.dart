@@ -132,7 +132,7 @@ class LoginView extends GetView<LoginController> {
                 borderRadius: 10.0,
                 onPressed: () => Get.toNamed(Routes.REGISTER),
               ),
-              const SizedBox(height: 20),
+              /*const SizedBox(height: 20),
               SignInButton(
                 Buttons.google,
                 onPressed: () async {
@@ -152,7 +152,7 @@ class LoginView extends GetView<LoginController> {
                     print('Error de autenticación: $error');
                   }
                 },
-              ),
+              ),*/
             ],
           ),
           const SizedBox(height: 20),
