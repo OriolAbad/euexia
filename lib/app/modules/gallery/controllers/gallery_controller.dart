@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
@@ -59,13 +60,28 @@ class GalleryController extends GetxController {
       final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
       if (photo == null) return;
 
-      // Convertir XFile a File
-      final File imageFile = File(photo.path);
+      // Leer el archivo como bytes
+      final Uint8List bytes = await photo.readAsBytes();
 
       // Subir la imagen
       isLoading.value = true;
       final String fileName = 'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      await client.storage.from('gallery').upload(fileName, imageFile);
+
+      // Verificar si es web
+      if (GetPlatform.isWeb) {
+        await client.storage.from('gallery').uploadBinary(
+          fileName,
+          bytes,
+          fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+        );
+      } else {
+       final File imageFile = File(photo.path);
+        await client.storage.from('gallery').upload(
+          fileName,
+          imageFile,
+          fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+        );
+      }
 
       // Actualizar la galería
       await fetchImages();
