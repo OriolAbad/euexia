@@ -3,7 +3,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter_map/flutter_map.dart'; // Importa flutter_map
 import 'package:flutter/material.dart';
-import 'package:euexia/app/modules/map/service/map_service.dart'; // Importa el controlador
+//import 'package:euexia/app/modules/map/service/map_service.dart'; // Importa el controlador
 
 class MapControllerX extends GetxController {
   final MapController mapController = MapController(); // Controlador de flutter_map
