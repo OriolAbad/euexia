@@ -21,8 +21,8 @@ class RegisterController extends GetxController {
             .signUp(password: passwordC.text, email: emailC.text);
         isLoading.value = false;
 
-        // insert registered user to table users
-        await client.from("users").insert({
+        // insert registered user to table usuarios
+        await client.from("usuarios").insert({
           "name": nameC.text,
           "email": emailC.text,
           "created_at": DateTime.now().toIso8601String(),

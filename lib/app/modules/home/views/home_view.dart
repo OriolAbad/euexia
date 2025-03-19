@@ -87,7 +87,7 @@ class HomeView extends GetView<HomeController> {
               leading: const Icon(Icons.track_changes, color: Colors.black),
               title: const Text('Challenges', style: TextStyle(color: Colors.black)),
               onTap: () {
-                Get.toNamed(Routes.CHALLENGES);
+                Get.offAllNamed(Routes.CHALLENGES);
               },
             ),
             ListTile(

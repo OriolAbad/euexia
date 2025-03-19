@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/profile_controller.dart';
 import 'package:euexia/app/modules/account/views/account_view.dart';
+import 'package:euexia/app/modules/gallery/views/gallery_view.dart';
+
 //import 'stats_view.dart';
 //import 'gallery_view.dart';
 //import 'account_view.dart';
@@ -53,7 +55,7 @@ class ProfileView extends StatelessWidget {
             ),
             SizedBox(height: 20),
             _buildButton("Stats", () => Get.to(() => StatsView())),
-           // _buildButton("Gallery"),//, () => Get.to(() => GalleryView())),
+            _buildButton("Gallery", () => Get.to(() => GalleryView())),
             _buildButton("Account", () => Get.to(() => AccountView())),
             SizedBox(height: 20),
             ElevatedButton(
