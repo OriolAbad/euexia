@@ -1,4 +1,4 @@
-import 'package:euexia/app/services/service_tips.dart';
+import 'package:euexia/app/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/data/help/response.dart' as custom_response;

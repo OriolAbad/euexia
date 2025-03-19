@@ -1,16 +1,22 @@
-class UsuariosGimnasios {
+import 'package:euexia/app/data/models/gimnasios.dart';
+import 'package:euexia/app/data/models/usuarios.dart';
+
+class UsuarioGimnasio {
   int idUsuario;
   int idGimnasio;
   bool favorito;
 
-  UsuariosGimnasios({
+  Usuario? usuario;
+  Gimnasio? gimnasio;
+
+  UsuarioGimnasio({
     required this.idUsuario,
     required this.idGimnasio,
     this.favorito = false,
   });
 
-  factory UsuariosGimnasios.fromJson(Map<String, dynamic> json) {
-    return UsuariosGimnasios(
+  factory UsuarioGimnasio.fromJson(Map<String, dynamic> json) {
+    return UsuarioGimnasio(
       idUsuario: json['idUsuario'],
       idGimnasio: json['idGimnasio'],
       favorito: json['favorito'] ?? false,

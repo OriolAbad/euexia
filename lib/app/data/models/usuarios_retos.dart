@@ -1,11 +1,17 @@
-class UsuariosRetos {
+import 'package:euexia/app/data/models/retos.dart';
+import 'package:euexia/app/data/models/usuarios.dart';
+
+class UsuarioReto {
   int idReto;
   int idUsuario;
   DateTime fechaInicio;
   DateTime? fechaFin;
   bool completado;
 
-  UsuariosRetos({
+  Reto? reto;
+  Usuario? usuario;
+
+  UsuarioReto({
     required this.idReto,
     required this.idUsuario,
     required this.fechaInicio,
@@ -13,8 +19,8 @@ class UsuariosRetos {
     this.completado = false,
   });
 
-  factory UsuariosRetos.fromJson(Map<String, dynamic> json) {
-    return UsuariosRetos(
+  factory UsuarioReto.fromJson(Map<String, dynamic> json) {
+    return UsuarioReto(
       idReto: json['idReto'],
       idUsuario: json['idUsuario'],
       fechaInicio: DateTime.parse(json['fechaInicio']),

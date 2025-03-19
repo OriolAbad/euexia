@@ -1,5 +1,5 @@
 import 'package:euexia/app/data/models/usuarios.dart';
-import 'package:euexia/app/services/service_tips.dart';
+import 'package:euexia/app/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/data/help/response.dart' as custom_response;
@@ -29,7 +29,7 @@ class RegisterController extends GetxController {
       isLoading.value = true;
 
       try {
-        Usuarios usuario = Usuarios(
+        Usuario usuario = Usuario(
           nombre: nameC.text,
           apellido1: apellido1.text,
           apellido2: apellido2.text,

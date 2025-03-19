@@ -125,7 +125,7 @@ class TipsView extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 // Acción de añadir
-                final newTip = Consejos(idconsejo: tipsController.tips.length + 1, descripcion: descripcionController.text);
+                final newTip = Consejo(idconsejo: tipsController.tips.length + 1, descripcion: descripcionController.text);
                 await tipsController.addTip(newTip);
                 Navigator.of(context).pop();
               },
@@ -137,7 +137,7 @@ class TipsView extends StatelessWidget {
     );
   }
 
-  void _showEditModal(BuildContext context, Consejos tip) {
+  void _showEditModal(BuildContext context, Consejo tip) {
     final TextEditingController descripcionController = TextEditingController(text: tip.descripcion);
 
     showDialog(
@@ -183,7 +183,7 @@ class TipsView extends StatelessWidget {
     );
   }
 
-  void _showDeleteModal(BuildContext context, Consejos tip) {
+  void _showDeleteModal(BuildContext context, Consejo tip) {
     showDialog(
       context: context,
       builder: (context) {

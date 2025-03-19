@@ -1,14 +1,14 @@
-class Consejos {
+class Consejo {
   int idconsejo;
   String descripcion;
 
-  Consejos({
+  Consejo({
     required this.idconsejo,
     required this.descripcion,
   });
 
-  factory Consejos.fromJson(Map<String, dynamic> json) {
-    return Consejos(
+  factory Consejo.fromJson(Map<String, dynamic> json) {
+    return Consejo(
       idconsejo: json['idconsejo'],
       descripcion: json['descripcion'],
     );

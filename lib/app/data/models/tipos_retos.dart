@@ -1,14 +1,14 @@
-class TiposRetos {
+class TipoReto {
   int idTipoReto;
   String descripcion;
 
-  TiposRetos({
+  TipoReto({
     required this.idTipoReto,
     required this.descripcion,
   });
 
-  factory TiposRetos.fromJson(Map<String, dynamic> json) {
-    return TiposRetos(
+  factory TipoReto.fromJson(Map<String, dynamic> json) {
+    return TipoReto(
       idTipoReto: json['idTipoReto'],
       descripcion: json['descripcion'],
     );

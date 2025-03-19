@@ -1,16 +1,22 @@
-class RecordsPersonales {
+import 'package:euexia/app/data/models/ejercicios.dart';
+import 'package:euexia/app/data/models/usuarios.dart';
+
+class RecordPersonal {
   int idUsuario;
   int idEjercicio;
   double record;
 
-  RecordsPersonales({
+  Usuario? usuario;
+  Ejercicio? ejercicio;
+
+  RecordPersonal({
     required this.idUsuario,
     required this.idEjercicio,
     required this.record,
   });
 
-  factory RecordsPersonales.fromJson(Map<String, dynamic> json) {
-    return RecordsPersonales(
+  factory RecordPersonal.fromJson(Map<String, dynamic> json) {
+    return RecordPersonal(
       idUsuario: json['idUsuario'],
       idEjercicio: json['idEjercicio'],
       record: json['record'].toDouble(),

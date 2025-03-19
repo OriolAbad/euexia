@@ -1,4 +1,4 @@
-class Usuarios {
+class Usuario {
   String? uuid;
   int? idUsuario;
   String nombre;
@@ -11,7 +11,7 @@ class Usuarios {
   int puntos;
   String location;
 
-  Usuarios({
+  Usuario({
     this.uuid,
     this.idUsuario,
     required this.nombre,
@@ -25,8 +25,8 @@ class Usuarios {
     required this.location,
   });
 
-  factory Usuarios.fromJson(Map<String, dynamic> json) {
-    return Usuarios(
+  factory Usuario.fromJson(Map<String, dynamic> json) {
+    return Usuario(
       uuid: json['uuid'],
       idUsuario: json['idusuario'],
       nombre: json['name'],

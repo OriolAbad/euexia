@@ -1,4 +1,7 @@
-class Retos {
+import 'package:euexia/app/data/models/dificultades.dart';
+import 'package:euexia/app/data/models/tipos_retos.dart';
+
+class Reto {
   int idReto;
   String titulo;
   String descripcion;
@@ -6,7 +9,10 @@ class Retos {
   int idTipoReto;
   int idDificultad;
 
-  Retos({
+  TipoReto? tipoReto;
+  Dificultad? dificultad;
+
+  Reto({
     required this.idReto,
     required this.titulo,
     required this.descripcion,
@@ -15,8 +21,8 @@ class Retos {
     required this.idDificultad,
   });
 
-  factory Retos.fromJson(Map<String, dynamic> json) {
-    return Retos(
+  factory Reto.fromJson(Map<String, dynamic> json) {
+    return Reto(
       idReto: json['idReto'],
       titulo: json['titulo'],
       descripcion: json['descripcion'],

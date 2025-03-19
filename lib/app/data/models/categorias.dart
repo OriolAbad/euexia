@@ -1,16 +1,23 @@
-class Categorias {
+class Categoria {
   int idCategoria;
   String nombre;
 
-  Categorias({
+  Categoria({
     required this.idCategoria,
     required this.nombre,
   });
 
-  factory Categorias.fromJson(Map<String, dynamic> json) {
-    return Categorias(
+  factory Categoria.fromJson(Map<String, dynamic> json) {
+    return Categoria(
       idCategoria: json['idCategoria'],
       nombre: json['nombre'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'idcategoria': idCategoria,
+      'nombre': nombre,
+    };
   }
 }

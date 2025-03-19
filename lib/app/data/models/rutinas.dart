@@ -1,22 +1,27 @@
-class Rutinas {
-  int idEjercicio;
+class Rutina {
+  int idRutina;
   String nombre;
   String? descripcion;
-  int idCategoria;
 
-  Rutinas({
-    required this.idEjercicio,
+  Rutina({
+    required this.idRutina,
     required this.nombre,
     this.descripcion,
-    required this.idCategoria,
   });
 
-  factory Rutinas.fromJson(Map<String, dynamic> json) {
-    return Rutinas(
-      idEjercicio: json['idEjercicio'],
+  factory Rutina.fromJson(Map<String, dynamic> json) {
+    return Rutina(
+      idRutina: json['idrutina'],
       nombre: json['nombre'],
       descripcion: json['descripcion'],
-      idCategoria: json['idCategoria'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'idrutina': idRutina,
+      'nombre': nombre,
+      'descripcion': descripcion,
+    };
   }
 }

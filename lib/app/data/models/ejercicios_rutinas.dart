@@ -1,11 +1,17 @@
-class EjerciciosRutina {
+import 'package:euexia/app/data/models/ejercicios.dart';
+import 'package:euexia/app/data/models/rutinas.dart';
+
+class EjercicioRutina {
   int idRutina;
   int idEjercicio;
   int series;
   int repeticiones;
   double? kilogramos;
 
-  EjerciciosRutina({
+  Rutina? rutina;
+  Ejercicio? ejercicio;
+
+  EjercicioRutina({
     required this.idRutina,
     required this.idEjercicio,
     required this.series,
@@ -13,8 +19,8 @@ class EjerciciosRutina {
     this.kilogramos,
   });
 
-  factory EjerciciosRutina.fromJson(Map<String, dynamic> json) {
-    return EjerciciosRutina(
+  factory EjercicioRutina.fromJson(Map<String, dynamic> json) {
+    return EjercicioRutina(
       idRutina: json['idRutina'],
       idEjercicio: json['idEjercicio'],
       series: json['series'],

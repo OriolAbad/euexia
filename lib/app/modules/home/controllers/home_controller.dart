@@ -1,11 +1,10 @@
 import 'package:get/get.dart';
-import 'package:euexia/app/data/models/notes_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Controlador para gestionar los planes en la aplicación
 class HomeController extends GetxController {
   // Lista reactiva que almacenará todos los planes
-  RxList allNotes = List<Notes>.empty().obs;
+
 
   // Cliente de Supabase para interactuar con la base de datos
   SupabaseClient client = Supabase.instance.client;
@@ -31,18 +30,6 @@ class HomeController extends GetxController {
 
     // Se obtiene el ID del usuario
     int id = user["id"]; // Obtener el ID del usuario antes de recuperar los planes
-
-    // Se obtienen todos los planes de la tabla "plans" que pertenecen a este usuario
-    var notes = await client.from("plans").select().match(
-      {"user_id": id}, // Filtrar los planes por el ID del usuario
-    );
-
-    // Convertir la lista obtenida en una lista de objetos Notes
-    List<Notes> notesData = Notes.fromJsonList((notes as List));
-
-    // Actualizar la lista reactiva con los datos obtenidos
-    allNotes(notesData);
-    allNotes.refresh(); // Refrescar la lista para reflejar los cambios en la UI
   }
 
   // Método para eliminar un plan por su ID
