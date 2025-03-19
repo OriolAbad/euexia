@@ -2,7 +2,6 @@
 import 'package:get/get.dart';
 
 class StatsController extends GetxController {
-  // Datos ficticios de estadísticas (sustituir con datos reales de la base de datos)
   var totalVolumeData = [
     {"day": "1jan", "weight": 50},
     {"day": "2jan", "weight": 55},
@@ -21,14 +20,10 @@ class StatsController extends GetxController {
     {"reps": 60, "weight": 70},
   ].obs;
 
-  // Simulación de obtención de datos desde la base de datos
   Future<void> fetchStatsFromDB() async {
-    // Aquí se haría la consulta real a la base de datos
-    await Future.delayed(Duration(seconds: 2)); // Simula espera de la BD
+    await Future.delayed(Duration(seconds: 2)); 
 
-    // Ejemplo: Obtener datos de la tabla dias_entrenados
-    // final result = await database.query("dias_entrenados", where: "idusuario = ?", whereArgs: [usuarioId]);
-    // totalVolumeData.value = result.map((e) => {"day": e["fechaentrenamiento"], "weight": e["peso"]}).toList();
+   
   }
 
   @override

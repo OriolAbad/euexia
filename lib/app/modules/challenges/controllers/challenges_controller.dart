@@ -16,7 +16,7 @@ class Challenge {
 }
 
 class ChallengesController extends GetxController {
-  var points = 100.obs; // Puntos ficticios
+  var points = 100.obs; 
   var challenges = <Challenge>[
     Challenge(name: "Curl martillo", description: "3 sets, 8-12 reps", image: "assets/curl_martillo.png", isCompleted: true),
     Challenge(name: "Curl inclinado", description: "3 sets, 8-12 reps", image: "assets/curl_inclinado.png", isCompleted: false),

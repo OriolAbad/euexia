@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../controllers/profile_controller.dart';
 import 'package:euexia/app/modules/account/views/account_view.dart';
 import 'package:euexia/app/modules/gallery/views/gallery_view.dart';
-import 'package:euexia/app/modules/home/views/home_view.dart'; // Importar HomeView
+import 'package:euexia/app/modules/home/views/home_view.dart'; 
 
 class ProfileView extends StatelessWidget {
   @override
@@ -34,7 +34,7 @@ class ProfileView extends StatelessWidget {
                 child: IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Get.off(() => HomeView()); // Navegar a HomeView
+                    Get.off(() => HomeView()); 
                   },
                 ),
               ),

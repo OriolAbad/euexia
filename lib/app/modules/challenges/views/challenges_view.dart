@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/challenges_controller.dart';
-import 'package:euexia/app/modules/home/views/home_view.dart'; // Importar HomeView
+import 'package:euexia/app/modules/home/views/home_view.dart'; 
 
 class ChallengesView extends StatelessWidget {
   @override
@@ -18,7 +18,7 @@ class ChallengesView extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Get.off(() => HomeView()); // Regresar a HomeView
+            Get.off(() => HomeView()); 
           },
         ),
       ),
@@ -74,7 +74,6 @@ class ChallengesView extends StatelessWidget {
                               ? Icon(Icons.check_circle, color: Colors.purple)
                               : Icon(Icons.circle_outlined, color: Colors.white),
                           onTap: () {
-                            // Cambia el estado manualmente
                             controller.challenges[index].isCompleted = !controller.challenges[index].isCompleted;
                             controller.challenges.refresh();
                           },

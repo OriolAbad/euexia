@@ -37,17 +37,14 @@ class GalleryController extends GetxController {
     }
   }
 
-  // Método para tomar foto desde la cámara y subirla
   Future<void> takeAndUploadPhoto() async {
     await _handleImagePick(ImageSource.camera);
   }
 
-  // Método para seleccionar foto desde la galería y subirla
   Future<void> pickAndUploadPhoto() async {
     await _handleImagePick(ImageSource.gallery);
   }
 
-  // Método general para manejar imágenes
   Future<void> _handleImagePick(ImageSource source) async {
     try {
       if (client.auth.currentUser == null) {

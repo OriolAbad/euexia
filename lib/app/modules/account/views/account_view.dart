@@ -86,7 +86,6 @@ class AccountView extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Guardar datos o hacer alguna acción
                 Get.snackbar("Success", "Account saved successfully!",
                     backgroundColor: Colors.green, colorText: Colors.white);
               },

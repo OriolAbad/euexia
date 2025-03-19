@@ -18,7 +18,6 @@ class GalleryView extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Imagen destacada (Primera imagen de Supabase en slider)
             Obx(() {
               if (controller.isLoading.value) {
                 return Center(child: CircularProgressIndicator());
@@ -50,7 +49,6 @@ class GalleryView extends StatelessWidget {
             }),
             SizedBox(height: 10),
 
-            // Botón para agregar una nueva foto desde la cámara o galería
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -63,7 +61,7 @@ class GalleryView extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () => controller.pickAndUploadPhoto(), // Nuevo método para seleccionar archivos
+                  onPressed: () => controller.pickAndUploadPhoto(), 
                   child: Text("Gallery"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
@@ -74,7 +72,6 @@ class GalleryView extends StatelessWidget {
             ),
             SizedBox(height: 20),
 
-            // Cuadrícula de imágenes desde Supabase
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
