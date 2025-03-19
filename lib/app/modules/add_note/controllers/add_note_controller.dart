@@ -41,7 +41,7 @@ class AddNoteController extends GetxController {
 
       // Obtiene el ID del usuario actual en la base de datos de Supabase
       List<dynamic> res = await client
-          .from("usuarios")
+          .from("")
           .select("id")
           .match({"uuid": client.auth.currentUser!.id});
 
