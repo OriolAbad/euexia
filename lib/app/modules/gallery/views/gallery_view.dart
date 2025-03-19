@@ -1,116 +1,120 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:euexia/app/modules/gallery/controllers/gallery_controller.dart';
+import '../controllers/gallery_controller.dart';
 
 class GalleryView extends StatelessWidget {
-  final GalleryController controller = Get.put(GalleryController());
-
   @override
   Widget build(BuildContext context) {
+    final GalleryController controller = Get.put(GalleryController());
+
     return Scaffold(
-      backgroundColor: const Color(0xFF212121), // Fondo negro grafito
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text(
-          'Gallery',
-          style: TextStyle(color: Colors.white), // Texto blanco
-        ),
+        title: Text("Gallery", style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.black,
         centerTitle: true,
-        backgroundColor: const Color(0xFF212121), // Fondo negro grafito
-        foregroundColor: Colors.white,
       ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: Colors.white, // Indicador de carga blanco
-            ),
-          );
-        } else if (controller.images.isEmpty) {
-          return const Center(
-            child: Text(
-              'No images found',
-              style: TextStyle(color: Colors.white), // Texto blanco
-            ),
-          );
-        } else {
-          return GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 4.0,
-              mainAxisSpacing: 4.0,
-              childAspectRatio: 1, // Ajusta la relación de aspecto según sea necesario
-            ),
-            itemCount: controller.images.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  // Navegar a la vista de imagen a pantalla completa
-                  Get.to(() => FullScreenImageView(imageUrl: controller.images[index]));
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10), // Bordes redondeados
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2), // Borde sutil
-                      width: 1,
-                    ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            // Imagen destacada (Primera imagen de Supabase en slider)
+            Obx(() {
+              if (controller.isLoading.value) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (controller.images.isEmpty) {
+                return Center(
+                  child: Text(
+                    "No images available",
+                    style: TextStyle(color: Colors.white),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10), // Bordes redondeados
-                    child: CachedNetworkImage(
-                      imageUrl: controller.images[index],
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white, // Indicador de carga blanco
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => const Icon(
-                        Icons.error,
-                        color: Colors.white, // Icono de error blanco
-                      ),
-                    ),
-                  ),
+                );
+              }
+
+              return Container(
+                height: 200,
+                child: PageView(
+                  children: controller.images
+                      .map((imageUrl) => Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset('assets/placeholder.png', fit: BoxFit.cover);
+                            },
+                          ))
+                      .toList(),
                 ),
               );
-            },
-          );
-        }
-      }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => controller.takeAndUploadPhoto(),
-        backgroundColor: const Color(0xFFB71C1C), // Color rojo intenso
-        child: const Icon(Icons.camera_alt, color: Colors.white),
-      ),
-    );
-  }
-}
+            }),
+            SizedBox(height: 10),
 
-class FullScreenImageView extends StatelessWidget {
-  final String imageUrl;
+            // Botón para agregar una nueva foto desde la cámara o galería
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () => controller.takeAndUploadPhoto(),
+                  child: Text("Camera"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => controller.pickAndUploadPhoto(), // Nuevo método para seleccionar archivos
+                  child: Text("Gallery"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
 
-  const FullScreenImageView({Key? key, required this.imageUrl}) : super(key: key);
+            // Cuadrícula de imágenes desde Supabase
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return Center(child: CircularProgressIndicator());
+                }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF212121), // Fondo negro grafito
-      appBar: AppBar(
-        title: const Text(
-          'Image View',
-          style: TextStyle(color: Colors.white), // Texto blanco
-        ),
-        centerTitle: true,
-        backgroundColor: const Color(0xFF212121), // Fondo negro grafito
-        foregroundColor: Colors.white,
-      ),
-      body: Center(
-        child: InteractiveViewer(
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.contain,
-          ),
+                if (controller.images.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "No images in gallery",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                }
+
+                return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                  ),
+                  itemCount: controller.images.length,
+                  itemBuilder: (context, index) {
+                    final imageUrl = controller.images[index];
+
+                    return Container(
+                      color: Colors.grey[800],
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset('assets/placeholder.png', fit: BoxFit.cover);
+                        },
+                      ),
+                    );
+                  },
+                );
+              }),
+            ),
+          ],
         ),
       ),
     );

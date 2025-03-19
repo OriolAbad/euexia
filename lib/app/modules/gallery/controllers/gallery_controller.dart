@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GalleryController extends GetxController {
-  var images = <String>[].obs; // Lista de URLs de imágenes
-  var isLoading = false.obs; // Estado de carga
+  var images = <String>[].obs;
+  var isLoading = false.obs;
 
   final SupabaseClient client = Supabase.instance.client;
   final ImagePicker _picker = ImagePicker();
@@ -15,59 +15,54 @@ class GalleryController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchImages(); // Cargar imágenes al iniciar
+    fetchImages();
   }
 
-  // Método para obtener las imágenes del bucket
   Future<void> fetchImages() async {
     isLoading.value = true;
     try {
       final response = await client.storage.from('gallery').list();
 
       if (response.isNotEmpty) {
-        // Extraer URLs públicas de los archivos
         images.value = response.map((file) {
           return client.storage.from('gallery').getPublicUrl(file.name);
         }).toList();
       } else {
-        Get.snackbar(
-          'Error',
-          'No images found',
-          colorText: Colors.white,
-        );
+        Get.snackbar('Error', 'No images found', colorText: Colors.white);
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'An error occurred: $e',
-        colorText: Colors.white,
-      );
+      Get.snackbar('Error', 'An error occurred: $e', colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Método para tomar una foto y subirla
+  // Método para tomar foto desde la cámara y subirla
   Future<void> takeAndUploadPhoto() async {
+    await _handleImagePick(ImageSource.camera);
+  }
+
+  // Método para seleccionar foto desde la galería y subirla
+  Future<void> pickAndUploadPhoto() async {
+    await _handleImagePick(ImageSource.gallery);
+  }
+
+  // Método general para manejar imágenes
+  Future<void> _handleImagePick(ImageSource source) async {
     try {
-      // Verificar autenticación
       if (client.auth.currentUser == null) {
         Get.snackbar('Error', 'You must be logged in to upload photos');
         return;
       }
 
-      // Tomar una foto
-      final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-      if (photo == null) return;
+      final XFile? image = await _picker.pickImage(source: source);
+      if (image == null) return;
 
-      // Leer el archivo como bytes
-      final Uint8List bytes = await photo.readAsBytes();
-
-      // Subir la imagen
+      final Uint8List bytes = await image.readAsBytes();
       isLoading.value = true;
+
       final String fileName = 'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-      // Verificar si es web
       if (GetPlatform.isWeb) {
         await client.storage.from('gallery').uploadBinary(
           fileName,
@@ -75,7 +70,7 @@ class GalleryController extends GetxController {
           fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
         );
       } else {
-       final File imageFile = File(photo.path);
+        final File imageFile = File(image.path);
         await client.storage.from('gallery').upload(
           fileName,
           imageFile,
@@ -83,20 +78,10 @@ class GalleryController extends GetxController {
         );
       }
 
-      // Actualizar la galería
       await fetchImages();
-
-      Get.snackbar(
-        'Success',
-        'Photo uploaded successfully!',
-        colorText: Colors.white,
-      );
+      Get.snackbar('Success', 'Photo uploaded successfully!', colorText: Colors.white);
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to upload photo: $e',
-        colorText: Colors.white,
-      );
+      Get.snackbar('Error', 'Failed to upload photo: $e', colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }
