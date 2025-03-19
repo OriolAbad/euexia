@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:euexia/app/modules/gallery/bindings/gallery_binding.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/modules/splash/bindings/splash_binding.dart';
 import 'package:euexia/app/modules/splash/views/splash_view.dart';
@@ -18,7 +19,7 @@ import 'package:euexia/app/modules/forgot_password/bindings/forgot_password_bind
 import 'package:euexia/app/modules/reset_password/views/reset_password_view.dart';
 import 'package:euexia/app/modules/reset_password/bindings/reset_password_binding.dart';
 import 'package:euexia/app/modules/gallery/views/gallery_view.dart';
-import 'package:euexia/app/modules/gallery/bindings/gallery_bindings.dart';
+import 'package:euexia/app/modules/gallery/bindings/gallery_binding.dart';
 import 'package:euexia/app/modules/map/bindings/map_bindings.dart';
 import 'package:euexia/app/modules/map/views/map_view.dart';
 import 'package:euexia/app/modules/tips/bindings/tips_binding.dart';
