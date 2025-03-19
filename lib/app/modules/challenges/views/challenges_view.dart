@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/challenges_controller.dart';
+import 'package:euexia/app/modules/home/views/home_view.dart'; // Importar HomeView
 
 class ChallengesView extends StatelessWidget {
   @override
@@ -14,6 +15,12 @@ class ChallengesView extends StatelessWidget {
         title: Text("CHALLENGES", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Get.off(() => HomeView()); // Regresar a HomeView
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
