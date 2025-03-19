@@ -73,10 +73,10 @@ class SettingsView extends GetView<SettingsController> {
                   const SizedBox(height: 20),
                   TextField(
                     autocorrect: false,
-                    controller: controller.nameC2,
+                    controller: controller.nombreusuarioC2,
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
-                      hintText: "Name",
+                      hintText: "UserName",
                       hintStyle: const TextStyle(color: Colors.black),
                       prefixIcon: const Icon(Icons.person, color: Colors.black),
                       filled: true,
@@ -134,7 +134,7 @@ class SettingsView extends GetView<SettingsController> {
                         borderRadius: 10.0,
                         onPressed: () async {
                           if (controller.isLoading.isFalse) {
-                            if (controller.nameC.text == controller.nameC2.text &&
+                            if (controller.nombreusuarioC.text == controller.nombreusuarioC2.text &&
                                 controller.passwordC.text.isEmpty) {
                               // Check if user have same name and not want to change password but they click the button
                               Get.snackbar("Info", "There is no data to update",

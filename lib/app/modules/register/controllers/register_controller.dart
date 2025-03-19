@@ -1,65 +1,54 @@
-import 'package:euexia/app/data/models/usuarios.dart';
-import 'package:euexia/app/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:euexia/app/data/help/response.dart' as custom_response;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegisterController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isHidden = true.obs;
   TextEditingController nameC = TextEditingController();
-  TextEditingController apellido1 = TextEditingController();
-  TextEditingController apellido2 = TextEditingController();
-  TextEditingController nombreusuario = TextEditingController();
   TextEditingController emailC = TextEditingController();
   TextEditingController passwordC = TextEditingController();
-  TextEditingController location = TextEditingController();
-  
-  final SupabaseService _supabaseService = SupabaseService();
-  late custom_response.Response result; 
+  TextEditingController locationC = TextEditingController();
+  TextEditingController apellido1C = TextEditingController();
+  TextEditingController apellido2C = TextEditingController();
+  TextEditingController userNameC = TextEditingController();
+
+  SupabaseClient client = Supabase.instance.client;
 
   Future<void> signUp() async {
-    if (nameC.text.isNotEmpty && 
-        apellido1.text.isNotEmpty && 
-        emailC.text.isNotEmpty && 
+    if (emailC.text.isNotEmpty &&
         passwordC.text.isNotEmpty &&
-        nombreusuario.text.isNotEmpty &&
-        location.text.isNotEmpty) {
-      
+        nameC.text.isNotEmpty) {
       isLoading.value = true;
-
       try {
-        Usuario usuario = Usuario(
-          nombre: nameC.text,
-          apellido1: apellido1.text,
-          apellido2: apellido2.text,
-          email: emailC.text,
-          nombreUsuario: nombreusuario.text,
-          created_at: DateTime.now(),
-          location: location.text
-        );
-
-        result = await _supabaseService.addUser(usuario, passwordC.text);
+        AuthResponse res = await client.auth
+            .signUp(password: passwordC.text, email: emailC.text);
         isLoading.value = false;
 
-        if(result.success){
-          Get.defaultDialog(
-                      barrierDismissible: false,
-                      title: "Registration success",
-                      middleText: "Please confirm email: ${usuario.email}",
-                      actions: [
-                        OutlinedButton(
-                            onPressed: () {
-                              Get.back(); //close dialog
-                              Get.back(); //back to login page
-                            },
-                            child: const Text("OK"))
-                      ]);
-        }
-        else{
-          Get.snackbar("ERROR", result.errorMessage.toString());
-        }
-        
+        // insert registered user to table users
+        await client.from("usuarios").insert({
+          "name": nameC.text,
+          "apellido1": apellido1C.text,
+          "apellido2": apellido2C.text,
+          "nombreusuario": userNameC.text,
+          "email": emailC.text,
+          "location": locationC.text,
+          "created_at": DateTime.now().toIso8601String(),
+          "uuid": res.user!.id,
+        });
+
+        Get.defaultDialog(
+            barrierDismissible: false,
+            title: "Registration success",
+            middleText: "Please confirm email: ${res.user!.email}",
+            actions: [
+              OutlinedButton(
+                  onPressed: () {
+                    Get.back(); //close dialog
+                    Get.back(); //back to login page
+                  },
+                  child: const Text("OK"))
+            ]);
       } catch (e) {
         isLoading.value = false;
         Get.snackbar("ERROR", e.toString());

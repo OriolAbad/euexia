@@ -13,11 +13,14 @@ abstract class Routes {
   static const SETTINGS = _Paths.SETTINGS;
   static const ADD_NOTE = _Paths.ADD_NOTE;
   static const EDIT_NOTE = _Paths.EDIT_NOTE;
-  // static const CHALLENGES = _Paths.CHALLENGES;
-  // static const EXERCISES = _Paths.EXERCISES;
-  // static const MAP = _Paths.MAP;
+  static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
+  static const RESET_PASSWORD = _Paths.RESET_PASSWORD;
+  static const GALLERY = _Paths.GALLERY;
+  static const MAP = _Paths.MAP;
+  /*static const CHALLENGES = _Paths.CHALLENGES;
+  static const EXERCISES = _Paths.EXERCISES;
   static const TIPS = _Paths.TIPS;
-  // static const PROFILE = _Paths.PROFILE;
+  static const PROFILE = _Paths.PROFILE;*/
 }
 
 abstract class _Paths {
@@ -28,9 +31,12 @@ abstract class _Paths {
   static const SETTINGS = '/settings';
   static const ADD_NOTE = '/add-note';
   static const EDIT_NOTE = '/edit-note';
-  // static const CHALLENGES = '/challenges';
-  // static const EXERCISES = '/exercises';
-  // static const MAP = '/map';
+  static const FORGOT_PASSWORD = '/forgot-password';
+  static const RESET_PASSWORD = '/reset-password';
+  static const GALLERY = '/gallery';
+  static const MAP = '/map';
+  /*static const CHALLENGES = '/challenges';
+  static const EXERCISES = '/exercises';
   static const TIPS = '/tips';
-  // static const PROFILE = '/profile';
+  static const PROFILE = '/profile';*/
 }

@@ -1,47 +1,38 @@
-import 'package:euexia/app/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:euexia/app/data/help/response.dart' as custom_response;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginController extends GetxController {
+  final isHoveringForgotPassword = false.obs;
   RxBool isLoading = false.obs;
   RxBool isHidden = true.obs;
   TextEditingController emailC = TextEditingController();
   TextEditingController passwordC = TextEditingController();
 
-  SupabaseService client = SupabaseService();
-  custom_response.Response response = custom_response.Response(success: false);
-  
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
+  SupabaseClient client = Supabase.instance.client;
 
   Future<bool?> login() async {
-    bool? result;
-
     if (emailC.text.isNotEmpty && passwordC.text.isNotEmpty) {
       isLoading.value = true;
-
-      response = await client.login(emailC.text, passwordC.text);
-      if (response.success) {
+      try {
+        await client.auth
+            .signInWithPassword(email: emailC.text, password: passwordC.text);
+        isLoading.value = false;
         Get.defaultDialog(
             barrierDismissible: false,
             title: "Login success",
             middleText: "Will be redirect to Home Page",
             backgroundColor: Colors.green);
-        
-        result = true;
-      } else {
+        return true;
+      } catch (e) {
         isLoading.value = false;
-        Get.snackbar("ERROR", response.errorMessage ?? "An unknown error occurred");
-        result = false;
+        Get.snackbar("ERROR", e.toString(),
+            colorText: Colors.white, backgroundColor: Color(0xFFB71C1C));
       }
-      
-      isLoading.value = false;
-      return result;
+    } else {
+      Get.snackbar("ERROR", "Email and password are required",
+          colorText: Colors.white, backgroundColor: Color(0xFFB71C1C));
     }
-    return result;
+    return null;
   }
 }
