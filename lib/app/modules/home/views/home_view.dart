@@ -57,42 +57,40 @@ class HomeView extends GetView<HomeController> {
             ),
             ListTile(
               leading: const Icon(Icons.home, color: Colors.black),
-              title: const Text('Inicio', style: TextStyle(color: Colors.black)),
+              title:
+                  const Text('Inicio', style: TextStyle(color: Colors.black)),
               onTap: () {
                 Get.offNamed(Routes.HOME);
               },
             ),
             ListTile(
               leading: const Icon(Icons.person, color: Colors.black),
-              title: const Text('My Profile', style: TextStyle(color: Colors.black)),
+              title: const Text('My Profile',
+                  style: TextStyle(color: Colors.black)),
               onTap: () {
                 Get.offNamed(Routes.PROFILE);
               },
             ),
             ListTile(
               leading: const Icon(Icons.fitness_center, color: Colors.black),
-              title: const Text('My Exercices', style: TextStyle(color: Colors.black)),
+              title: const Text('My Exercices',
+                  style: TextStyle(color: Colors.black)),
               onTap: () {
                 //Get.toNamed(Routes.EXERCICES);
               },
             ),
             ListTile(
               leading: const Icon(Icons.map, color: Colors.black),
-              title: const Text('Gallery', style: TextStyle(color: Colors.black)),
-              onTap: () {
-                Get.toNamed(Routes.GALLERY);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.map, color: Colors.black),
-              title: const Text('Gym Map', style: TextStyle(color: Colors.black)),
+              title:
+                  const Text('Gym Map', style: TextStyle(color: Colors.black)),
               onTap: () {
                 Get.toNamed(Routes.MAP);
               },
             ),
             ListTile(
               leading: const Icon(Icons.track_changes, color: Colors.black),
-              title: const Text('Challenges', style: TextStyle(color: Colors.black)),
+              title: const Text('Challenges',
+                  style: TextStyle(color: Colors.black)),
               onTap: () {
                 Get.offAllNamed(Routes.CHALLENGES);
               },
@@ -106,7 +104,8 @@ class HomeView extends GetView<HomeController> {
             ),
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.black),
-              title: const Text('Cerrar sesión', style: TextStyle(color: Colors.black)),
+              title: const Text('Cerrar sesión',
+                  style: TextStyle(color: Colors.black)),
               onTap: () {
                 Get.offAllNamed(Routes.LOGIN);
               },

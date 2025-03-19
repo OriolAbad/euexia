@@ -17,10 +17,12 @@ abstract class Routes {
   static const RESET_PASSWORD = _Paths.RESET_PASSWORD;
   static const GALLERY = _Paths.GALLERY;
   static const MAP = _Paths.MAP;
-  /*static const CHALLENGES = _Paths.CHALLENGES;
-  static const EXERCISES = _Paths.EXERCISES;
   static const TIPS = _Paths.TIPS;
-  static const PROFILE = _Paths.PROFILE;*/
+  static const CHALLENGES = _Paths.CHALLENGES;
+  static const PROFILE = _Paths.PROFILE;
+  /*
+  static const EXERCISES = _Paths.EXERCISES;
+  */
 }
 
 abstract class _Paths {
@@ -35,8 +37,10 @@ abstract class _Paths {
   static const RESET_PASSWORD = '/reset-password';
   static const GALLERY = '/gallery';
   static const MAP = '/map';
-  /*static const CHALLENGES = '/challenges';
-  static const EXERCISES = '/exercises';
   static const TIPS = '/tips';
-  static const PROFILE = '/profile';*/
+  static const CHALLENGES = '/challenges';
+  static const PROFILE = '/profile';
+  /*
+  static const EXERCISES = '/exercises';
+  */
 }
