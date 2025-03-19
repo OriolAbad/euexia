@@ -5,8 +5,6 @@ import 'package:euexia/app/modules/splash/bindings/splash_binding.dart';
 import 'package:euexia/app/modules/splash/views/splash_view.dart';
 import 'package:euexia/app/modules/add_note/bindings/add_note_binding.dart';
 import 'package:euexia/app/modules/add_note/views/add_note_view.dart';
-import 'package:euexia/app/modules/edit_note/bindings/edit_note_binding.dart';
-import 'package:euexia/app/modules/edit_note/views/edit_note_view.dart';
 import 'package:euexia/app/modules/home/bindings/home_binding.dart';
 import 'package:euexia/app/modules/home/views/home_view.dart';
 import 'package:euexia/app/modules/login/bindings/login_binding.dart';
@@ -23,14 +21,15 @@ import 'package:euexia/app/modules/gallery/views/gallery_view.dart';
 import 'package:euexia/app/modules/gallery/bindings/gallery_bindings.dart';
 import 'package:euexia/app/modules/map/bindings/map_bindings.dart';
 import 'package:euexia/app/modules/map/views/map_view.dart';
-/*import 'package:euexia/app/modules/challenges/bindings/challenges_binding.dart';
-import 'package:euexia/app/modules/challenges/views/challenges_view.dart';
-import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
-import 'package:euexia/app/modules/exercises/views/exercises_view.dart';
 import 'package:euexia/app/modules/tips/bindings/tips_binding.dart';
 import 'package:euexia/app/modules/tips/views/tips_view.dart';
+import 'package:euexia/app/modules/challenges/bindings/challenges_binding.dart';
+import 'package:euexia/app/modules/challenges/views/challenges_view.dart';
 import 'package:euexia/app/modules/profile/bindings/profile_binding.dart';
-import 'package:euexia/app/modules/profile/views/profile_view.dart';*/
+import 'package:euexia/app/modules/profile/views/profile_view.dart';
+/*
+import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
+import 'package:euexia/app/modules/exercises/views/exercises_view.dart';*/
 
 part 'app_routes.dart';
 
@@ -81,11 +80,6 @@ class AppPages {
       binding: AddNoteBinding(),
     ),
     GetPage(
-      name: _Paths.EDIT_NOTE,
-      page: () => EditNoteView(),
-      binding: EditNoteBinding(),
-    ),
-    GetPage(
       name: _Paths.GALLERY,
       page: () => GalleryView(),
       binding: GalleryBinding(),
@@ -94,16 +88,6 @@ class AppPages {
       name: _Paths.MAP,
       page: () => MapView(),
       binding: MapBinding(),
-    )
-    /*GetPage(
-      name: _Paths.CHALLENGES,
-      page: () => ChallengesView(),
-      binding: ChallengesBinding(),
-    ),
-    GetPage(
-      name: _Paths.EXERCISES,
-      page: () => ExercisesView(),
-      binding: ExercisesBinding(),
     ),
     GetPage(
       name: _Paths.TIPS,
@@ -111,9 +95,20 @@ class AppPages {
       binding: TipsBinding(),
     ),
     GetPage(
+      name: _Paths.CHALLENGES,
+      page: () => ChallengesView(),
+      binding: ChallengesBinding(),
+    ),
+    GetPage(
       name: _Paths.PROFILE,
       page: () => ProfileView(),
       binding: ProfileBinding(),
-    ),*/
+    ), /*
+    GetPage(
+      name: _Paths.EXERCISES,
+      page: () => ExercisesView(),
+      binding: ExercisesBinding(),
+    ),
+    */
   ];
 }
