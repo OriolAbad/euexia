@@ -14,8 +14,15 @@ class Amigo {
 
   factory Amigo.fromJson(Map<String, dynamic> json) {
     return Amigo(
-      idUsuario1: json['idUsuario1'],
-      idUsuario2: json['idUsuario2'],
+      idUsuario1: json['idusuario1'],
+      idUsuario2: json['idusuario2'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'idusuario1': idUsuario1,
+      'idusuario2': idUsuario2,
+    };
   }
 }

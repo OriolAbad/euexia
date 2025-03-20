@@ -17,9 +17,17 @@ class UsuarioGimnasio {
 
   factory UsuarioGimnasio.fromJson(Map<String, dynamic> json) {
     return UsuarioGimnasio(
-      idUsuario: json['idUsuario'],
-      idGimnasio: json['idGimnasio'],
+      idUsuario: json['idusuario'],
+      idGimnasio: json['idgimnasio'],
       favorito: json['favorito'] ?? false,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'idusuario': idUsuario,
+      'idgimnasio': idGimnasio,
+      'favorito': favorito,
+    };
   }
 }
