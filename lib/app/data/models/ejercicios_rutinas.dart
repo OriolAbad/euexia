@@ -21,11 +21,21 @@ class EjercicioRutina {
 
   factory EjercicioRutina.fromJson(Map<String, dynamic> json) {
     return EjercicioRutina(
-      idRutina: json['idRutina'],
-      idEjercicio: json['idEjercicio'],
+      idRutina: json['idrutina'],
+      idEjercicio: json['idejercicio'],
       series: json['series'],
       repeticiones: json['repeticiones'],
       kilogramos: json['kilogramos']?.toDouble(),
     );
   }
+
+  Map<String, dynamic> toJson() {
+  return {
+    'idrutina': idRutina,
+    'idejercicio': idEjercicio,
+    'series': series,
+    'repeticiones': repeticiones,
+    'kilogramos': kilogramos,
+  };
+}
 }

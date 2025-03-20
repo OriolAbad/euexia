@@ -1,6 +1,10 @@
+import 'package:euexia/app/data/models/ejercicios.dart';
+
 class Categoria {
   int idCategoria;
   String nombre;
+
+  List<Ejercicio>? ejercicios;
 
   Categoria({
     required this.idCategoria,
@@ -9,7 +13,7 @@ class Categoria {
 
   factory Categoria.fromJson(Map<String, dynamic> json) {
     return Categoria(
-      idCategoria: json['idCategoria'],
+      idCategoria: json['idcategoria'],
       nombre: json['nombre'],
     );
   }

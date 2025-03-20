@@ -1,3 +1,4 @@
+import 'package:euexia/app/data/models/categorias.dart';
 import 'package:euexia/app/data/models/fotos.dart';
 import 'package:euexia/app/services/service.dart';
 import 'package:get/get.dart';
@@ -17,13 +18,13 @@ class TipsController extends GetxController {
   void onInit() {
     super.onInit();
     getTips();
-    // result = _supabaseService.getPhotosByUserIdWithUser(6);
+    // var data = _supabaseService.
 
     }
 
   Future<void> getTips() async {
     isLoading.value = true;
-    result = await _supabaseService.getTips();
+    result = await _supabaseService.ejercicios_rutinas.getEjerciciosOfRutina(1);
 
     if(result.success){
       tips.assignAll(result.data as Iterable<Consejo>); // Asignar correctamente los datos a la lista observable
@@ -38,7 +39,7 @@ class TipsController extends GetxController {
   Future<void> getTipById(int id) async {
     isLoading.value = true;
 
-    result = await _supabaseService.getTipById(id);
+    result = await _supabaseService.consejos.getTipById(id);
 
     if(result.success){
       tip.value = result.data as Consejo; // Asignar correctamente los datos a la lista observable
@@ -50,7 +51,7 @@ class TipsController extends GetxController {
   }
 
   Future<void> addTip(Consejo tip) async {
-    result = await _supabaseService.addTip(tip);
+    result = await _supabaseService.consejos.addTip(tip);
     if(result.success){
       tips.add(tip); // Agregar el consejo a la lista observable
     }
@@ -60,7 +61,7 @@ class TipsController extends GetxController {
   }
 
   Future<void> updateTip(Consejo tip) async {
-    result = await _supabaseService.updateTip(tip);
+    result = await _supabaseService.consejos.updateTip(tip);
     if(result.success){
       var index = tips.indexWhere((element) => element.idconsejo == tip.idconsejo);
       tips[index] = tip; // Actualizar el consejo en la lista observable
@@ -71,7 +72,7 @@ class TipsController extends GetxController {
   }
 
   Future<void> deleteTip(int id) async {
-    result = await _supabaseService.deleteTip(id);
+    result = await _supabaseService.consejos.deleteTip(id);
     if(result.success){
       tips.removeWhere((element) => element.idconsejo == id); // Eliminar el consejo de la lista observable
     }

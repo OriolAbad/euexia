@@ -21,11 +21,11 @@ class DiaEntrenado {
     return DiaEntrenado(
       idUsuario: json['idusuario'],
       idRutina: json['idrutina'],
-      fechaEntrenamiento: DateTime.parse(json['fechaEntrenamiento']),
+      fechaEntrenamiento: DateTime.parse(json['fechaentrenamiento']),
       tiempoEntrenamiento: Duration(
-        hours: int.parse(json['tiempoEntrenamiento'].split(':')[0]),
-        minutes: int.parse(json['tiempoEntrenamiento'].split(':')[1]),
-        seconds: int.parse(json['tiempoEntrenamiento'].split(':')[2]),
+        hours: int.parse(json['tiempoentrenamiento'].split(':')[0]),
+        minutes: int.parse(json['tiempoentrenamiento'].split(':')[1]),
+        seconds: int.parse(json['tiempoentrenamiento'].split(':')[2]),
       ),
     );
   }
@@ -34,8 +34,8 @@ class DiaEntrenado {
     return {
       'idusuario': idUsuario,
       'idrutina': idRutina,
-      'fechaEntrenamiento': fechaEntrenamiento.toIso8601String(),
-      'tiempoEntrenamiento': '${tiempoEntrenamiento.inHours.toString().padLeft(2, '0')}:'
+      'fechaentrenamiento': fechaEntrenamiento.toIso8601String(),
+      'tiempoentrenamiento': '${tiempoEntrenamiento.inHours.toString().padLeft(2, '0')}:'
           '${(tiempoEntrenamiento.inMinutes % 60).toString().padLeft(2, '0')}:'
           '${(tiempoEntrenamiento.inSeconds % 60).toString().padLeft(2, '0')}',
     };

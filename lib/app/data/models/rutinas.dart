@@ -1,7 +1,11 @@
+import 'package:euexia/app/data/models/ejercicios.dart';
+
 class Rutina {
   int idRutina;
   String nombre;
   String? descripcion;
+
+  List<Ejercicio>? ejercicios;
 
   Rutina({
     required this.idRutina,

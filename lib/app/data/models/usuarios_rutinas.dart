@@ -17,9 +17,17 @@ class UsuarioRutina {
 
   factory UsuarioRutina.fromJson(Map<String, dynamic> json) {
     return UsuarioRutina(
-      idUsuario: json['idUsuario'],
-      idRutina: json['idRutina'],
+      idUsuario: json['idusuario'],
+      idRutina: json['idrutina'],
       publicada: json['publicada'] ?? false,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'idusuario': idUsuario,
+      'idrutina': idRutina,
+      'publicada': publicada,
+    };
   }
 }

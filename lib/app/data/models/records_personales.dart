@@ -17,9 +17,17 @@ class RecordPersonal {
 
   factory RecordPersonal.fromJson(Map<String, dynamic> json) {
     return RecordPersonal(
-      idUsuario: json['idUsuario'],
-      idEjercicio: json['idEjercicio'],
+      idUsuario: json['idusuario'],
+      idEjercicio: json['idejercicio'],
       record: json['record'].toDouble(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'idusuario': idUsuario,
+      'idejercicio': idEjercicio,
+      'record': record,
+    };
   }
 }

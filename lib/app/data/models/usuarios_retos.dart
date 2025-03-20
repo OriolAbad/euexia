@@ -21,11 +21,21 @@ class UsuarioReto {
 
   factory UsuarioReto.fromJson(Map<String, dynamic> json) {
     return UsuarioReto(
-      idReto: json['idReto'],
-      idUsuario: json['idUsuario'],
-      fechaInicio: DateTime.parse(json['fechaInicio']),
-      fechaFin: json['fechaFin'] != null ? DateTime.parse(json['fechaFin']) : null,
+      idReto: json['idreto'],
+      idUsuario: json['idusuario'],
+      fechaInicio: DateTime.parse(json['fechainicio']),
+      fechaFin: json['fechafin'] != null ? DateTime.parse(json['fechafin']) : null,
       completado: json['completado'] ?? false,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'idreto': idReto,
+      'idusuario': idUsuario,
+      'fechainicio': fechaInicio.toIso8601String(),
+      'fechafin': fechaFin?.toIso8601String(),
+      'completado': completado,
+    };
   }
 }

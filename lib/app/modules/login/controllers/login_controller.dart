@@ -24,7 +24,7 @@ class LoginController extends GetxController {
     if (emailC.text.isNotEmpty && passwordC.text.isNotEmpty) {
       isLoading.value = true;
 
-      response = await client.login(emailC.text, passwordC.text);
+      // response = await client.login(emailC.text, passwordC.text);
       if (response.success) {
         Get.defaultDialog(
             barrierDismissible: false,
