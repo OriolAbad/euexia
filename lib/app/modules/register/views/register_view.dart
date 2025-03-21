@@ -244,7 +244,7 @@ class RegisterView extends GetView<RegisterController> {
             ],
           ),
         ],
-     ),
-);
-}
+      ),
+    );
+  }
 }

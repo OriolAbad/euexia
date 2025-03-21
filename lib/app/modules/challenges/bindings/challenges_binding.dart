@@ -1,0 +1,10 @@
+// lib/bindings/challenges_binding.dart
+import 'package:get/get.dart';
+import '../controllers/challenges_controller.dart';
+
+class ChallengesBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut<ChallengesController>(() => ChallengesController());
+  }
+}
