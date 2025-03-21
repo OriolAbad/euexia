@@ -1,11 +1,11 @@
 class Recompensa {
-  int idRecompensa;
+  int? idRecompensa; // Ahora es opcional
   String nombre;
   String descripcion;
   int puntosNecesarios;
 
   Recompensa({
-    required this.idRecompensa,
+    this.idRecompensa, // No es obligatorio
     required this.nombre,
     required this.descripcion,
     required this.puntosNecesarios,
@@ -21,11 +21,16 @@ class Recompensa {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'idrecompensa': idRecompensa,
+    final data = {
       'nombre': nombre,
       'descripcion': descripcion,
       'puntosnecesarios': puntosNecesarios,
     };
+
+    if (idRecompensa != null) {
+      data['idrecompensa'] = idRecompensa.toString();
+    }
+
+    return data;
   }
 }

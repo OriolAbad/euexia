@@ -2,7 +2,7 @@ import 'package:euexia/app/data/models/dificultades.dart';
 import 'package:euexia/app/data/models/tipos_retos.dart';
 
 class Reto {
-  int idReto;
+  int? idReto; // Ahora es opcional
   String titulo;
   String descripcion;
   int puntos;
@@ -13,7 +13,7 @@ class Reto {
   Dificultad? dificultad;
 
   Reto({
-    required this.idReto,
+    this.idReto, // No es obligatorio
     required this.titulo,
     required this.descripcion,
     required this.puntos,
@@ -33,13 +33,18 @@ class Reto {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'idreto': idReto,
+    final data = {
       'titulo': titulo,
       'descripcion': descripcion,
       'puntos': puntos,
       'idtiporeto': idTipoReto,
       'iddificultad': idDificultad,
     };
+
+    if (idReto != null) {
+      data['idreto'] = idReto.toString();
+    }
+
+    return data;
   }
 }

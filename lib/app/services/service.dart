@@ -1671,7 +1671,7 @@ class _RutinasService {
       // Itera sobre cada rutina para obtener sus ejercicios
       _EjerciciosRutinasService _ejerciciosRutinasService = _EjerciciosRutinasService();
       for (var rutina in rutinas) {
-        final ejerciciosResponse = await _ejerciciosRutinasService.getEjerciciosOfRutina(rutina.idRutina);
+        final ejerciciosResponse = await _ejerciciosRutinasService.getEjerciciosOfRutina(rutina.idRutina!);
         if (ejerciciosResponse.success) {
           rutina.ejercicios = ejerciciosResponse.data as List<Ejercicio>;
         } else {
@@ -2243,7 +2243,7 @@ class _UsuariosRutinasService {
       // Itera sobre cada rutina para obtener sus ejercicios
       _EjerciciosRutinasService ejerciciosService = _EjerciciosRutinasService();
       for (var rutina in rutinas) {
-        final ejerciciosResponse = await ejerciciosService.getEjerciciosOfRutina(rutina.idRutina);
+        final ejerciciosResponse = await ejerciciosService.getEjerciciosOfRutina(rutina.idRutina!);
         if (ejerciciosResponse.success) {
           rutina.ejercicios = ejerciciosResponse.data as List<Ejercicio>;
         } else {

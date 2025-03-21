@@ -1,7 +1,7 @@
 import 'package:euexia/app/data/models/categorias.dart';
 
 class Ejercicio {
-  int idEjercicio;
+  int? idEjercicio; // Ahora es opcional
   String nombre;
   String? descripcion;
   int idCategoria;
@@ -9,7 +9,7 @@ class Ejercicio {
   Categoria? categoria;
 
   Ejercicio({
-    required this.idEjercicio,
+    this.idEjercicio, // No es obligatorio
     required this.nombre,
     this.descripcion,
     required this.idCategoria,
@@ -25,11 +25,16 @@ class Ejercicio {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'idejercicio': idEjercicio,
+    final data = {
       'nombre': nombre,
       'descripcion': descripcion,
       'idcategoria': idCategoria,
     };
+
+    if (idEjercicio != null) {
+      data['idejercicio'] = idEjercicio;
+    }
+
+    return data;
   }
 }

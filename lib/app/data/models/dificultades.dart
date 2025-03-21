@@ -1,9 +1,9 @@
 class Dificultad {
-  int idDificultad;
+  int? idDificultad; // Ahora es opcional
   String descripcion;
 
   Dificultad({
-    required this.idDificultad,
+    this.idDificultad, // No es obligatorio
     required this.descripcion,
   });
 
@@ -15,9 +15,14 @@ class Dificultad {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'iddificultad': idDificultad,
+    final data = {
       'descripcion': descripcion,
     };
+
+    if (idDificultad != null) {
+      data['iddificultad'] = idDificultad.toString();
+    }
+
+    return data;
   }
 }
