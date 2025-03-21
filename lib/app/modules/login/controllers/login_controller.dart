@@ -6,8 +6,10 @@ import 'package:euexia/app/data/help/response.dart' as custom_response;
 class LoginController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isHidden = true.obs;
+  var isHoveringForgotPassword = false.obs;
   TextEditingController emailC = TextEditingController();
   TextEditingController passwordC = TextEditingController();
+
 
   SupabaseService client = SupabaseService();
   custom_response.Response response = custom_response.Response(success: false);

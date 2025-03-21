@@ -61,7 +61,7 @@ class RegisterView extends GetView<RegisterController> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextField(
-                      controller: controller.apellido1C,
+                      controller: controller.apellido1,
                       decoration: InputDecoration(
                         hintText: "Apellido1",
                         hintStyle: const TextStyle(color: Colors.black),
@@ -87,7 +87,7 @@ class RegisterView extends GetView<RegisterController> {
                 children: [
                   Expanded(
                     child: TextField(
-                      controller: controller.apellido2C,
+                      controller: controller.apellido2,
                       decoration: InputDecoration(
                         hintText: "Apellido2",
                         hintStyle: const TextStyle(color: Colors.black),
@@ -109,7 +109,7 @@ class RegisterView extends GetView<RegisterController> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextField(
-                      controller: controller.userNameC,
+                      controller: controller.nameC,
                       decoration: InputDecoration(
                         hintText: "User Name",
                         hintStyle: const TextStyle(color: Colors.black),
@@ -157,7 +157,7 @@ class RegisterView extends GetView<RegisterController> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextField(
-                      controller: controller.locationC,
+                      controller: controller.location,
                       decoration: InputDecoration(
                         hintText: "Location",
                         hintStyle: const TextStyle(color: Colors.black),
