@@ -60,20 +60,12 @@ class GalleryController extends GetxController {
 
       final String fileName = 'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-      if (GetPlatform.isWeb) {
-        await client.storage.from('gallery').uploadBinary(
-          fileName,
-          bytes,
-          fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
-        );
-      } else {
-        final File imageFile = File(image.path);
-        await client.storage.from('gallery').upload(
-          fileName,
-          imageFile,
-          fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
-        );
-      }
+      // Always use uploadBinary for all platforms
+      await client.storage.from('gallery').uploadBinary(
+        fileName,
+        bytes,
+        fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+      );
 
       await fetchImages();
       Get.snackbar('Success', 'Photo uploaded successfully!', colorText: Colors.white);
