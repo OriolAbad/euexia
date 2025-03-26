@@ -766,23 +766,20 @@ class _EjerciciosRutinasService {
     
     return result;
   }
-  Future<custom_response.Response> getEjerciciosByRutinaIdWithRutinaAndEjercicios(int idRutina) async {
+  Future<custom_response.Response> getEjerciciosByRutinaIdWithEjercicios(int idRutina) async {
     List<EjercicioRutina> ejerciciosRutina = [];
     custom_response.Response result = custom_response.Response(success: false);
 
     try {
       final data = await client
           .from('ejercicios_rutina')
-          .select('*, ejercicios(*), rutinas(*)') // Incluye la relación con las tablas ejercicios y rutinas
+          .select('*, ejercicios(*)') // Incluye la relación con las tablas ejercicios y rutinas
           .eq('idrutina', idRutina); // Filtra por idRutina
 
       ejerciciosRutina = data.map<EjercicioRutina>((json) {
         EjercicioRutina ejercicioRutina = EjercicioRutina.fromJson(json);
         if (json['ejercicios'] != null) {
           ejercicioRutina.ejercicio = Ejercicio.fromJson(json['ejercicios']);
-        }
-        if (json['rutinas'] != null) {
-          ejercicioRutina.rutina = Rutina.fromJson(json['rutinas']);
         }
         return ejercicioRutina;
       }).toList();
@@ -2305,6 +2302,33 @@ class _UsuariosService {
       result.success = false;
       result.errorMessage = e.toString();
     }
+    return result;
+  }
+  Future<custom_response.Response> getLoggedInUser() async {
+    custom_response.Response result = custom_response.Response(success: false);
+  
+    try {
+      final User? currentUser = client.auth.currentUser;
+  
+      if (currentUser != null) {
+        final data = await client
+            .from('usuarios')
+            .select()
+            .eq('uuid', currentUser.id)
+            .single();
+  
+        Usuario user = Usuario.fromJson(data);
+  
+        result.success = true;
+        result.data = user;
+      } else {
+        result.errorMessage = "No user is currently logged in.";
+      }
+    } catch (e) {
+      result.success = false;
+      result.errorMessage = e.toString();
+    }
+  
     return result;
   }
   Future<custom_response.Response> addUser(Usuario user, String password) async {
