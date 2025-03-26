@@ -62,7 +62,7 @@ class GalleryView extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () => controller.pickAndUploadPhoto(), 
-                  child: Text("Gallery"),
+                  child: Text("Upload"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32),
