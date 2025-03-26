@@ -26,8 +26,7 @@ dependencies:
   geocoding: ^2.1.0
   http: ^0.13.3
   image_picker: ^0.8.7+4
-  video_thumbnail: ^0.5.3
-  video_player: ^2.5.1
+
 
 dev_dependencies:
   flutter_lints: ^2.0.0
