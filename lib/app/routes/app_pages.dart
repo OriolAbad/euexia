@@ -1,6 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:euexia/app/modules/gallery/bindings/gallery_binding.dart';
+import 'package:euexia/app/modules/trainings/binding/trainings_binding.dart';
+import 'package:euexia/app/modules/trainings/view/trainings_view.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/modules/splash/bindings/splash_binding.dart';
 import 'package:euexia/app/modules/splash/views/splash_view.dart';
@@ -104,6 +106,11 @@ class AppPages {
       name: _Paths.PROFILE,
       page: () => ProfileView(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.RUTINAS,
+      page: () => TrainingsView(),
+      binding: TrainingsBinding(),
     ), /*
     GetPage(
       name: _Paths.EXERCISES,

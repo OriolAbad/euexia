@@ -1,5 +1,4 @@
 import 'package:euexia/app/data/models/categorias.dart';
-import 'package:euexia/app/data/models/fotos.dart';
 import 'package:euexia/app/services/service.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/data/models/consejos.dart';
@@ -19,12 +18,13 @@ class TipsController extends GetxController {
     super.onInit();
     getTips();
     // var data = _supabaseService.
-
+    
     }
 
   Future<void> getTips() async {
     isLoading.value = true;
-    result = await _supabaseService.ejercicios_rutinas.getEjerciciosOfRutina(1);
+    Categoria categoria = Categoria(nombre: 'hola');
+    result = await _supabaseService.categorias.addCategory(categoria);
 
     if(result.success){
       tips.assignAll(result.data as Iterable<Consejo>); // Asignar correctamente los datos a la lista observable

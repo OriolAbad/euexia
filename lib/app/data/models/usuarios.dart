@@ -42,9 +42,8 @@ class Usuario {
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    final data = {
       'uuid': uuid,
-      'idusuario': idUsuario,
       'name': nombre,
       'apellido1': apellido1,
       'apellido2': apellido2,
@@ -55,5 +54,11 @@ class Usuario {
       'puntos': puntos,
       'location': location,
     };
+
+    if (idUsuario != null) {
+      data['idusuario'] = idUsuario;
+    }
+
+    return data;
   }
 }
