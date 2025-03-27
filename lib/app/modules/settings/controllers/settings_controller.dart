@@ -55,7 +55,7 @@ class SettingsController extends GetxController {
       Get.defaultDialog(
           barrierDismissible: false,
           title: "Update Profile success",
-          middleText: "Name or Password will be updated",
+          middleText: "Your changes will be updated",
           actions: [
             OutlinedButton(
                 onPressed: () {
