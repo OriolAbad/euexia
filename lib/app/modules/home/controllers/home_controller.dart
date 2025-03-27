@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -7,7 +6,8 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class HomeController extends GetxController {
   final SupabaseClient client = Supabase.instance.client;
-  final RxList<Map<String, dynamic>> featuredTips = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> featuredTips =
+      <Map<String, dynamic>>[].obs;
   final RxBool isLoading = true.obs;
   final List<String> _imageExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
   final Map<String, bool> _imagePreloadStatus = {};
@@ -37,7 +37,8 @@ class HomeController extends GetxController {
   }
 
   Future<List<Map<String, dynamic>>> _processTips(List response) async {
-    return await Future.wait(response.map<Future<Map<String, dynamic>>>((tip) async {
+    return await Future.wait(
+        response.map<Future<Map<String, dynamic>>>((tip) async {
       final imageUrl = await _resolveImageUrl(tip['imagen'], tip['idconsejo']);
       return {...tip as Map<String, dynamic>, 'full_image_url': imageUrl};
     }));
@@ -95,10 +96,8 @@ class HomeController extends GetxController {
   // ========================
   Future<void> _preloadInitialBatch() async {
     final initialIndices = List.generate(
-      featuredTips.length < 4 ? featuredTips.length : 4,
-      (i) => i
-    );
-    
+        featuredTips.length < 4 ? featuredTips.length : 4, (i) => i);
+
     await Future.wait(initialIndices.map((i) {
       return _precacheImage(featuredTips[i]['full_image_url']);
     }));
