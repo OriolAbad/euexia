@@ -95,6 +95,28 @@ class SettingsView extends GetView<SettingsController> {
                   const SizedBox(height: 20),
                   TextField(
                     autocorrect: false,
+                    controller: controller.locationC,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      hintText: "Location",
+                      hintStyle: const TextStyle(color: Colors.black),
+                      prefixIcon: const Icon(Icons.map, color: Colors.black),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: const BorderSide(color: Colors.white),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: const BorderSide(color: Colors.white, width: 2),
+                      ),
+                    ),
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    autocorrect: false,
                     controller: controller.passwordC,
                     textInputAction: TextInputAction.done,
                     obscureText: controller.isHidden.value,
