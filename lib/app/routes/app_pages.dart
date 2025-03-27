@@ -6,8 +6,6 @@ import 'package:euexia/app/modules/trainings/view/trainings_view.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/modules/splash/bindings/splash_binding.dart';
 import 'package:euexia/app/modules/splash/views/splash_view.dart';
-import 'package:euexia/app/modules/add_note/bindings/add_note_binding.dart';
-import 'package:euexia/app/modules/add_note/views/add_note_view.dart';
 import 'package:euexia/app/modules/home/bindings/home_binding.dart';
 import 'package:euexia/app/modules/home/views/home_view.dart';
 import 'package:euexia/app/modules/login/bindings/login_binding.dart';
@@ -76,11 +74,6 @@ class AppPages {
       name: _Paths.RESET_PASSWORD,
       page: () => ResetPasswordView(),
       binding: ResetPasswordBinding(),
-    ),
-    GetPage(
-      name: _Paths.ADD_NOTE,
-      page: () => AddNoteView(),
-      binding: AddNoteBinding(),
     ),
     GetPage(
       name: _Paths.GALLERY,
