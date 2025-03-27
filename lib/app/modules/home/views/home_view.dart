@@ -180,35 +180,69 @@ class HomeView extends GetView<HomeController> {
                 ],
               ),
             ),
-            // Carrusel con LayoutBuilder
+            // Carrusel de consejos
             Obx(() {
-              if (controller.featuredTips.isEmpty) {
+              if (controller.isLoading.value) {
                 return const Center(
-                  child:
-                      CircularProgressIndicator(), // O un mensaje: Text('No hay consejos')
+                  child: CircularProgressIndicator(),
                 );
               }
+
+              if (controller.featuredTips.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'No hay consejos destacados',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                );
+              }
+
               return CarouselSlider(
                 options: CarouselOptions(
-                  height: 150.0, // Altura reducida
-                  autoPlay: true, // Deslizamiento automático
-                  viewportFraction: 0.8, // Espacio entre items
+                  height: 200.0,
+                  autoPlay: true,
+                  viewportFraction: 0.85,
+                  enlargeCenterPage: true,
+                  autoPlayInterval: const Duration(seconds: 5),
                 ),
                 items: controller.featuredTips.map((tip) {
+                  // Verificación de URL (añade esto para debug)
+                  debugPrint(
+                      'URL de imagen para consejo ${tip['idconsejo']}: ${tip['full_image_url']}');
+
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 5.0),
                     decoration: BoxDecoration(
-                      color: Colors.grey[800], // Fondo oscuro para contraste
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: Colors.grey[800], // Color de fondo por defecto
+                      image: (tip['full_image_url'] != null &&
+                              tip['full_image_url'].toString().isNotEmpty)
+                          ? DecorationImage(
+                              image: NetworkImage(tip['full_image_url']!),
+                              fit: BoxFit.cover,
+                              colorFilter: ColorFilter.mode(
+                                Colors.black.withOpacity(0.4),
+                                BlendMode.darken,
+                              ),
+                            )
+                          : null,
                     ),
                     child: Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(20.0),
                         child: Text(
                           tip['descripcion'] ?? 'Descripción no disponible',
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 16.0,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 6.0,
+                                color: Colors.black,
+                                offset: Offset(2.0, 2.0),
+                              ),
+                            ],
                           ),
                           textAlign: TextAlign.center,
                         ),
