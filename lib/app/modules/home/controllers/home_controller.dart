@@ -1,12 +1,21 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class HomeController extends GetxController {
   final SupabaseClient client = Supabase.instance.client;
-  final RxList<Map<String, dynamic>> featuredTips = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> featuredTips =
+      <Map<String, dynamic>>[].obs;
   final RxBool isLoading = true.obs;
   final List<String> _imageExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+  final Map<String, bool> _imagePreloadStatus = {};
+  final DefaultCacheManager _cacheManager = DefaultCacheManager();
 
+  // ========================
+  // 1. Carga inicial
+  // ========================
   Future<void> fetchFeaturedTips() async {
     try {
       isLoading.value = true;
@@ -17,68 +26,106 @@ class HomeController extends GetxController {
           .order('idconsejo', ascending: true);
 
       if (response != null && response.isNotEmpty) {
-        final tipsWithImages = await Future.wait(
-          (response as List).map<Future<Map<String, dynamic>>>((tip) async {
-            // Si ya hay una URL en la base de datos, la usamos
-            if (tip['imagen'] != null && tip['imagen'].toString().isNotEmpty) {
-              return {...tip as Map<String, dynamic>, 'full_image_url': tip['imagen']};
-            }
-            
-            // Si no, probamos con diferentes extensiones
-            final imageUrl = await _findImageUrl(tip['idconsejo']);
-            return {...tip as Map<String, dynamic>, 'full_image_url': imageUrl};
-          }),
-        );
-        
-        featuredTips.assignAll(tipsWithImages.where((tip) => tip['full_image_url'] != null));
-      } else {
-        featuredTips.clear();
+        featuredTips.assignAll(await _processTips(response));
+        await _preloadInitialBatch();
       }
     } catch (e) {
-      featuredTips.clear();
-      Get.snackbar('Error', 'No se pudieron cargar los consejos: ${e.toString()}');
+      Get.snackbar('Error', 'No se pudieron cargar los consejos');
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<String?> _findImageUrl(int tipId) async {
-    try {
-      // Primero intentamos sin extensión (por si acaso)
-      final baseUrl = client.storage
-          .from('consejos')
-          .getPublicUrl('consejos_$tipId');
-      
-      // Verificamos si la URL sin extensión funciona
-      final response = await _checkImageExists(baseUrl);
-      if (response) return baseUrl;
+  Future<List<Map<String, dynamic>>> _processTips(List response) async {
+    return await Future.wait(
+        response.map<Future<Map<String, dynamic>>>((tip) async {
+      final imageUrl = await _resolveImageUrl(tip['imagen'], tip['idconsejo']);
+      return {...tip as Map<String, dynamic>, 'full_image_url': imageUrl};
+    }));
+  }
 
-      // Si no, probamos con cada extensión
-      for (final ext in _imageExtensions) {
-        final url = client.storage
-            .from('consejos')
-            .getPublicUrl('consejos_$tipId$ext');
-        
-        if (await _checkImageExists(url)) {
-          return url;
-        }
-      }
-      
-      return null;
-    } catch (e) {
-      return null;  
+  // ========================
+  // 2. Gestión de imágenes
+  // ========================
+  Future<String?> _resolveImageUrl(dynamic storedUrl, int tipId) async {
+    if (storedUrl != null && storedUrl.toString().isNotEmpty) return storedUrl;
+
+    for (final ext in _imageExtensions) {
+      try {
+        final fileName = 'consejos_$tipId$ext';
+        final url = client.storage.from('consejos').getPublicUrl(fileName);
+        await client.storage.from('consejos').createSignedUrl(fileName, 60);
+        return url;
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  // ========================
+  // 3. Precarga inteligente (NUEVO)
+  // ========================
+  Future<void> preloadNextBatch(int currentIndex) async {
+    final indicesToPreload = [
+      currentIndex + 1,
+      currentIndex + 2,
+      currentIndex + 3,
+      if (currentIndex > 0) currentIndex - 1,
+    ].where((i) => i < featuredTips.length && i >= 0).toList();
+
+    await Future.wait(indicesToPreload.map((i) {
+      return _precacheImage(featuredTips[i]['full_image_url']);
+    }));
+  }
+
+  Future<bool> isImagePreloaded(String? url) async {
+    if (url == null) return false;
+    return _imagePreloadStatus[url] ??= await _checkImageInCache(url);
+  }
+
+  Future<bool> _checkImageInCache(String url) async {
+    try {
+      final file = await _cacheManager.getFileFromCache(url);
+      return file != null && await file.file.exists();
+    } catch (_) {
+      return false;
     }
   }
 
-  Future<bool> _checkImageExists(String url) async {
+  // ========================
+  // 4. Sistema de caché
+  // ========================
+  Future<void> _preloadInitialBatch() async {
+    final initialIndices = List.generate(
+        featuredTips.length < 4 ? featuredTips.length : 4, (i) => i);
+
+    await Future.wait(initialIndices.map((i) {
+      return _precacheImage(featuredTips[i]['full_image_url']);
+    }));
+  }
+
+  Future<void> _precacheImage(String? url) async {
+    if (url == null || _imagePreloadStatus[url] == true) return;
+
     try {
-      final response = await client.storage
-          .from('consejos')
-          .createSignedUrl(url.split('/').last, 60); // URL válida por 60 segundos
-      return response != null;
+      await precacheImage(
+        CachedNetworkImageProvider(url, cacheManager: _cacheManager),
+        Get.context!,
+        onError: (_, __) => _imagePreloadStatus[url] = false,
+      );
+      _imagePreloadStatus[url] = true;
     } catch (e) {
-      return false;
+      _imagePreloadStatus[url] = false;
+      debugPrint('Precache error for $url: $e');
     }
+  }
+
+  // ========================
+  // Ciclo de vida
+  // ========================
+  @override
+  void onClose() {
+    _cacheManager.emptyCache();
+    super.onClose();
   }
 
   @override
