@@ -182,108 +182,109 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
             // Carrusel ultra-optimizado (sin fondos grises)
-Obx(() {
-  if (controller.isLoading.value) {
-    return const Center(
-      child: CircularProgressIndicator(color: Colors.white),
-    );
-  }
+            Obx(() {
+              if (controller.isLoading.value) {
+                return const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                );
+              }
 
-  if (controller.featuredTips.isEmpty) {
-    return const Center(
-      child: Text(
-        'No hay consejos destacados',
-        style: TextStyle(color: Colors.white, fontSize: 16),
-      ),
-    );
-  }
+              if (controller.featuredTips.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'No hay consejos destacados',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                );
+              }
 
-  return CarouselSlider.builder(
-    itemCount: controller.featuredTips.length,
-    options: CarouselOptions(
-      height: 220.0,
-      autoPlay: true,
-      viewportFraction: 0.92,
-      enlargeCenterPage: true,
-      autoPlayInterval: const Duration(seconds: 6),
-      pauseAutoPlayOnManualNavigate: true,
-      onPageChanged: (index, _) => controller.preloadNextBatch(index),
-    ),
-    itemBuilder: (context, index, _) {
-      final tip = controller.featuredTips[index];
-      final imageUrl = tip['full_image_url'] as String?;
-      
-      return FutureBuilder<bool>(
-        future: controller.isImagePreloaded(imageUrl),
-        builder: (context, snapshot) {
-          final isPreloaded = snapshot.data ?? false;
-          
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0),
-              image: isPreloaded && imageUrl != null
-                  ? DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        imageUrl,
-                        maxWidth: 600, // Optimización para tamaño
-                        maxHeight: 400,
-                      ),
-                      fit: BoxFit.cover,
-                      colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.35),
-                        BlendMode.darken,
-                      ),
-                    )
-                  : null,
-            ),
-            child: Stack(
-              children: [
-                // Fondo de precarga sutil
-                if (!isPreloaded || imageUrl == null)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[900]!.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.0,
-                        color: Colors.white54,
-                      ),
-                    ),
-                  ),
-                
-                // Contenido del consejo
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Text(
-                      tip['descripcion'] ?? '',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.5,
-                        fontWeight: FontWeight.w600,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 12.0,
-                            color: Colors.black87,
-                            offset: Offset(2.0, 2.0),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+              return CarouselSlider.builder(
+                itemCount: controller.featuredTips.length,
+                options: CarouselOptions(
+                  height: 220.0,
+                  autoPlay: true,
+                  viewportFraction: 0.92,
+                  enlargeCenterPage: true,
+                  autoPlayInterval: const Duration(seconds: 6),
+                  pauseAutoPlayOnManualNavigate: true,
+                  onPageChanged: (index, _) =>
+                      controller.preloadNextBatch(index),
                 ),
-              ],
-            ),
-          );
-        },
-      );
-    },
-  );
-}),
+                itemBuilder: (context, index, _) {
+                  final tip = controller.featuredTips[index];
+                  final imageUrl = tip['full_image_url'] as String?;
+
+                  return FutureBuilder<bool>(
+                    future: controller.isImagePreloaded(imageUrl),
+                    builder: (context, snapshot) {
+                      final isPreloaded = snapshot.data ?? false;
+
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.0),
+                          image: isPreloaded && imageUrl != null
+                              ? DecorationImage(
+                                  image: CachedNetworkImageProvider(
+                                    imageUrl,
+                                    maxWidth: 600, // Optimización para tamaño
+                                    maxHeight: 400,
+                                  ),
+                                  fit: BoxFit.cover,
+                                  colorFilter: ColorFilter.mode(
+                                    Colors.black.withOpacity(0.35),
+                                    BlendMode.darken,
+                                  ),
+                                )
+                              : null,
+                        ),
+                        child: Stack(
+                          children: [
+                            // Fondo de precarga sutil
+                            if (!isPreloaded || imageUrl == null)
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[900]!.withOpacity(0.7),
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.0,
+                                    color: Colors.white54,
+                                  ),
+                                ),
+                              ),
+
+                            // Contenido del consejo
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Text(
+                                  tip['descripcion'] ?? '',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.5,
+                                    fontWeight: FontWeight.w600,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 12.0,
+                                        color: Colors.black87,
+                                        offset: Offset(2.0, 2.0),
+                                      ),
+                                    ],
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            }),
           ],
         ),
       ),
