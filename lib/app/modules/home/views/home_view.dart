@@ -180,37 +180,46 @@ class HomeView extends GetView<HomeController> {
                 ],
               ),
             ),
-            // Carrusel corregido con LayoutBuilder
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return CarouselSlider(
-                    options: CarouselOptions(height: 200.0),
-                    items: [1, 2, 3, 4, 5].map((i) {
-                      return Container(
-                        width: constraints.maxWidth, // Tamaño seguro
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        decoration: const BoxDecoration(color: Colors.amber),
-                        child: Center(
-                          child: Text(
-                            'Image $i',
-                            style: const TextStyle(fontSize: 16.0),
+            // Carrusel con LayoutBuilder
+            Obx(() {
+              if (controller.featuredTips.isEmpty) {
+                return const Center(
+                  child:
+                      CircularProgressIndicator(), // O un mensaje: Text('No hay consejos')
+                );
+              }
+              return CarouselSlider(
+                options: CarouselOptions(
+                  height: 150.0, // Altura reducida
+                  autoPlay: true, // Deslizamiento automático
+                  viewportFraction: 0.8, // Espacio entre items
+                ),
+                items: controller.featuredTips.map((tip) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[800], // Fondo oscuro para contraste
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          tip['descripcion'] ?? 'Descripción no disponible',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
                           ),
+                          textAlign: TextAlign.center,
                         ),
-                      );
-                    }).toList(),
+                      ),
+                    ),
                   );
-                },
-              ),
-            ),
+                }).toList(),
+              );
+            }),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF4CAF50), // Verde lima
-        onPressed: () => Get.toNamed(Routes.ADD_NOTE),
-        child: const Icon(Icons.add),
       ),
     );
   }

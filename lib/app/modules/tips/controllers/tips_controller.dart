@@ -24,7 +24,7 @@ class TipsController extends GetxController {
 
   Future<void> getTips() async {
     isLoading.value = true;
-    result = await _supabaseService.ejercicios_rutinas.getEjerciciosOfRutina(1);
+    result = await _supabaseService.consejos.getTips();
 
     if(result.success){
       tips.assignAll(result.data as Iterable<Consejo>); // Asignar correctamente los datos a la lista observable
