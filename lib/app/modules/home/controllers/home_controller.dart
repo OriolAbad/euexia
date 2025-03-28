@@ -36,7 +36,7 @@ class HomeController extends GetxController {
           .single();
 
       if (response != null && response['idusuario'] != null) {
-        qrData.value = response['idUsuario'].toString();
+        qrData.value = response['idusuario'].toString();
       } else {
         throw Exception('ID de usuario no encontrado');
       }
