@@ -22,7 +22,9 @@ class SingTrainingView extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         } else {
-          
+          return Center(
+            child: Text('Training details loaded successfully!'),
+          );
         }
       }),
     );
