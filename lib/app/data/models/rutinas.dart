@@ -1,10 +1,11 @@
 import 'package:euexia/app/data/models/ejercicios.dart';
+import 'package:euexia/app/data/models/ejercicios_rutinas.dart';
 
 class Rutina {
   int? idRutina; // Ahora es opcional
   String nombre;
   String? descripcion;
-  List<Ejercicio>? ejercicios;
+  List<EjercicioRutina>? ejercicios;
 
   Rutina({
     this.idRutina, // No es obligatorio
@@ -20,7 +21,12 @@ class Rutina {
       descripcion: json['descripcion'],
       ejercicios: json['ejercicios'] != null
           ? (json['ejercicios'] as List)
-              .map((e) => Ejercicio.fromJson(e))
+              .map((e) => EjercicioRutina.fromJson({
+                    ...e,
+                    'ejercicio': e['ejercicio'] != null
+                        ? Ejercicio.fromJson(e['ejercicio']).toJson()
+                        : null,
+                  }))
               .toList()
           : null,
     );
