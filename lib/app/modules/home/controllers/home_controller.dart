@@ -18,6 +18,8 @@ class HomeController extends GetxController {
   // ========================
   // Gerador QR
   // ========================
+
+  /// Obtiene el ID del usuario autenticado y lo asigna a qrData para luego mostrar las rutinas de la persona que tenga ese idusuario.
   Future<void> fetchUserQrData() async {
     try {
       isLoadingQr.value = true;
