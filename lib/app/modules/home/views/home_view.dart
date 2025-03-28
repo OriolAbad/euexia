@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:euexia/app/routes/app_pages.dart';
 import 'package:fl_chart/fl_chart.dart'; // para gráficos
 import 'package:carousel_slider/carousel_slider.dart'; // para carrusel
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -154,29 +155,105 @@ class HomeView extends GetView<HomeController> {
             ),
             // Contenedores para botones
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(12.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // Contenedor QR
                   Container(
-                    width: 150,
-                    height: 100,
-                    color: const Color(0xFF4CAF50), // Verde lima
-                    child: const Center(
-                      child: Text(
-                        'Button 1',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                    width: 170,
+                    height: 170,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
+                    child: Obx(() {
+                      if (controller.isLoadingQr.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (controller.qrData.value.isEmpty) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.qr_code_2,
+                                size: 36, color: Colors.grey),
+                            const SizedBox(height: 8),
+                            Text('QR no disponible',
+                                style: TextStyle(
+                                    color: Colors.grey, fontSize: 14)),
+                            TextButton(
+                              onPressed: controller.fetchUserQrData,
+                              child: const Text('Generar QR',
+                                  style: TextStyle(fontSize: 14)),
+                            ),
+                          ],
+                        );
+                      }
+
+                      return QrImageView(
+                        data: controller.qrData.value,
+                        version: QrVersions.auto,
+                        size: 150.0,
+                        padding: const EdgeInsets.all(10),
+                      );
+                    }),
                   ),
-                  Container(
-                    width: 150,
-                    height: 100,
-                    color: const Color(0xFF4CAF50), // Verde lima
-                    child: const Center(
-                      child: Text(
-                        'Button 2',
-                        style: TextStyle(color: Colors.white),
+
+                  const SizedBox(width: 24),
+
+                  // Botón Train con texto abajo a la izquierda
+                  GestureDetector(
+                    onTap: () {
+                      print("Train button pressed");
+                      // Aquí tu lógica para el botón Train
+                    },
+                    child: Container(
+                      width: 170,
+                      height: 170,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4CAF50),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            const Color(0xFF4CAF50).withOpacity(0.9),
+                            const Color(0xFF2E7D32),
+                          ],
+                        ),
+                      ),
+                      child: const Stack(
+                        children: [
+                          Positioned(
+                            left: 12,
+                            bottom: 12,
+                            child: Text(
+                              'TRAIN',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -289,6 +366,13 @@ class HomeView extends GetView<HomeController> {
             }),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.toNamed(Routes.QR); // Navegar a la vista QR
+        },
+        backgroundColor: const Color(0xFF4CAF50), // Verde lima
+        child: const Icon(Icons.qr_code, color: Colors.white),
       ),
     );
   }
