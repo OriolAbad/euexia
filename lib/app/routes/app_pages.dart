@@ -1,8 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:euexia/app/modules/gallery/bindings/gallery_binding.dart';
-import 'package:euexia/app/modules/trainings/binding/trainings_binding.dart';
-import 'package:euexia/app/modules/trainings/view/trainings_view.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/modules/splash/bindings/splash_binding.dart';
 import 'package:euexia/app/modules/splash/views/splash_view.dart';
@@ -28,6 +26,10 @@ import 'package:euexia/app/modules/challenges/bindings/challenges_binding.dart';
 import 'package:euexia/app/modules/challenges/views/challenges_view.dart';
 import 'package:euexia/app/modules/profile/bindings/profile_binding.dart';
 import 'package:euexia/app/modules/profile/views/profile_view.dart';
+import 'package:euexia/app/modules/qr/views/qr_view.dart';
+import 'package:euexia/app/modules/qr/bindings/qr_binding.dart';
+
+
 /*
 import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
 import 'package:euexia/app/modules/exercises/views/exercises_view.dart';*/
@@ -101,10 +103,11 @@ class AppPages {
       binding: ProfileBinding(),
     ),
     GetPage(
-      name: _Paths.RUTINAS,
-      page: () => TrainingsView(),
-      binding: TrainingsBinding(),
-    ), /*
+      name: _Paths.QR,
+      page: () => QrView(),
+      binding: QrBinding(),
+    ),
+     /*
     GetPage(
       name: _Paths.EXERCISES,
       page: () => ExercisesView(),

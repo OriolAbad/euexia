@@ -12,6 +12,45 @@ class HomeController extends GetxController {
   final List<String> _imageExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
   final Map<String, bool> _imagePreloadStatus = {};
   final DefaultCacheManager _cacheManager = DefaultCacheManager();
+  final RxString qrData = ''.obs;
+  final RxBool isLoadingQr = false.obs;
+
+  // ========================
+  // Gerador QR
+  // ========================
+
+  /// Obtiene el ID del usuario autenticado y lo asigna a qrData para luego mostrar las rutinas de la persona que tenga ese idusuario.
+  Future<void> fetchUserQrData() async {
+    try {
+      isLoadingQr.value = true;
+      final user = client.auth.currentUser;
+
+      if (user == null) {
+        throw Exception('Usuario no autenticado');
+      }
+
+      final response = await client
+          .from('usuarios')
+          .select('idusuario')
+          .eq('uuid', user.id)
+          .single();
+
+      if (response != null && response['idusuario'] != null) {
+        qrData.value = response['idUsuario'].toString();
+      } else {
+        throw Exception('ID de usuario no encontrado');
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'No se pudo obtener el ID para el QR: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      qrData.value = '';
+    } finally {
+      isLoadingQr.value = false;
+    }
+  }
 
   // ========================
   // 1. Carga inicial
@@ -130,6 +169,7 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
+    fetchUserQrData();
     fetchFeaturedTips();
     super.onInit();
   }
