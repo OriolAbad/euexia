@@ -1,44 +1,136 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-// Controlador para gestionar los planes en la aplicación
 class HomeController extends GetxController {
-  // Lista reactiva que almacenará todos los planes
+  final SupabaseClient client = Supabase.instance.client;
+  final RxList<Map<String, dynamic>> featuredTips =
+      <Map<String, dynamic>>[].obs;
+  final RxBool isLoading = true.obs;
+  final List<String> _imageExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+  final Map<String, bool> _imagePreloadStatus = {};
+  final DefaultCacheManager _cacheManager = DefaultCacheManager();
 
+  // ========================
+  // 1. Carga inicial
+  // ========================
+  Future<void> fetchFeaturedTips() async {
+    try {
+      isLoading.value = true;
+      final response = await client
+          .from('consejos')
+          .select('idconsejo, descripcion, imagen')
+          .eq('destacado', true)
+          .order('idconsejo', ascending: true);
 
-  // Cliente de Supabase para interactuar con la base de datos
-  SupabaseClient client = Supabase.instance.client;
-
-  // Método para obtener todos los planes del usuario actual
-  Future<void> getAllNotes() async {
-    // Verificar si el usuario está autenticado
-    final currentUser = client.auth.currentUser;
-    if (currentUser == null) {
-      // Manejar el caso en que el usuario no esté autenticado
-      print("Usuario no autenticado");
-      return;
+      if (response != null && response.isNotEmpty) {
+        featuredTips.assignAll(await _processTips(response));
+        await _preloadInitialBatch();
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'No se pudieron cargar los consejos');
+    } finally {
+      isLoading.value = false;
     }
-
-    // Se obtiene el ID del usuario desde la tabla "usuarios" filtrando por el UID de autenticación actual
-    List<dynamic> res = await client
-        .from("usuarios")
-        .select("id")
-        .match({"uuid": currentUser.id});
-
-    // Se extrae el primer resultado de la consulta como un mapa
-    Map<String, dynamic> user = (res).first as Map<String, dynamic>;
-
-    // Se obtiene el ID del usuario
-    int id = user["id"]; // Obtener el ID del usuario antes de recuperar los planes
   }
 
-  // Método para eliminar un plan por su ID
-  Future<void> deleteNote(int id) async {
-    await client.from("plans").delete().match({
-      "id": id, // Buscar el plan por su ID y eliminarlo
-    });
+  Future<List<Map<String, dynamic>>> _processTips(List response) async {
+    return await Future.wait(
+        response.map<Future<Map<String, dynamic>>>((tip) async {
+      final imageUrl = await _resolveImageUrl(tip['imagen'], tip['idconsejo']);
+      return {...tip as Map<String, dynamic>, 'full_image_url': imageUrl};
+    }));
+  }
 
-    // Volver a obtener la lista de planes después de la eliminación
-    getAllNotes();
+  // ========================
+  // 2. Gestión de imágenes
+  // ========================
+  Future<String?> _resolveImageUrl(dynamic storedUrl, int tipId) async {
+    if (storedUrl != null && storedUrl.toString().isNotEmpty) return storedUrl;
+
+    for (final ext in _imageExtensions) {
+      try {
+        final fileName = 'consejos_$tipId$ext';
+        final url = client.storage.from('consejos').getPublicUrl(fileName);
+        await client.storage.from('consejos').createSignedUrl(fileName, 60);
+        return url;
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  // ========================
+  // 3. Precarga inteligente (NUEVO)
+  // ========================
+  Future<void> preloadNextBatch(int currentIndex) async {
+    final indicesToPreload = [
+      currentIndex + 1,
+      currentIndex + 2,
+      currentIndex + 3,
+      if (currentIndex > 0) currentIndex - 1,
+    ].where((i) => i < featuredTips.length && i >= 0).toList();
+
+    await Future.wait(indicesToPreload.map((i) {
+      return _precacheImage(featuredTips[i]['full_image_url']);
+    }));
+  }
+
+  Future<bool> isImagePreloaded(String? url) async {
+    if (url == null) return false;
+    return _imagePreloadStatus[url] ??= await _checkImageInCache(url);
+  }
+
+  Future<bool> _checkImageInCache(String url) async {
+    try {
+      final file = await _cacheManager.getFileFromCache(url);
+      return file != null && await file.file.exists();
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // ========================
+  // 4. Sistema de caché
+  // ========================
+  Future<void> _preloadInitialBatch() async {
+    final initialIndices = List.generate(
+        featuredTips.length < 4 ? featuredTips.length : 4, (i) => i);
+
+    await Future.wait(initialIndices.map((i) {
+      return _precacheImage(featuredTips[i]['full_image_url']);
+    }));
+  }
+
+  Future<void> _precacheImage(String? url) async {
+    if (url == null || _imagePreloadStatus[url] == true) return;
+
+    try {
+      await precacheImage(
+        CachedNetworkImageProvider(url, cacheManager: _cacheManager),
+        Get.context!,
+        onError: (_, __) => _imagePreloadStatus[url] = false,
+      );
+      _imagePreloadStatus[url] = true;
+    } catch (e) {
+      _imagePreloadStatus[url] = false;
+      debugPrint('Precache error for $url: $e');
+    }
+  }
+
+  // ========================
+  // Ciclo de vida
+  // ========================
+  @override
+  void onClose() {
+    _cacheManager.emptyCache();
+    super.onClose();
+  }
+
+  @override
+  void onInit() {
+    fetchFeaturedTips();
+    super.onInit();
   }
 }

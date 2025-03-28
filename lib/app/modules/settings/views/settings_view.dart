@@ -87,7 +87,8 @@ class SettingsView extends GetView<SettingsController> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                        borderSide: const BorderSide(color: Colors.white, width: 2),
+                        borderSide:
+                            const BorderSide(color: Colors.white, width: 2),
                       ),
                     ),
                     style: const TextStyle(color: Colors.black),
@@ -95,13 +96,12 @@ class SettingsView extends GetView<SettingsController> {
                   const SizedBox(height: 20),
                   TextField(
                     autocorrect: false,
-                    controller: controller.passwordC,
+                    controller: controller.locationC,
                     textInputAction: TextInputAction.done,
-                    obscureText: controller.isHidden.value,
                     decoration: InputDecoration(
-                      hintText: "New password",
+                      hintText: "Location",
                       hintStyle: const TextStyle(color: Colors.black),
-                      prefixIcon: const Icon(Icons.lock, color: Colors.black),
+                      prefixIcon: const Icon(Icons.map, color: Colors.black),
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -110,21 +110,53 @@ class SettingsView extends GetView<SettingsController> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                        borderSide: const BorderSide(color: Colors.white, width: 2),
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () => controller.isHidden.toggle(),
-                        icon: controller.isHidden.isTrue
-                            ? const Icon(Icons.remove_red_eye, color: Colors.black)
-                            : const Icon(Icons.remove_red_eye_outlined, color: Colors.black),
+                        borderSide:
+                            const BorderSide(color: Colors.white, width: 2),
                       ),
                     ),
                     style: const TextStyle(color: Colors.black),
                   ),
+                  const SizedBox(height: 20),
+                  Obx(() => TextField(
+                        autocorrect: false,
+                        controller: controller.passwordC,
+                        textInputAction: TextInputAction.done,
+                        obscureText: controller
+                            .isHidden.value, // Esto ahora sí se actualizará
+                        decoration: InputDecoration(
+                          hintText: "New password",
+                          hintStyle: const TextStyle(color: Colors.black),
+                          prefixIcon:
+                              const Icon(Icons.lock, color: Colors.black),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(color: Colors.white),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide:
+                                const BorderSide(color: Colors.white, width: 2),
+                          ),
+                          suffixIcon: IconButton(
+                            onPressed: () => controller.isHidden.toggle(),
+                            icon: controller.isHidden.value
+                                ? const Icon(Icons.visibility_off,
+                                    color: Colors.black)
+                                : const Icon(Icons.visibility,
+                                    color: Colors.black),
+                          ),
+                        ),
+                        style: const TextStyle(color: Colors.black),
+                      )),
                   const SizedBox(height: 30),
                   Obx(() => GradientButton(
-                        text: controller.isLoading.isFalse ? "UPDATE PROFILE" : "Loading...",
-                        textStyle: const TextStyle(color: Colors.white, fontSize: 16),
+                        text: controller.isLoading.isFalse
+                            ? "UPDATE PROFILE"
+                            : "Loading...",
+                        textStyle:
+                            const TextStyle(color: Colors.white, fontSize: 16),
                         gradientColors: const [
                           Color.fromARGB(255, 225, 117, 15),
                           Color(0xFFB71C1C)
@@ -134,18 +166,32 @@ class SettingsView extends GetView<SettingsController> {
                         borderRadius: 10.0,
                         onPressed: () async {
                           if (controller.isLoading.isFalse) {
-                            if (controller.nombreusuarioC.text == controller.nombreusuarioC2.text &&
-                                controller.passwordC.text.isEmpty) {
-                              // Check if user have same name and not want to change password but they click the button
-                              Get.snackbar("Info", "There is no data to update",
+                            // Verificar si hay cambios reales
+                            final hasNameChanged =
+                                controller.nombreusuarioC.text !=
+                                    controller.nombreusuarioC2.text;
+                            final hasLocationChanged = controller.locationC.text
+                                .isNotEmpty; // Asumiendo que location puede estar vacío inicialmente
+                            final hasPasswordChanged =
+                                controller.passwordC.text.isNotEmpty;
+
+                            // Si no hay ningún cambio, mostrar mensaje y salir
+                            if (!hasNameChanged &&
+                                !hasLocationChanged &&
+                                !hasPasswordChanged) {
+                              Get.snackbar(
+                                  "Info", "There are no changes to update",
                                   borderWidth: 1,
                                   borderColor: Colors.white,
                                   barBlur: 100);
                               return;
                             }
+
+                            // Si hay cambios, proceder con la actualización
                             await controller.updateProfile();
-                            if (controller.passwordC.text.isNotEmpty &&
-                                controller.passwordC.text.length >= 6) {
+
+                            // Solo hacer logout si se cambió la contraseña
+                            if (hasPasswordChanged) {
                               await controller.logout();
                               await authC.resetTimer();
                               Get.offAllNamed(Routes.LOGIN);

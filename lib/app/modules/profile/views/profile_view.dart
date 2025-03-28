@@ -30,7 +30,7 @@ class ProfileView extends StatelessWidget {
               ),
               Positioned(
                 left: 16,
-                top: 16,
+                top: 50,
                 child: IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {

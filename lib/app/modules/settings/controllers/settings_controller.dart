@@ -8,6 +8,7 @@ class SettingsController extends GetxController {
   RxBool isHidden = true.obs;
   TextEditingController nombreusuarioC = TextEditingController();
   TextEditingController nombreusuarioC2 = TextEditingController();
+  TextEditingController locationC = TextEditingController();
   TextEditingController emailC = TextEditingController();
   TextEditingController passwordC = TextEditingController();
 
@@ -27,6 +28,7 @@ class SettingsController extends GetxController {
     nombreusuarioC.text = user["nombreusuario"];
     nombreusuarioC2.text = user["nombreusuario"];
     emailC.text = user["email"];
+    locationC.text = user["location"] ?? "";
   }
 
   Future<void> updateProfile() async {
@@ -34,6 +36,7 @@ class SettingsController extends GetxController {
       isLoading.value = true;
       await client.from("usuarios").update({
         "nombreusuario": nombreusuarioC2.text,
+        "location": locationC.text,
       }).match({"uuid": client.auth.currentUser!.id});
       // if user want to update password
       if (passwordC.text.isNotEmpty) {
@@ -52,7 +55,7 @@ class SettingsController extends GetxController {
       Get.defaultDialog(
           barrierDismissible: false,
           title: "Update Profile success",
-          middleText: "Name or Password will be updated",
+          middleText: "Your changes will be updated",
           actions: [
             OutlinedButton(
                 onPressed: () {
