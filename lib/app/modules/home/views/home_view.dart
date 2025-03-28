@@ -9,7 +9,7 @@ import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
   // Crear un GlobalKey para el Scaffold
-  final HomeController controller = Get.find<HomeController>(tag: 'home');
+  final HomeController controller = Get.find<HomeController>(tag: 'home'); //
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
