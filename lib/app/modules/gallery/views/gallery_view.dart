@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/gallery_controller.dart';
+import 'dart:io';
 
 class GalleryView extends StatelessWidget {
   @override
@@ -40,7 +41,8 @@ class GalleryView extends StatelessWidget {
                             imageUrl,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
-                              return Image.asset('assets/placeholder.png', fit: BoxFit.cover);
+                              return Image.asset('assets/placeholder.png',
+                                  fit: BoxFit.cover);
                             },
                           ))
                       .toList(),
@@ -48,12 +50,23 @@ class GalleryView extends StatelessWidget {
               );
             }),
             SizedBox(height: 10),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () => controller.takeAndUploadPhoto(),
+                  onPressed: () {
+                    if (Platform.isAndroid || Platform.isIOS) {
+                      controller.takeAndUploadPhoto();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text("Taking photos is only available in mobile"),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    }
+                  }, 
                   child: Text("Camera"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
@@ -61,7 +74,7 @@ class GalleryView extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () => controller.pickAndUploadPhoto(), 
+                  onPressed: () => controller.pickAndUploadPhoto(),
                   child: Text("Upload"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
@@ -71,7 +84,6 @@ class GalleryView extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
@@ -103,7 +115,8 @@ class GalleryView extends StatelessWidget {
                         imageUrl,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
-                          return Image.asset('assets/placeholder.png', fit: BoxFit.cover);
+                          return Image.asset('assets/placeholder.png',
+                              fit: BoxFit.cover);
                         },
                       ),
                     );

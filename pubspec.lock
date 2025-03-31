@@ -488,6 +488,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.10.1"
+  image_picker_web:
+    dependency: "direct main"
+    description:
+      name: image_picker_web
+      sha256: e1656f1ce48a614aefdf22ab73c0cc7e498fa7b78893ffdcc83171e7289092e0
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.1"
   image_picker_windows:
     dependency: transitive
     description:
@@ -520,6 +528,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.1"
+  kd_utils:
+    dependency: "direct main"
+    description:
+      name: kd_utils
+      sha256: "657a0326376d12ce5513b9a9406c5e674c79db9f28c7971e9c922425bf77e4ae"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0+7"
   latlong2:
     dependency: "direct main"
     description:
