@@ -30,7 +30,8 @@ class _GalleryViewState extends State<GalleryView> {
   void _startAutoSlide() {
     _autoSlideTimer = Timer.periodic(Duration(seconds: 3), (timer) {
       if (_pageController.hasClients && controller.images.isNotEmpty) {
-        final nextPage = (_pageController.page!.toInt() + 1) % controller.images.length;
+        final nextPage =
+            (_pageController.page!.toInt() + 1) % controller.images.length;
         _pageController.animateToPage(
           nextPage,
           duration: Duration(milliseconds: 500),
@@ -83,9 +84,8 @@ class _GalleryViewState extends State<GalleryView> {
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Center(
-                                      child: Icon(Icons.broken_image, 
-                                        color: Colors.white, 
-                                        size: 50),
+                                      child: Icon(Icons.broken_image,
+                                          color: Colors.white, size: 50),
                                     );
                                   },
                                 ),
@@ -107,12 +107,13 @@ class _GalleryViewState extends State<GalleryView> {
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text("Taking photos is only available in mobile"),
+                          content:
+                              Text("Taking photos is only available in mobile"),
                           duration: Duration(seconds: 2),
                         ),
                       );
                     }
-                  }, 
+                  },
                   child: Text("Camera"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
@@ -169,9 +170,8 @@ class _GalleryViewState extends State<GalleryView> {
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Center(
-                                    child: Icon(Icons.broken_image, 
-                                      color: Colors.white, 
-                                      size: 40),
+                                    child: Icon(Icons.broken_image,
+                                        color: Colors.white, size: 40),
                                   );
                                 },
                               ),
@@ -180,7 +180,8 @@ class _GalleryViewState extends State<GalleryView> {
                                 right: 5,
                                 child: IconButton(
                                   icon: Icon(Icons.delete, color: Colors.red),
-                                  onPressed: () => _confirmDelete(context, imageUrl, controller),
+                                  onPressed: () => _confirmDelete(
+                                      context, imageUrl, controller),
                                 ),
                               ),
                             ],
@@ -221,9 +222,8 @@ class _GalleryViewState extends State<GalleryView> {
                       return Container(
                         color: Colors.grey[800],
                         child: Center(
-                          child: Icon(Icons.broken_image, 
-                            color: Colors.white, 
-                            size: 60),
+                          child: Icon(Icons.broken_image,
+                              color: Colors.white, size: 60),
                         ),
                       );
                     },
@@ -248,14 +248,15 @@ class _GalleryViewState extends State<GalleryView> {
     );
   }
 
-  void _confirmDelete(BuildContext context, String imageUrl, GalleryController controller) {
+  void _confirmDelete(
+      BuildContext context, String imageUrl, GalleryController controller) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.grey[900],
         title: Text("Delete Image", style: TextStyle(color: Colors.white)),
-        content: Text("Are you sure you want to delete this image?", 
-                     style: TextStyle(color: Colors.white70)),
+        content: Text("Are you sure you want to delete this image?",
+            style: TextStyle(color: Colors.white70)),
         actions: [
           TextButton(
             child: Text("Cancel", style: TextStyle(color: Colors.grey)),
