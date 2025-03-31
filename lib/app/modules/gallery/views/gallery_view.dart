@@ -2,12 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/gallery_controller.dart';
 import 'dart:io';
+import 'dart:async';
 
-class GalleryView extends StatelessWidget {
+class GalleryView extends StatefulWidget {
+  @override
+  _GalleryViewState createState() => _GalleryViewState();
+}
+
+class _GalleryViewState extends State<GalleryView> {
+  final GalleryController controller = Get.put(GalleryController());
+  final PageController _pageController = PageController();
+  Timer? _autoSlideTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startAutoSlide();
+  }
+
+  @override
+  void dispose() {
+    _autoSlideTimer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _startAutoSlide() {
+    _autoSlideTimer = Timer.periodic(Duration(seconds: 3), (timer) {
+      if (_pageController.hasClients && controller.images.isNotEmpty) {
+        final nextPage = (_pageController.page!.toInt() + 1) % controller.images.length;
+        _pageController.animateToPage(
+          nextPage,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final GalleryController controller = Get.put(GalleryController());
-
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -36,14 +70,27 @@ class GalleryView extends StatelessWidget {
               return Container(
                 height: 200,
                 child: PageView(
+                  controller: _pageController,
                   children: controller.images
-                      .map((imageUrl) => Image.network(
-                            imageUrl,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset('assets/placeholder.png',
-                                  fit: BoxFit.cover);
-                            },
+                      .map((imageUrl) => GestureDetector(
+                            onTap: () => _showFullImage(context, imageUrl),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Container(
+                                color: Colors.grey[800],
+                                child: Image.network(
+                                  imageUrl,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Center(
+                                      child: Icon(Icons.broken_image, 
+                                        color: Colors.white, 
+                                        size: 50),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
                           ))
                       .toList(),
                 ),
@@ -60,8 +107,7 @@ class GalleryView extends StatelessWidget {
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content:
-                              Text("Taking photos is only available in mobile"),
+                          content: Text("Taking photos is only available in mobile"),
                           duration: Duration(seconds: 2),
                         ),
                       );
@@ -109,15 +155,37 @@ class GalleryView extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final imageUrl = controller.images[index];
 
-                    return Container(
-                      color: Colors.grey[800],
-                      child: Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset('assets/placeholder.png',
-                              fit: BoxFit.cover);
-                        },
+                    return GestureDetector(
+                      onTap: () => _showFullImage(context, imageUrl),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          color: Colors.grey[800],
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Center(
+                                    child: Icon(Icons.broken_image, 
+                                      color: Colors.white, 
+                                      size: 40),
+                                  );
+                                },
+                              ),
+                              Positioned(
+                                top: 5,
+                                right: 5,
+                                child: IconButton(
+                                  icon: Icon(Icons.delete, color: Colors.red),
+                                  onPressed: () => _confirmDelete(context, imageUrl, controller),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -126,6 +194,81 @@ class GalleryView extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showFullImage(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.zero,
+        child: Stack(
+          alignment: Alignment.topRight,
+          children: [
+            InteractiveViewer(
+              panEnabled: true,
+              minScale: 0.5,
+              maxScale: 4.0,
+              child: Container(
+                color: Colors.black,
+                child: Center(
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[800],
+                        child: Center(
+                          child: Icon(Icons.broken_image, 
+                            color: Colors.white, 
+                            size: 60),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: Icon(Icons.close, color: Colors.white, size: 30),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context, String imageUrl, GalleryController controller) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey[900],
+        title: Text("Delete Image", style: TextStyle(color: Colors.white)),
+        content: Text("Are you sure you want to delete this image?", 
+                     style: TextStyle(color: Colors.white70)),
+        actions: [
+          TextButton(
+            child: Text("Cancel", style: TextStyle(color: Colors.grey)),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: Text("Delete", style: TextStyle(color: Colors.red)),
+            onPressed: () {
+              Navigator.of(context).pop();
+              controller.deleteImage(imageUrl);
+            },
+          ),
+        ],
       ),
     );
   }
