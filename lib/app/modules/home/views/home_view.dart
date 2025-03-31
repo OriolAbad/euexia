@@ -5,6 +5,7 @@ import 'package:euexia/app/routes/app_pages.dart';
 import 'package:fl_chart/fl_chart.dart'; // para gráficos
 import 'package:carousel_slider/carousel_slider.dart'; // para carrusel
 import 'package:qr_flutter/qr_flutter.dart';
+import 'dart:io';
 
 import '../controllers/home_controller.dart';
 
@@ -377,8 +378,19 @@ class HomeView extends GetView<HomeController> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.toNamed(Routes.QR); // Navegar a la vista QR
-        },
+    if (Platform.isAndroid || Platform.isIOS) {
+      Get.toNamed(Routes.QR);
+    } else {
+      Get.snackbar(
+        'Función no disponible',
+        'El escaneo QR solo está disponible en dispositivos móviles',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: Duration(seconds: 2),
+        colorText: Colors.white,
+        backgroundColor: const Color(0xFFD32F2F),
+      );
+    }
+  },
         backgroundColor: const Color(0xFF4CAF50), // Verde lima
         child: const Icon(Icons.qr_code, color: Colors.white),
       ),
