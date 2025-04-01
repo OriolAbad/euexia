@@ -15,26 +15,25 @@ class SplashController extends GetxController {
 
   Future<void> _initializeApp() async {
     try {
-      // Precargar el controlador de Home y sus datos
-      Get.put(HomeController(), permanent: true, tag: 'home');
-      final homeController = Get.find<HomeController>(tag: 'home');
-      
-      // Cargar datos en paralelo para mayor eficiencia
-      await Future.wait([
-        homeController.fetchUserQrData(),
-        homeController.fetchFeaturedTips(),
-      ]);
+      // Simula la carga de datos o realiza cualquier inicialización necesaria
+      await Future.delayed(Duration(seconds: 2));
 
-      
+      // Redirige según el estado de autenticación
+      final supaProvider = Supabase.instance.client;
+      if (supaProvider.auth.currentUser == null) {
+        Get.offAllNamed(Routes.LOGIN);
+      } else {
+        Get.offAllNamed(Routes.HOME);
+      }
     } catch (e) {
-      Get.snackbar('Error', 'Ocurrió un problema al cargar los datos');
-    } finally {
+      Get.snackbar('Error', 'Ocurrió un problema al inicializar la aplicación: $e');
+    }
+    finally {
       _isLoading.value = false;
-      _redirectToAppropriateScreen();
     }
   }
 
-  void _redirectToAppropriateScreen() {
+  void redirectToAppropriateScreen() {
     final supaProvider = Supabase.instance.client;
     if (supaProvider.auth.currentUser == null) {
       Get.offAllNamed(Routes.LOGIN);
