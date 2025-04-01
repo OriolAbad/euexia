@@ -18,9 +18,9 @@ class Challenge {
 class ChallengesController extends GetxController {
   var points = 100.obs; 
   var challenges = <Challenge>[
-    Challenge(name: "Curl martillo", description: "3 sets, 8-12 reps", image: "assets/curl_martillo.png", isCompleted: true),
+    Challenge(name: "Curl martillo", description: "3 sets, 8-12 reps", image: "assets/curl_martillo.png", isCompleted: false),
     Challenge(name: "Curl inclinado", description: "3 sets, 8-12 reps", image: "assets/curl_inclinado.png", isCompleted: false),
-    Challenge(name: "Curl predicador", description: "3 sets, 8-12 reps", image: "assets/curl_predicador.png", isCompleted: true),
+    Challenge(name: "Curl predicador", description: "3 sets, 8-12 reps", image: "assets/curl_predicador.png", isCompleted: false),
     Challenge(name: "Extensión de tríceps", description: "3 sets, 8-12 reps", image: "assets/extension_triceps.png", isCompleted: false),
     Challenge(name: "Extensión de tríceps tras nuca", description: "3 sets, 8-12 reps", image: "assets/extension_nuca.png", isCompleted: false),
     Challenge(name: "Fondos en máquina", description: "3 sets, 8-12 reps", image: "assets/fondos_maquina.png", isCompleted: false),
