@@ -75,16 +75,15 @@ class ChallengesView extends StatelessWidget {
                               ? Icon(Icons.check_circle, color: Colors.purple)
                               : Icon(Icons.circle_outlined, color: Colors.white),
                           onTap: () {
-                            Get.to(() => PomodoroView(
-                              series: 1, // Ajusta según el desafío
-                              descanso: 60, // Ajusta según el desafío
-                            ))?.then((result) { // Usa ? para evitar el error si Get.to() devuelve null
+                            final challenge = controller.challenges[index]; // Obtén el desafío completo
+                            Get.to(() => PomodoroView(challenge: challenge))?.then((result) {
                               if (result == true) { 
-                                controller.challenges[index].isCompleted = true;
-                                controller.challenges.refresh();
+                                challenge.isCompleted = true;  // Marca el desafío como completado
+                                controller.challenges.refresh();  // Refresca la lista para actualizar la UI
                               }
                             });
                           },
+
 
                         ),
                       );

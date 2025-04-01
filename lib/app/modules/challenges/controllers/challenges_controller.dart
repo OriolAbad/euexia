@@ -27,4 +27,9 @@ class ChallengesController extends GetxController {
   ].obs;
 
   int get completedCount => challenges.where((c) => c.isCompleted).length;
+
+  void completeChallenge(int index) {
+    challenges[index].isCompleted = true;
+    challenges.refresh();  // Refresca la lista para actualizar la UI
+  }
 }

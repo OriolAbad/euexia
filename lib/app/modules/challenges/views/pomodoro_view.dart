@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
+import '../controllers/challenges_controller.dart';
 
 class PomodoroController extends GetxController {
   var series = 2.obs;
@@ -29,22 +30,22 @@ class PomodoroController extends GetxController {
 
   void cancelTraining() {
     timer?.cancel();
-    Get.offAllNamed('/home');
+    Get.offAllNamed('/home'); // Si cancela, regresa a la pantalla principal
   }
 }
 
 class PomodoroView extends StatelessWidget {
-  final int series;
-  final int descanso;
+  final Challenge challenge;
 
-  PomodoroView({Key? key, required this.series, required this.descanso}) : super(key: key);
+  PomodoroView({Key? key, required this.challenge}) : super(key: key);
 
   final PomodoroController controller = Get.put(PomodoroController());
+  final ChallengesController challengesController = Get.find<ChallengesController>();
 
   @override
   Widget build(BuildContext context) {
-    controller.series.value = series;
-    controller.descanso.value = descanso;
+    controller.series.value = 2;  // Asumir que las series son 2
+    controller.descanso.value = 60;  // 60 segundos de descanso por defecto
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -79,7 +80,12 @@ class PomodoroView extends StatelessWidget {
             SizedBox(height: 20),
             Obx(() => controller.seriesCompletadas.value >= controller.series.value
                 ? ElevatedButton(
-                    onPressed: controller.cancelTraining,
+                    onPressed: () {
+                      // Cuando se complete todas las series
+                      challenge.isCompleted = true;  // Marca el desafío como completado
+                      challengesController.challenges.refresh();  // Refresca la lista de desafíos
+                      Get.back(result: true);  // Devuelves 'true' a la vista anterior para marcar el desafío como completado
+                    },
                     child: Text("Felicidades, has terminado!"),
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   )
