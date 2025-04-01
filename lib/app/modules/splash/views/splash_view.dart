@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:euexia/app/routes/app_pages.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:euexia/app/modules/splash/controllers/splash_controller.dart';
 
 class SplashView extends StatelessWidget {
+  final SplashController controller = Get.put(SplashController());
+
   @override
   Widget build(BuildContext context) {
-    // Redirigir después de 3 segundos
-    Future.delayed(Duration(seconds: 3), () {
-      final supaProvider = Supabase.instance.client;
-      if (supaProvider.auth.currentUser == null) {
-        Get.offNamed(Routes.LOGIN);
-      } else {
-        Get.offNamed(Routes.HOME);
-      }
-    });
 
     return Scaffold(
       body: Stack(

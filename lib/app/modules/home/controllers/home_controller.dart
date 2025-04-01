@@ -169,8 +169,10 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
-    fetchUserQrData();
-    fetchFeaturedTips();
+    if (featuredTips.isEmpty) {
+      fetchUserQrData();
+      fetchFeaturedTips();
+    }
     super.onInit();
   }
 }
