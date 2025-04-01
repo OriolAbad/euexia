@@ -21,6 +21,7 @@ abstract class Routes {
   static const CHALLENGES = _Paths.CHALLENGES;
   static const PROFILE = _Paths.PROFILE;
   static const RUTINAS = _Paths.RUTINAS;
+  static const EJERCICIOS = _Paths.EJERCICIOS;
   /*
   static const EXERCISES = _Paths.EXERCISES;
   */
@@ -42,6 +43,7 @@ abstract class _Paths {
   static const CHALLENGES = '/challenges';
   static const PROFILE = '/profile';
   static const RUTINAS = '/rutinas'; 
+  static const EJERCICIOS = '/ejercicios';
   /*
   static const EXERCISES = '/exercises';
   */

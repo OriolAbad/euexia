@@ -105,12 +105,20 @@ class HomeView extends GetView<HomeController> {
                 Get.toNamed(Routes.TIPS);
               },
             ),
-             ListTile(
-              leading: const Icon(Icons.logout, color: Colors.black),
+            ListTile(
+              leading: const Icon(Icons.format_list_bulleted, color: Colors.black),
               title: const Text('Rutinas',
                   style: TextStyle(color: Colors.black)),
               onTap: () {
                 Get.offAllNamed(Routes.RUTINAS);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.fitness_center, color: Colors.black),
+              title: const Text('Ejercicios',
+                  style: TextStyle(color: Colors.black)),
+              onTap: () {
+                Get.offAllNamed(Routes.EJERCICIOS);
               },
             ),
             ListTile(

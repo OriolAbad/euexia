@@ -551,9 +551,8 @@ class _EjerciciosService {
 
     try {
       final data = await client
-        .from('dias_entrenados')
-        .select()
-        .order('idusuario', ascending: true);
+        .from('ejercicios')
+        .select();
 
       exercises = data.map<Ejercicio>((json) => Ejercicio.fromJson(json)).toList();
 
@@ -568,32 +567,32 @@ class _EjerciciosService {
     return result;
   }
   Future<custom_response.Response> getExercisesWithCategory() async {
-  List<Ejercicio> exercises = [];
-  custom_response.Response result = custom_response.Response(success: false);
+    List<Ejercicio> exercises = [];
+    custom_response.Response result = custom_response.Response(success: false);
 
-  try {
-    final data = await client
-        .from('ejercicios')
-        .select('*, categorias(*)'); // Incluye la relación con la tabla categorias
+    try {
+      final data = await client
+          .from('ejercicios')
+          .select('*, categorias(*)'); // Incluye la relación con la tabla categorias
 
-    exercises = data.map<Ejercicio>((json) {
-      Ejercicio exercise = Ejercicio.fromJson(json);
-      if (json['categorias'] != null) {
-        exercise.categoria = Categoria.fromJson(json['categorias']);
-      }
-      return exercise;
-    }).toList();
+      exercises = data.map<Ejercicio>((json) {
+        Ejercicio exercise = Ejercicio.fromJson(json);
+        if (json['categorias'] != null) {
+          exercise.categoria = Categoria.fromJson(json['categorias']);
+        }
+        return exercise;
+      }).toList();
 
-    result.success = true;
-    result.data = exercises;
+      result.success = true;
+      result.data = exercises;
 
-  } catch (e) {
-    result.success = false;
-    result.errorMessage = e.toString();
+    } catch (e) {
+      result.success = false;
+      result.errorMessage = e.toString();
+    }
+
+    return result;
   }
-
-  return result;
-}
   Future<custom_response.Response> getExerciseById(int id) async {
     Ejercicio exercise = Ejercicio(idEjercicio: 0, nombre: '', descripcion: '', idCategoria: 0);
     custom_response.Response result = custom_response.Response(success: false);

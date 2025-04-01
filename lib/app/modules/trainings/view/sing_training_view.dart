@@ -14,6 +14,7 @@ class SingTrainingView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
@@ -130,7 +131,8 @@ class SingTrainingView extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    "${ejercicioRutina.series} sets, ${ejercicioRutina.repeticiones} reps, ${ejercicioRutina.kilogramos ?? 0} kg",
+                                    "${ejercicioRutina.series} sets, ${ejercicioRutina.repeticiones} reps"
+                                    "${ejercicioRutina.kilogramos != null && ejercicioRutina.kilogramos! > 0 ? ', ${ejercicioRutina.kilogramos} kg' : ''}",
                                     style: const TextStyle(
                                       color: Colors.white70,
                                       fontSize: 14,
@@ -144,6 +146,30 @@ class SingTrainingView extends StatelessWidget {
                       ),
                     );
                   },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue, // Color del botón
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                  },
+                  child: const Center(
+                    child: Text(
+                      "START TRAINING",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/controllers/auth_controller.dart';
 import 'package:euexia/app/routes/app_pages.dart';
-import 'package:sign_in_button/sign_in_button.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:gradient_coloured_buttons/gradient_coloured_buttons.dart';
 
 import '../controllers/login_controller.dart';
