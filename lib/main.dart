@@ -7,7 +7,6 @@ import 'package:euexia/app/controllers/auth_controller.dart';
 import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app/routes/app_pages.dart';
-import 'app/controllers/notifications_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,11 +19,6 @@ void main() async {
     url: supaUri,
     anonKey: supaAnon,
   );
-
-  await NotificationController.initialize();
-  if (Platform.isIOS) {
-    await NotificationController.requestIOSPermissions();
-  }
 
   final authC = Get.put(AuthController(), permanent: true);
   runApp(
