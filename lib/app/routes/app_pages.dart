@@ -110,7 +110,13 @@ class AppPages {
       name: _Paths.EJERCICIOS,
       page: () => ExercisesView(),
       binding: ExercisesBinding(),
-    ),  /*
+    ), 
+    GetPage(
+      name: _Paths.QR,
+      page: () => GalleryView(),
+      binding: GalleryBinding(),
+    )
+     /*
     GetPage(
       name: _Paths.EXERCISES,
       page: () => ExercisesView(),

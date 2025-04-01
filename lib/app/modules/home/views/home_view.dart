@@ -77,14 +77,6 @@ class HomeView extends GetView<HomeController> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.fitness_center, color: Colors.black),
-              title: const Text('My Exercices',
-                  style: TextStyle(color: Colors.black)),
-              onTap: () {
-                //Get.toNamed(Routes.EXERCICES);
-              },
-            ),
-            ListTile(
               leading: const Icon(Icons.map, color: Colors.black),
               title:
                   const Text('Gym Map', style: TextStyle(color: Colors.black)),
@@ -98,13 +90,6 @@ class HomeView extends GetView<HomeController> {
                   style: TextStyle(color: Colors.black)),
               onTap: () {
                 Get.offAllNamed(Routes.CHALLENGES);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.lightbulb, color: Colors.black),
-              title: const Text('Tips', style: TextStyle(color: Colors.black)),
-              onTap: () {
-                Get.toNamed(Routes.TIPS);
               },
             ),
             ListTile(

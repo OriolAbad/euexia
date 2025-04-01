@@ -22,6 +22,7 @@ abstract class Routes {
   static const PROFILE = _Paths.PROFILE;
   static const RUTINAS = _Paths.RUTINAS;
   static const EJERCICIOS = _Paths.EJERCICIOS;
+  static const QR = _Paths.QR;
   /*
   static const EXERCISES = _Paths.EXERCISES;
   */
@@ -44,6 +45,7 @@ abstract class _Paths {
   static const PROFILE = '/profile';
   static const RUTINAS = '/rutinas'; 
   static const EJERCICIOS = '/ejercicios';
+  static const QR = '/qr';
   /*
   static const EXERCISES = '/exercises';
   */
