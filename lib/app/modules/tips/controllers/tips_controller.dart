@@ -1,5 +1,3 @@
-import 'package:euexia/app/data/models/categorias.dart';
-import 'package:euexia/app/data/models/fotos.dart';
 import 'package:euexia/app/services/service.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/data/models/consejos.dart';

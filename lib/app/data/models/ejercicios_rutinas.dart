@@ -17,6 +17,7 @@ class EjercicioRutina {
     required this.series,
     required this.repeticiones,
     this.kilogramos,
+    this.ejercicio
   });
 
   factory EjercicioRutina.fromJson(Map<String, dynamic> json) {
