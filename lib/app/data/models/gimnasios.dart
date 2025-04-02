@@ -1,5 +1,5 @@
 class Gimnasio {
-  int idGimnasio;
+  int? idGimnasio; // Ahora es opcional
   String nombre;
   String ubicacion;
   double? longitud;
@@ -8,7 +8,7 @@ class Gimnasio {
   String? fotoGimnasio;
 
   Gimnasio({
-    required this.idGimnasio,
+    this.idGimnasio, // No es obligatorio
     required this.nombre,
     required this.ubicacion,
     this.longitud,
@@ -30,8 +30,7 @@ class Gimnasio {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'idgimnasio': idGimnasio,
+    final data = {
       'nombre': nombre,
       'ubicacion': ubicacion,
       'longitud': longitud,
@@ -39,5 +38,11 @@ class Gimnasio {
       'paginaweb': paginaWeb,
       'fotogimnasio': fotoGimnasio,
     };
+
+    if (idGimnasio != null) {
+      data['idgimnasio'] = idGimnasio;
+    }
+
+    return data;
   }
 }
