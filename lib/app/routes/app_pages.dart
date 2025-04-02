@@ -29,7 +29,6 @@ import 'package:euexia/app/modules/profile/views/profile_view.dart';
 import 'package:euexia/app/modules/qr/views/qr_view.dart';
 import 'package:euexia/app/modules/qr/bindings/qr_binding.dart';
 
-
 /*
 import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
 import 'package:euexia/app/modules/exercises/views/exercises_view.dart';*/
