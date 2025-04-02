@@ -13,6 +13,7 @@ class MapControllerX extends GetxController {
   Rx<LatLng?> searchLocation =
       Rx<LatLng?>(null); // Ubicación buscada (observable)
   RxList<LatLng> markers = <LatLng>[].obs; // Lista de marcadores (observable)
+  
 
   @override
   void onInit() {
