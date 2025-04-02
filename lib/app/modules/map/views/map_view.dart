@@ -14,34 +14,51 @@ class MapView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black, // Fondo negro como en ExercisesView
       appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
         title: const Text(
           'Gym Map',
-          style: TextStyle(fontSize: 20),
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Get.back(),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.my_location),
+            icon: const Icon(Icons.my_location, color: Colors.blue),
             onPressed: mapControllerX.centerMapOnUserLocation,
           ),
         ],
       ),
       body: Column(
         children: [
+          // Nueva barra de búsqueda estilo ExercisesView
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: mapControllerX.searchController,
               decoration: InputDecoration(
-                hintText: 'Buscar ubicación...',
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: mapControllerX.searchLocationOnMap,
-                ),
+                hintText: "Search location...",
+                hintStyle: const TextStyle(color: Colors.white70),
+                prefixIcon: const Icon(Icons.search, color: Colors.blue),
+                filled: true,
+                fillColor: Colors.grey[800],
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
                 ),
               ),
+              style: const TextStyle(color: Colors.white),
+              onChanged: (value) {
+                // Puedes implementar búsqueda en tiempo real aquí si lo deseas
+                // mapControllerX.searchLocationOnMap(value);
+              },
+              onSubmitted: (value) {
+                mapControllerX.searchLocationOnMap();
+              },
             ),
           ),
           Expanded(
@@ -90,17 +107,19 @@ class MapView extends StatelessWidget {
                   child: Column(
                     children: [
                       FloatingActionButton(
-                        heroTag: 'zoom_in_btn', // Etiqueta única
+                        heroTag: 'zoom_in_btn',
                         mini: true,
+                        backgroundColor: Colors.grey[800],
                         onPressed: mapControllerX.zoomIn,
-                        child: const Icon(Icons.add),
+                        child: const Icon(Icons.add, color: Colors.white),
                       ),
                       const SizedBox(height: 8),
                       FloatingActionButton(
-                        heroTag: 'zoom_out_btn', // Etiqueta única
+                        heroTag: 'zoom_out_btn',
                         mini: true,
+                        backgroundColor: Colors.grey[800],
                         onPressed: mapControllerX.zoomOut,
-                        child: const Icon(Icons.remove),
+                        child: const Icon(Icons.remove, color: Colors.white),
                       ),
                     ],
                   ),
