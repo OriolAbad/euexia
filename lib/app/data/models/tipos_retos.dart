@@ -1,12 +1,12 @@
 class TipoReto {
-  int idTipoReto;
+  int? idTipoReto; // Ahora es opcional
   String descripcion;
   int horas;
 
   TipoReto({
-    required this.idTipoReto,
+    this.idTipoReto, // No es obligatorio
     required this.descripcion,
-    required this.horas
+    required this.horas,
   });
 
   factory TipoReto.fromJson(Map<String, dynamic> json) {
@@ -18,10 +18,15 @@ class TipoReto {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'idtiporeto': idTipoReto,
+    final data = {
       'descripcion': descripcion,
       'horas': horas,
     };
+
+    if (idTipoReto != null) {
+      data['idtiporeto'] = idTipoReto.toString();
+    }
+
+    return data;
   }
 }

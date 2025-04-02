@@ -1,16 +1,17 @@
 import 'package:euexia/app/data/models/ejercicios.dart';
+import 'package:euexia/app/data/models/ejercicios_rutinas.dart';
 
 class Rutina {
-  int idRutina;
+  int? idRutina; // Ahora es opcional
   String nombre;
   String? descripcion;
-
-  List<Ejercicio>? ejercicios;
+  List<EjercicioRutina>? ejercicios;
 
   Rutina({
-    required this.idRutina,
+    this.idRutina, // No es obligatorio
     required this.nombre,
     this.descripcion,
+    this.ejercicios,
   });
 
   factory Rutina.fromJson(Map<String, dynamic> json) {
@@ -18,14 +19,30 @@ class Rutina {
       idRutina: json['idrutina'],
       nombre: json['nombre'],
       descripcion: json['descripcion'],
+      ejercicios: json['ejercicios'] != null
+          ? (json['ejercicios'] as List)
+              .map((e) => EjercicioRutina.fromJson({
+                    ...e,
+                    'ejercicio': e['ejercicio'] != null
+                        ? Ejercicio.fromJson(e['ejercicio']).toJson()
+                        : null,
+                  }))
+              .toList()
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'idrutina': idRutina,
+    final data = {
       'nombre': nombre,
       'descripcion': descripcion,
+      'ejercicios': ejercicios?.map((e) => e.toJson()).toList(),
     };
+
+    if (idRutina != null) {
+      data['idrutina'] = idRutina;
+    }
+
+    return data;
   }
 }

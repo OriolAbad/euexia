@@ -203,7 +203,7 @@ class TipsView extends StatelessWidget {
               ),
               onPressed: () async {
                 // Acción de eliminar
-                await tipsController.deleteTip(tip.idconsejo);
+                await tipsController.deleteTip(tip.idconsejo!);
                 Navigator.of(context).pop();
               },
               child: const Text('Eliminar'),

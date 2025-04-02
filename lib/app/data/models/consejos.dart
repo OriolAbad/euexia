@@ -1,9 +1,9 @@
 class Consejo {
-  int idconsejo;
+  int? idconsejo; // Ahora es opcional
   String descripcion;
 
   Consejo({
-    required this.idconsejo,
+    this.idconsejo, // No es obligatorio
     required this.descripcion,
   });
 
@@ -15,9 +15,14 @@ class Consejo {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'idconsejo': idconsejo,
+    final data = {
       'descripcion': descripcion,
     };
+
+    if (idconsejo != null) {
+      data['idconsejo'] = idconsejo.toString();
+    }
+
+    return data;
   }
 }

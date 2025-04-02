@@ -13,40 +13,12 @@ class MapControllerX extends GetxController {
   Rx<LatLng?> searchLocation =
       Rx<LatLng?>(null); // Ubicación buscada (observable)
   RxList<LatLng> markers = <LatLng>[].obs; // Lista de marcadores (observable)
-  RxList<Map<String, dynamic>> gimnasios =
-      <Map<String, dynamic>>[].obs; // Lista completa de gimnasios
-  RxList<Map<String, dynamic>> filteredGimnasios =
-      <Map<String, dynamic>>[].obs; // Gimnasios filtrados
-  RxString searchQuery = "".obs; // Para la búsqueda en tiempo real
+  
 
   @override
   void onInit() {
     super.onInit();
     fetchMarkers(); // Llama a la función para obtener los marcadores
-    // Escuchar cambios en el campo de búsqueda
-    searchController.addListener(() {
-      searchQuery.value = searchController.text;
-      filterGimnasios();
-    });
-  }
-
-  @override
-  void onClose() {
-    searchController.dispose();
-    super.onClose();
-  }
-
-  void filterGimnasios() {
-    if (searchQuery.value.isEmpty) {
-      filteredGimnasios.value = gimnasios;
-    } else {
-      filteredGimnasios.value = gimnasios
-          .where((gimnasio) => gimnasio['nombre']
-              .toString()
-              .toLowerCase()
-              .contains(searchQuery.value.toLowerCase()))
-          .toList();
-    }
   }
 
   void fetchMarkers() async {
@@ -55,15 +27,14 @@ class MapControllerX extends GetxController {
       // Realiza la consulta a la tabla gimnasios
       final response = await supabase
           .from('gimnasios')
-          .select('latitud, longitud, nombre')
+          .select('latitud, longitud')
           .execute();
 
       if (response.data == null || response.data.isEmpty) {
         print("No hay gimnasios en la base de datos");
         return;
       }
-      gimnasios.value = List<Map<String, dynamic>>.from(response.data);
-      filteredGimnasios.value = gimnasios;
+
       // Limpia los marcadores existentes
       markers.clear();
 
