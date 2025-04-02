@@ -551,9 +551,8 @@ class _EjerciciosService {
 
     try {
       final data = await client
-        .from('dias_entrenados')
-        .select()
-        .order('idusuario', ascending: true);
+        .from('ejercicios')
+        .select();
 
       exercises = data.map<Ejercicio>((json) => Ejercicio.fromJson(json)).toList();
 
@@ -568,32 +567,32 @@ class _EjerciciosService {
     return result;
   }
   Future<custom_response.Response> getExercisesWithCategory() async {
-  List<Ejercicio> exercises = [];
-  custom_response.Response result = custom_response.Response(success: false);
+    List<Ejercicio> exercises = [];
+    custom_response.Response result = custom_response.Response(success: false);
 
-  try {
-    final data = await client
-        .from('ejercicios')
-        .select('*, categorias(*)'); // Incluye la relación con la tabla categorias
+    try {
+      final data = await client
+          .from('ejercicios')
+          .select('*, categorias(*)'); // Incluye la relación con la tabla categorias
 
-    exercises = data.map<Ejercicio>((json) {
-      Ejercicio exercise = Ejercicio.fromJson(json);
-      if (json['categorias'] != null) {
-        exercise.categoria = Categoria.fromJson(json['categorias']);
-      }
-      return exercise;
-    }).toList();
+      exercises = data.map<Ejercicio>((json) {
+        Ejercicio exercise = Ejercicio.fromJson(json);
+        if (json['categorias'] != null) {
+          exercise.categoria = Categoria.fromJson(json['categorias']);
+        }
+        return exercise;
+      }).toList();
 
-    result.success = true;
-    result.data = exercises;
+      result.success = true;
+      result.data = exercises;
 
-  } catch (e) {
-    result.success = false;
-    result.errorMessage = e.toString();
+    } catch (e) {
+      result.success = false;
+      result.errorMessage = e.toString();
+    }
+
+    return result;
   }
-
-  return result;
-}
   Future<custom_response.Response> getExerciseById(int id) async {
     Ejercicio exercise = Ejercicio(idEjercicio: 0, nombre: '', descripcion: '', idCategoria: 0);
     custom_response.Response result = custom_response.Response(success: false);
@@ -850,30 +849,31 @@ class _EjerciciosRutinasService {
   }
 
   Future<custom_response.Response> getEjerciciosOfRutina(int idRutina) async {
-    List<Ejercicio> ejercicios = [];
+    List<EjercicioRutina> ejerciciosRutina = [];
     custom_response.Response result = custom_response.Response(success: false);
-  
+
     try {
       final data = await client
           .from('ejercicios_rutina')
-          .select('ejercicios(*)') // Obtiene solo los ejercicios relacionados
+          .select('*, ejercicios(*)') // Incluye la relación con la tabla ejercicios
           .eq('idrutina', idRutina); // Filtra por idRutina
-  
-      ejercicios = data.map<Ejercicio>((json) {
+
+      // Mapea los datos para incluir el objeto ejercicio
+      ejerciciosRutina = (data as List).map<EjercicioRutina>((json) {
+        EjercicioRutina ejercicioRutina = EjercicioRutina.fromJson(json);
         if (json['ejercicios'] != null) {
-          return Ejercicio.fromJson(json['ejercicios']);
+          ejercicioRutina.ejercicio = Ejercicio.fromJson(json['ejercicios']);
         }
-        throw Exception('Datos de ejercicio no encontrados');
+        return ejercicioRutina;
       }).toList();
-  
+
       result.success = true;
-      result.data = ejercicios;
-  
+      result.data = ejerciciosRutina;
     } catch (e) {
       result.success = false;
       result.errorMessage = e.toString();
     }
-  
+
     return result;
   }
 }
@@ -1652,6 +1652,38 @@ class _RutinasService {
     return result;
   }
 
+    Future<custom_response.Response> getRutinaWithEjercicios(int idRutina) async {
+      Rutina? rutina;
+      custom_response.Response result = custom_response.Response(success: false);
+    
+      try {
+        // Obtiene la rutina por su ID
+        final data = await client
+            .from('rutinas')
+            .select()
+            .eq('idrutina', idRutina)
+            .single(); // Obtiene un único registro
+    
+        rutina = Rutina.fromJson(data);
+    
+        // Obtiene los ejercicios asociados a la rutina
+        final ejerciciosResponse = await _EjerciciosRutinasService().getEjerciciosOfRutina(idRutina);
+    
+        if (ejerciciosResponse.success) {
+          rutina.ejercicios = ejerciciosResponse.data as List<EjercicioRutina>;
+        } else {
+          throw Exception('Error obteniendo ejercicios para la rutina $idRutina: ${ejerciciosResponse.errorMessage}');
+        }
+    
+        result.success = true;
+        result.data = rutina;
+      } catch (e) {
+        result.success = false;
+        result.errorMessage = e.toString();
+      }
+    
+      return result;
+  } 
   Future<custom_response.Response> getRutinasWithEjercicios() async {
     List<Rutina> rutinas = [];
     custom_response.Response result = custom_response.Response(success: false);
@@ -1663,14 +1695,13 @@ class _RutinasService {
           .select()
           .order('idrutina', ascending: true);
   
-      rutinas = data.map<Rutina>((json) => Rutina.fromJson(json)).toList();
-
+      rutinas = (data as List).map<Rutina>((json) => Rutina.fromJson(json)).toList();
+  
       // Itera sobre cada rutina para obtener sus ejercicios
-      _EjerciciosRutinasService _ejerciciosRutinasService = _EjerciciosRutinasService();
       for (var rutina in rutinas) {
-        final ejerciciosResponse = await _ejerciciosRutinasService.getEjerciciosOfRutina(rutina.idRutina!);
+        final ejerciciosResponse = await _EjerciciosRutinasService().getEjerciciosOfRutina(rutina.idRutina!);
         if (ejerciciosResponse.success) {
-          rutina.ejercicios = ejerciciosResponse.data as List<Ejercicio>;
+          rutina.ejercicios = ejerciciosResponse.data as List<EjercicioRutina>;
         } else {
           throw Exception('Error obteniendo ejercicios para la rutina ${rutina.idRutina}: ${ejerciciosResponse.errorMessage}');
         }
@@ -1678,41 +1709,6 @@ class _RutinasService {
   
       result.success = true;
       result.data = rutinas;
-  
-    } catch (e) {
-      result.success = false;
-      result.errorMessage = e.toString();
-    }
-  
-    return result;
-  }
-  Future<custom_response.Response> getRutinaWithEjercicios(int idRutina) async {
-    Rutina? rutina;
-    custom_response.Response result = custom_response.Response(success: false);
-  
-    try {
-      // Obtiene la rutina por su ID
-      final data = await client
-          .from('rutinas')
-          .select()
-          .eq('idrutina', idRutina)
-          .single(); // Obtiene un único registro
-  
-      rutina = Rutina.fromJson(data);
-  
-      // Obtiene los ejercicios asociados a la rutina
-      _EjerciciosRutinasService _ejerciciosRutinasService = _EjerciciosRutinasService();
-      final ejerciciosResponse = await _ejerciciosRutinasService.getEjerciciosOfRutina(idRutina);
-  
-      if (ejerciciosResponse.success) {
-        rutina.ejercicios = ejerciciosResponse.data as List<Ejercicio>;
-      } else {
-        throw Exception('Error obteniendo ejercicios para la rutina $idRutina: ${ejerciciosResponse.errorMessage}');
-      }
-  
-      result.success = true;
-      result.data = rutina;
-  
     } catch (e) {
       result.success = false;
       result.errorMessage = e.toString();
@@ -2227,9 +2223,10 @@ class _UsuariosRutinasService {
       // Obtiene las rutinas asociadas al usuario
       final data = await client
           .from('usuarios_rutinas')
-          .select('rutinas(*)') // Incluye la relación con la tabla rutinas
+          .select('rutinas(*, ejercicios_rutina(*, ejercicios(*)))') // Incluye rutinas, ejercicios_rutina y ejercicios
           .eq('idusuario', idUsuario); // Filtra por idUsuario
   
+      // Mapea los datos para convertirlos en objetos Rutina
       rutinas = data.map<Rutina>((json) {
         if (json['rutinas'] != null) {
           return Rutina.fromJson(json['rutinas']);
@@ -2237,20 +2234,8 @@ class _UsuariosRutinasService {
         throw Exception('Datos de rutina no encontrados');
       }).toList();
   
-      // Itera sobre cada rutina para obtener sus ejercicios
-      _EjerciciosRutinasService ejerciciosService = _EjerciciosRutinasService();
-      for (var rutina in rutinas) {
-        final ejerciciosResponse = await ejerciciosService.getEjerciciosOfRutina(rutina.idRutina!);
-        if (ejerciciosResponse.success) {
-          rutina.ejercicios = ejerciciosResponse.data as List<Ejercicio>;
-        } else {
-          throw Exception('Error obteniendo ejercicios para la rutina ${rutina.idRutina}: ${ejerciciosResponse.errorMessage}');
-        }
-      }
-  
       result.success = true;
       result.data = rutinas;
-  
     } catch (e) {
       result.success = false;
       result.errorMessage = e.toString();

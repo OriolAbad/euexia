@@ -1,3 +1,4 @@
+import 'package:euexia/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/modules/trainings/controller/trainings_controller.dart';
@@ -13,7 +14,23 @@ class TrainingsView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black, // Fondo negro
       appBar: AppBar(
+        foregroundColor: Colors.white,
         title: const Text('Trainings'),
+        backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Get.offAllNamed(Routes.HOME); // Vuelve a la pantalla anterior
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add, color: Colors.blue),
+            onPressed: () {
+              // Acción del botón '+' (de momento no hace nada)
+            },
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -24,7 +41,7 @@ class TrainingsView extends StatelessWidget {
               );
             } else {
               return ListView.builder(
-                padding: const EdgeInsets.only(top: 80, left: 16, right: 16), // Espacio superior para evitar superposición
+                padding: const EdgeInsets.only(top: 16, left: 16, right: 16), // Espacio superior para evitar superposición
                 itemCount: trainingsController.trainings.length,
                 itemBuilder: (context, index) {
                   final rutina = trainingsController.trainings[index];
@@ -70,17 +87,6 @@ class TrainingsView extends StatelessWidget {
               );
             }
           }),
-          Positioned(
-            top: 16,
-            right: 16,
-            child: FloatingActionButton(
-              onPressed: () {
-                // Botón de agregar rutina (de momento no hace nada)
-              },
-              child: const Icon(Icons.add),
-              backgroundColor: Colors.blue,
-            ),
-          ),
         ],
       ),
     );

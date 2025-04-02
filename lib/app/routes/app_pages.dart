@@ -1,6 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
+import 'package:euexia/app/modules/exercises/views/exercises_view.dart';
 import 'package:euexia/app/modules/gallery/bindings/gallery_binding.dart';
+import 'package:euexia/app/modules/trainings/binding/trainings_binding.dart';
+import 'package:euexia/app/modules/trainings/view/trainings_view.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/modules/splash/bindings/splash_binding.dart';
 import 'package:euexia/app/modules/splash/views/splash_view.dart';
@@ -17,7 +21,6 @@ import 'package:euexia/app/modules/forgot_password/bindings/forgot_password_bind
 import 'package:euexia/app/modules/reset_password/views/reset_password_view.dart';
 import 'package:euexia/app/modules/reset_password/bindings/reset_password_binding.dart';
 import 'package:euexia/app/modules/gallery/views/gallery_view.dart';
-import 'package:euexia/app/modules/gallery/bindings/gallery_binding.dart';
 import 'package:euexia/app/modules/map/bindings/map_bindings.dart';
 import 'package:euexia/app/modules/map/views/map_view.dart';
 import 'package:euexia/app/modules/tips/bindings/tips_binding.dart';
@@ -26,9 +29,6 @@ import 'package:euexia/app/modules/challenges/bindings/challenges_binding.dart';
 import 'package:euexia/app/modules/challenges/views/challenges_view.dart';
 import 'package:euexia/app/modules/profile/bindings/profile_binding.dart';
 import 'package:euexia/app/modules/profile/views/profile_view.dart';
-import 'package:euexia/app/modules/qr/views/qr_view.dart';
-import 'package:euexia/app/modules/qr/bindings/qr_binding.dart';
-
 /*
 import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
 import 'package:euexia/app/modules/exercises/views/exercises_view.dart';*/
@@ -102,10 +102,20 @@ class AppPages {
       binding: ProfileBinding(),
     ),
     GetPage(
-      name: _Paths.QR,
-      page: () => QrView(),
-      binding: QrBinding(),
+      name: _Paths.RUTINAS,
+      page: () => TrainingsView(),
+      binding: TrainingsBinding(),
     ),
+     GetPage(
+      name: _Paths.EJERCICIOS,
+      page: () => ExercisesView(),
+      binding: ExercisesBinding(),
+    ), 
+    GetPage(
+      name: _Paths.QR,
+      page: () => GalleryView(),
+      binding: GalleryBinding(),
+    )
      /*
     GetPage(
       name: _Paths.EXERCISES,
