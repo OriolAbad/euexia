@@ -29,6 +29,8 @@ import 'package:euexia/app/modules/challenges/bindings/challenges_binding.dart';
 import 'package:euexia/app/modules/challenges/views/challenges_view.dart';
 import 'package:euexia/app/modules/profile/bindings/profile_binding.dart';
 import 'package:euexia/app/modules/profile/views/profile_view.dart';
+import 'package:euexia/app/modules/qr/bindings/qr_binding.dart';
+import 'package:euexia/app/modules/qr/views/qr_view.dart';
 /*
 import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
 import 'package:euexia/app/modules/exercises/views/exercises_view.dart';*/
@@ -113,8 +115,8 @@ class AppPages {
     ), 
     GetPage(
       name: _Paths.QR,
-      page: () => GalleryView(),
-      binding: GalleryBinding(),
+      page: () => QrView(),
+      binding: QrBinding(),
     )
      /*
     GetPage(
