@@ -1652,7 +1652,7 @@ class _RutinasService {
     return result;
   }
 
-    Future<custom_response.Response> getRutinaWithEjercicios(int idRutina) async {
+  Future<custom_response.Response> getRutinaWithEjercicios(int idRutina) async {
       Rutina? rutina;
       custom_response.Response result = custom_response.Response(success: false);
     
@@ -1716,6 +1716,28 @@ class _RutinasService {
   
     return result;
   }
+  Future<custom_response.Response> getNumberOfRutinas() async {
+    custom_response.Response result = custom_response.Response(success: false);
+  
+    try {
+      // Realiza una consulta para contar el número de rutinas
+      final data = await client
+          .from('rutinas')
+          .select('idrutina', const FetchOptions(count: CountOption.exact)) // Solicita el conteo exacto
+          .limit(1); // No necesitas traer datos, solo el conteo
+  
+      final count = data.count; // Obtiene el número total de rutinas
+  
+      result.success = true;
+      result.data = count;
+    } catch (e) {
+      result.success = false;
+      result.errorMessage = e.toString();
+    }
+  
+    return result;
+  }
+
 }
 
 class _TiposRetosService {
@@ -2218,29 +2240,43 @@ class _UsuariosRutinasService {
   Future<custom_response.Response> getRutinasOfUserWithExercises(int idUsuario) async {
     List<Rutina> rutinas = [];
     custom_response.Response result = custom_response.Response(success: false);
-  
+
     try {
-      // Obtiene las rutinas asociadas al usuario
       final data = await client
           .from('usuarios_rutinas')
-          .select('rutinas(*, ejercicios_rutina(*, ejercicios(*)))') // Incluye rutinas, ejercicios_rutina y ejercicios
-          .eq('idusuario', idUsuario); // Filtra por idUsuario
-  
-      // Mapea los datos para convertirlos en objetos Rutina
-      rutinas = data.map<Rutina>((json) {
-        if (json['rutinas'] != null) {
-          return Rutina.fromJson(json['rutinas']);
+          .select('rutinas(*, ejercicios_rutina(*, ejercicios(*)))')
+          .eq('idusuario', idUsuario);
+
+      rutinas = (data as List).map<Rutina>((json) {
+        final rutinaData = json['rutinas'];
+        if (rutinaData != null) {
+          final ejerciciosRutinaData = rutinaData['ejercicios_rutina'] as List?;
+
+          final ejercicios = ejerciciosRutinaData?.map((ejercicioRutinaJson) {
+            final ejercicioRutina = EjercicioRutina.fromJson(ejercicioRutinaJson);
+            if (ejercicioRutinaJson['ejercicios'] != null) {
+              ejercicioRutina.ejercicio = Ejercicio.fromJson(ejercicioRutinaJson['ejercicios']);
+            }
+            return ejercicioRutina;
+          }).toList();
+
+          return Rutina(
+            idRutina: rutinaData['idrutina'],
+            nombre: rutinaData['nombre'],
+            descripcion: rutinaData['descripcion'],
+            ejercicios: ejercicios,
+          );
         }
         throw Exception('Datos de rutina no encontrados');
       }).toList();
-  
+
       result.success = true;
       result.data = rutinas;
     } catch (e) {
       result.success = false;
       result.errorMessage = e.toString();
     }
-  
+
     return result;
   }
 }

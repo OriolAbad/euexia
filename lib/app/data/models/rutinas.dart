@@ -36,13 +36,11 @@ class Rutina {
     final data = {
       'nombre': nombre,
       'descripcion': descripcion,
-      'ejercicios': ejercicios?.map((e) => e.toJson()).toList(),
     };
 
     if (idRutina != null) {
-      data['idrutina'] = idRutina;
+      data['idrutina'] = idRutina.toString();
     }
-
     return data;
   }
 }
