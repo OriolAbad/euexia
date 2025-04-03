@@ -4,7 +4,6 @@ import 'package:euexia/app/controllers/auth_controller.dart';
 import 'package:euexia/app/routes/app_pages.dart';
 import 'package:gradient_coloured_buttons/gradient_coloured_buttons.dart';
 import 'package:sign_in_button/sign_in_button.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../controllers/login_controller.dart';
 
@@ -137,19 +136,13 @@ class LoginView extends GetView<LoginController> {
                 Buttons.google,
                 onPressed: () async {
                   try {
-                    final supabase = Supabase.instance.client;
-                    final res = await supabase.auth.signInWithOAuth(
-                      Provider.google,
-                      redirectTo:
-                          'https://ovfxbzqxcobozjpukzfo.supabase.co/auth/v1/callback',
-                    );
-                    if (res) {
-                      Get.offNamed(Routes.HOME);
-                    } else {
-                      print('Error al iniciar sesión con Google');
-                    }
-                  } catch (error) {
-                    print('Error de autenticación: $error');
+                    await controller.nativeGoogleSignIn();
+                    Get.offAllNamed(Routes.HOME);
+                  } catch (e) {
+                    Get.snackbar(
+                        'Error', 'Error al iniciar sesión con Google: $e',
+                        backgroundColor: Colors.redAccent,
+                        colorText: Colors.white);
                   }
                 },
               ),

@@ -2,6 +2,8 @@ import 'package:euexia/app/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/data/help/response.dart' as custom_response;
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginController extends GetxController {
   RxBool isLoading = false.obs;
@@ -9,14 +11,46 @@ class LoginController extends GetxController {
   TextEditingController emailC = TextEditingController();
   TextEditingController passwordC = TextEditingController();
 
+  Supabase supabase = Supabase.instance;
   SupabaseService client = SupabaseService();
   custom_response.Response response = custom_response.Response(success: false);
-  
+
   var isHoveringForgotPassword = false.obs;
-  
+
   @override
   void onInit() {
     super.onInit();
+  }
+
+  Future<void> nativeGoogleSignIn() async {
+    /// TODO: update the Web client ID with your own.
+    ///
+    /// Web Client ID that you registered with Google Cloud.
+    const webClientId = '558314433035-7vvapu23aq5gk7j2utct0kqqocvu814p.apps.googleusercontent.com';
+
+    /// TODO: update the iOS client ID with your own.
+    ///
+    /// iOS Client ID that you registered with Google Cloud.
+    const iosClientId = '558314433035-qrjfc6mo41hu4qnu05vpcp4mlevbsk25.apps.googleusercontent.com';
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId: iosClientId,
+      serverClientId: webClientId,
+    );
+    final googleUser = await googleSignIn.signIn();
+    final googleAuth = await googleUser!.authentication;
+    final accessToken = googleAuth.accessToken;
+    final idToken = googleAuth.idToken;
+    if (accessToken == null) {
+      throw 'No Access Token found.';
+    }
+    if (idToken == null) {
+      throw 'No ID Token found.';
+    }
+    await supabase.auth.signInWithIdToken(
+      provider: OAuthProvider.google,
+      idToken: idToken,
+      accessToken: accessToken,
+    );
   }
 
   Future<bool?> login() async {
@@ -32,14 +66,15 @@ class LoginController extends GetxController {
             title: "Login success",
             middleText: "Will be redirect to Home Page",
             backgroundColor: Colors.green);
-        
+
         result = true;
       } else {
         isLoading.value = false;
-        Get.snackbar("ERROR", response.errorMessage ?? "An unknown error occurred");
+        Get.snackbar(
+            "ERROR", response.errorMessage ?? "An unknown error occurred");
         result = false;
       }
-      
+
       isLoading.value = false;
       return result;
     }

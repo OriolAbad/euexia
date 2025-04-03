@@ -27,10 +27,9 @@ class MapControllerX extends GetxController {
       // Realiza la consulta a la tabla gimnasios
       final response = await supabase
           .from('gimnasios')
-          .select('latitud, longitud')
-          .execute();
+          .select('latitud, longitud');
 
-      if (response.data == null || response.data.isEmpty) {
+      if (response == null || response.isEmpty) {
         print("No hay gimnasios en la base de datos");
         return;
       }
@@ -39,7 +38,7 @@ class MapControllerX extends GetxController {
       markers.clear();
 
       // Añade los nuevos marcadores desde la base de datos
-      for (final gimnasio in response.data) {
+      for (final gimnasio in response) {
         addMarker(LatLng(
             gimnasio['latitud'], gimnasio['longitud'])); // Agrega el marcador
       }
