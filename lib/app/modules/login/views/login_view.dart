@@ -136,13 +136,15 @@ class LoginView extends GetView<LoginController> {
                 Buttons.google,
                 onPressed: () async {
                   try {
-                    await controller.nativeGoogleSignIn();
+                    await controller.signInWithGoogle();
                     Get.offAllNamed(Routes.HOME);
                   } catch (e) {
                     Get.snackbar(
-                        'Error', 'Error al iniciar sesión con Google: $e',
-                        backgroundColor: Colors.redAccent,
-                        colorText: Colors.white);
+                      'Error',
+                      'Error al iniciar sesión con Google: $e',
+                      backgroundColor: Colors.redAccent,
+                      colorText: Colors.white,
+                    );
                   }
                 },
               ),

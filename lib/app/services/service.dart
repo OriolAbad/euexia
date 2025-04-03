@@ -283,7 +283,7 @@ class _CategoriasService {
       await client
         .from('categorias')
         .update(category.toJson())
-        .eq('idcategoria', category.idCategoria);
+        .eq('idcategoria', category.idCategoria ?? 0);
 
       result.success = true;
     } catch (e) {
@@ -378,7 +378,7 @@ class _ConsejosServices {
       await client
         .from('consejos')
         .update(tip.toJson())
-        .eq('idconsejo', tip.idconsejo);
+        .eq('idconsejo', tip.idconsejo ?? 0);
 
       result.success = true;
     } catch (e) {
@@ -515,7 +515,7 @@ class _DificultadesService {
       await client
         .from('dificultades')
         .update(difficulty.toJson())
-        .eq('iddificultad', difficulty.idDificultad);
+        .eq('iddificultad', difficulty.idDificultad ?? 0);
 
       result.success = true;
     } catch (e) {
@@ -713,7 +713,7 @@ class _EjerciciosService {
       await client
         .from('ejercicios')
         .update(exercise.toJson())
-        .eq('idejercicio', exercise.idEjercicio);
+        .eq('idejercicio', exercise.idEjercicio ?? 0);
 
       result.success = true;
     } catch (e) {
@@ -987,7 +987,7 @@ class _FotosService {
       await client
         .from('fotos')
         .update(photo.toJson())
-        .eq('idfoto', photo.idFoto);
+        .eq('idfoto', photo.idFoto ?? 0);
 
       result.success = true;
     } catch (e) {
@@ -1083,7 +1083,7 @@ class _GimnasiosService {
       await client
         .from('gimnasios')
         .update(gym.toJson())
-        .eq('idgimnasio', gym.idGimnasio);
+        .eq('idgimnasio', gym.idGimnasio ?? 0);
 
       result.success = true;
     } catch (e) {
@@ -1179,7 +1179,7 @@ class _RecompensasService {
       await client
         .from('recompensas')
         .update(reward.toJson())
-        .eq('idrecompensa', reward.idRecompensa);
+        .eq('idrecompensa', reward.idRecompensa ?? 0);
 
       result.success = true;
     } catch (e) {
@@ -1525,7 +1525,7 @@ class _RetosService {
       await client
           .from('retos')
           .update(reto.toJson()) // Actualiza el objeto convertido a JSON
-          .eq('idreto', reto.idReto); // Filtra por idReto
+          .eq('idreto', reto.idReto ?? 0); // Filtra por idReto, usa 0 si es nulo
   
       result.success = true;
       result.data = reto;
@@ -1623,7 +1623,7 @@ class _RutinasService {
       await client
           .from('rutinas')
           .update(rutina.toJson()) // Actualiza el objeto convertido a JSON
-          .eq('idrutina', rutina.idRutina); // Filtra por idRutina
+          .eq('idrutina', rutina.idRutina ?? 0); // Filtra por idRutina, usa 0 si es nulo
   
       result.success = true;
       result.data = rutina;
@@ -1786,7 +1786,7 @@ class _TiposRetosService {
       await client
           .from('tipos_retos')
           .update(tipoReto.toJson()) // Actualiza el objeto convertido a JSON
-          .eq('idtiporeto', tipoReto.idTipoReto); // Filtra por idTipoReto
+          .eq('idtiporeto', tipoReto.idTipoReto ?? 0); // Filtra por idTipoReto, usa 0 si es nulo
   
       result.success = true;
       result.data = tipoReto;
@@ -2366,7 +2366,7 @@ class _UsuariosService {
       await client
         .from('usuarios')
         .update(user.toJson())
-        .eq('idusuario', user.idUsuario);
+        .eq('idusuario', user.idUsuario ?? 0);
 
       result.success = true;
     } catch (e) {

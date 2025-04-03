@@ -1,6 +1,7 @@
 import 'package:euexia/app/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/foundation.dart';
 import 'package:euexia/app/data/help/response.dart' as custom_response;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,35 +23,44 @@ class LoginController extends GetxController {
     super.onInit();
   }
 
-  Future<void> nativeGoogleSignIn() async {
-    /// TODO: update the Web client ID with your own.
-    ///
-    /// Web Client ID that you registered with Google Cloud.
-    const webClientId = '558314433035-7vvapu23aq5gk7j2utct0kqqocvu814p.apps.googleusercontent.com';
+  Future<void> signInWithGoogle() async {
+    final supabase = Supabase.instance.client;
 
-    /// TODO: update the iOS client ID with your own.
-    ///
-    /// iOS Client ID that you registered with Google Cloud.
-    const iosClientId = '558314433035-qrjfc6mo41hu4qnu05vpcp4mlevbsk25.apps.googleusercontent.com';
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: iosClientId,
-      serverClientId: webClientId,
-    );
-    final googleUser = await googleSignIn.signIn();
-    final googleAuth = await googleUser!.authentication;
-    final accessToken = googleAuth.accessToken;
-    final idToken = googleAuth.idToken;
-    if (accessToken == null) {
-      throw 'No Access Token found.';
+    if (kIsWeb) {
+      await supabase.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: 'https://fewllovypiblimiutsji.supabase.co/auth/v1/callback',
+        authScreenLaunchMode: kIsWeb
+            ? LaunchMode.platformDefault
+            : LaunchMode.externalApplication,
+      );
+    } else {
+      const webClientId =
+          '558314433035-7vvapu23aq5gk7j2utct0kqqocvu814p.apps.googleusercontent.com';
+      const iosClientId =
+          '558314433035-qrjfc6mo41hu4qnu05vpcp4mlevbsk25.apps.googleusercontent.com';
+
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: iosClientId,
+        serverClientId: webClientId,
+      );
+      final googleUser = await googleSignIn.signIn();
+      if (googleUser == null) return;
+
+      final googleAuth = await googleUser.authentication;
+      final accessToken = googleAuth.accessToken;
+      final idToken = googleAuth.idToken;
+
+      if (accessToken == null || idToken == null) {
+        throw 'No Access Token or ID Token found.';
+      }
+
+      await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      );
     }
-    if (idToken == null) {
-      throw 'No ID Token found.';
-    }
-    await supabase.client.auth.signInWithIdToken(
-      provider: OAuthProvider.google,
-      idToken: idToken,
-      accessToken: accessToken,
-    );
   }
 
   Future<bool?> login() async {

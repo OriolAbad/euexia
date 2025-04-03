@@ -243,7 +243,7 @@ class HomeView extends GetView<HomeController> {
                       child: const Stack(
                         children: [
                           Positioned(
-                            left: 12,
+                            left: 8,
                             bottom: 12,
                             child: Text(
                               'TRAIN',
