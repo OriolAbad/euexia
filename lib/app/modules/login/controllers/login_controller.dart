@@ -12,6 +12,7 @@ class LoginController extends GetxController {
   TextEditingController emailC = TextEditingController();
   TextEditingController passwordC = TextEditingController();
 
+  late custom_response.Response result; 
   Supabase supabase = Supabase.instance;
   SupabaseService client = SupabaseService();
   custom_response.Response response = custom_response.Response(success: false);
@@ -23,7 +24,7 @@ class LoginController extends GetxController {
     super.onInit();
   }
 
-  Future<void> signInWithGoogle() async {
+  /*Future<void> signInWithGoogle() async {
     final supabase = Supabase.instance.client;
 
     if (kIsWeb) {
@@ -55,13 +56,13 @@ class LoginController extends GetxController {
         throw 'No Access Token or ID Token found.';
       }
 
-      await supabase.auth.signInWithIdToken(
+      final response = await supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
         accessToken: accessToken,
       );
     }
-  }
+  }*/
 
   Future<bool?> login() async {
     bool? result;
