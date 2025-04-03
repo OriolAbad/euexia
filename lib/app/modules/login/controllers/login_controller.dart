@@ -46,7 +46,7 @@ class LoginController extends GetxController {
     if (idToken == null) {
       throw 'No ID Token found.';
     }
-    await supabase.auth.signInWithIdToken(
+    await supabase.client.auth.signInWithIdToken(
       provider: OAuthProvider.google,
       idToken: idToken,
       accessToken: accessToken,
