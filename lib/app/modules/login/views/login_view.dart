@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:euexia/app/controllers/auth_controller.dart';
 import 'package:euexia/app/routes/app_pages.dart';
 import 'package:gradient_coloured_buttons/gradient_coloured_buttons.dart';
+import 'package:sign_in_button/sign_in_button.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../controllers/login_controller.dart';
 
@@ -130,7 +132,7 @@ class LoginView extends GetView<LoginController> {
                 borderRadius: 10.0,
                 onPressed: () => Get.toNamed(Routes.REGISTER),
               ),
-              /*const SizedBox(height: 20),
+              const SizedBox(height: 20),
               SignInButton(
                 Buttons.google,
                 onPressed: () async {
@@ -150,7 +152,7 @@ class LoginView extends GetView<LoginController> {
                     print('Error de autenticación: $error');
                   }
                 },
-              ),*/
+              ),
             ],
           ),
           const SizedBox(height: 20),
