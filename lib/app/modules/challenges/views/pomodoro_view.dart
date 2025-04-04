@@ -30,7 +30,7 @@ class PomodoroController extends GetxController {
 
   void cancelTraining() {
     timer?.cancel();
-    Get.offAllNamed('/home'); // Si cancela, regresa a la pantalla principal
+    Get.offAllNamed('/challenges'); // Si cancela, regresa a la pantalla principal
   }
 }
 
@@ -70,18 +70,17 @@ class PomodoroView extends StatelessWidget {
             Obx(() => controller.isResting.value
                 ? Text(
                     "Descanso: ${controller.descanso.value}s",
-                    style: TextStyle(color: Colors.red, fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: const Color.fromARGB(255, 204, 0, 190), fontSize: 24, fontWeight: FontWeight.bold),
                   )
                 : ElevatedButton(
                     onPressed: controller.startRest,
                     child: Text("Iniciar descanso"),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 204, 0, 190)),
                   )),
             SizedBox(height: 20),
             Obx(() => controller.seriesCompletadas.value >= controller.series.value
                 ? ElevatedButton(
                     onPressed: () {
-                      // Cuando se complete todas las series
                       challenge.isCompleted = true;  // Marca el desafío como completado
                       challengesController.challenges.refresh();  // Refresca la lista de desafíos
                       Get.back(result: true);  // Devuelves 'true' a la vista anterior para marcar el desafío como completado
