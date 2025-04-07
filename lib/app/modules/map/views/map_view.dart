@@ -1,10 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/modules/map/controllers/map_controller.dart';
 
-const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoib3Jpb2xhYmFkIiwiYSI6ImNtODk0NmU4ZDEwbDUyanIzdmhza2F3YjIifQ.nG7KPJ5kocu-dcih-UaoiQ';
+const MAPBOX_ACCESS_TOKEN =
+    'pk.eyJ1Ijoib3Jpb2xhYmFkIiwiYSI6ImNtODk0NmU4ZDEwbDUyanIzdmhza2F3YjIifQ.nG7KPJ5kocu-dcih-UaoiQ';
 
 class MapView extends StatelessWidget {
   final MapControllerX mapControllerX = Get.put(MapControllerX());
@@ -35,30 +38,83 @@ class MapView extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Nueva barra de búsqueda estilo ExercisesView
+          // Nueva barra de búsqueda con sugerencias
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: mapControllerX.searchController,
-              decoration: InputDecoration(
-                hintText: "Search location...",
-                hintStyle: const TextStyle(color: Colors.white70),
-                prefixIcon: const Icon(Icons.search, color: Colors.blue),
-                filled: true,
-                fillColor: Colors.grey[800],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+            child: Column(
+              children: [
+                TextField(
+                  controller: mapControllerX.searchController,
+                  decoration: InputDecoration(
+                    hintText: "Buscar gimnasio...",
+                    hintStyle: const TextStyle(color: Colors.white70),
+                    prefixIcon: const Icon(Icons.search, color: Colors.blue),
+                    filled: true,
+                    fillColor: Colors.grey[800],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                  onChanged: (value) {
+                    mapControllerX.searchQuery.value = value;
+                    mapControllerX.filterGyms();
+                  },
                 ),
-              ),
-              style: const TextStyle(color: Colors.white),
-              onChanged: (value) {
-                // Puedes implementar búsqueda en tiempo real aquí si lo deseas
-                // mapControllerX.searchLocationOnMap(value);
-              },
-              onSubmitted: (value) {
-                mapControllerX.searchLocationOnMap();
-              },
+                // Lista de sugerencias
+                Obx(() {
+                  if (mapControllerX.filteredGyms.isEmpty ||
+                      mapControllerX.searchQuery.value.isEmpty) {
+                    return SizedBox.shrink();
+                  }
+
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[800],
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
+                      ),
+                    ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: min(mapControllerX.filteredGyms.length,
+                          5), // Máximo 5 sugerencias
+                      itemBuilder: (context, index) {
+                        final gym = mapControllerX.filteredGyms[index];
+                        return ListTile(
+                          title: Text(
+                            gym['nombre'] ?? 'Sin nombre',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          subtitle: Text(
+                            gym['ubicacion'] ?? '',
+                            style: TextStyle(color: Colors.white70),
+                          ),
+                          dense: true,
+                          onTap: () {
+                            // Cierra el teclado
+                            FocusScope.of(context).unfocus();
+                            // Actualiza el texto de búsqueda
+                            mapControllerX.searchController.text =
+                                gym['nombre'] ?? '';
+                            // Navega al punto en el mapa
+                            if (gym['latitud'] != null &&
+                                gym['longitud'] != null) {
+                              mapControllerX.searchLocationOnMap(
+                                  gym['latitud'], gym['longitud']);
+                            }
+                            // Limpia las sugerencias
+                            mapControllerX.searchQuery.value = '';
+                          },
+                        );
+                      },
+                    ),
+                  );
+                }),
+              ],
             ),
           ),
           Expanded(
@@ -69,7 +125,7 @@ class MapView extends StatelessWidget {
                   child: Obx(() => FlutterMap(
                         mapController: mapControllerX.mapController,
                         options: MapOptions(
-                          center: mapControllerX.searchLocation.value ?? 
+                          center: mapControllerX.searchLocation.value ??
                               LatLng(41.382894, 2.177432),
                           zoom: 10,
                           minZoom: 3,

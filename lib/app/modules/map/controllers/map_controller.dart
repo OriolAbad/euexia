@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:flutter_map/flutter_map.dart'; // Importa flutter_map
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,7 +12,11 @@ class MapControllerX extends GetxController {
   Rx<LatLng?> searchLocation =
       Rx<LatLng?>(null); // Ubicación buscada (observable)
   RxList<LatLng> markers = <LatLng>[].obs; // Lista de marcadores (observable)
-  
+  RxString searchQuery = "".obs;
+  var filteredMarkers =
+      <LatLng>[].obs; // // Lista filtrada de marcadores (observable)
+  RxList<Map<String, dynamic>> gymsList = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> filteredGyms = <Map<String, dynamic>>[].obs;
 
   @override
   void onInit() {
@@ -27,12 +30,15 @@ class MapControllerX extends GetxController {
       // Realiza la consulta a la tabla gimnasios
       final response = await supabase
           .from('gimnasios')
-          .select('latitud, longitud');
+          .select('idgimnasio, nombre, latitud, longitud');
 
       if (response == null || response.isEmpty) {
         print("No hay gimnasios en la base de datos");
         return;
       }
+
+      gymsList.assignAll(response);
+      filteredGyms.assignAll(response);
 
       // Limpia los marcadores existentes
       markers.clear();
@@ -44,6 +50,27 @@ class MapControllerX extends GetxController {
       }
     } catch (e) {
       print('Error al obtener los gimnasios: $e');
+    }
+  }
+
+  void filterGyms() {
+    if (searchQuery.value.isEmpty) {
+      filteredGyms.assignAll(gymsList);
+    } else {
+      filteredGyms.assignAll(gymsList
+          .where((gym) =>
+              gym['nombre']
+                  ?.toString()
+                  .toLowerCase()
+                  .contains(searchQuery.value.toLowerCase()) ??
+              false)
+          .toList());
+    }
+  }
+
+  void onGymSelected(Map<String, dynamic> selectedGym) {
+    if (selectedGym['latitud'] != null && selectedGym['longitud'] != null) {
+      searchLocationOnMap(selectedGym['latitud'], selectedGym['longitud']);
     }
   }
 
@@ -61,21 +88,18 @@ class MapControllerX extends GetxController {
         mapController.center, currentZoom - 1); // Disminuir zoom en 1
   }
 
-  // Método para buscar una ubicación
-  Future<void> searchLocationOnMap() async {
+  // Método para moverse a una ubicación
+  Future<void> searchLocationOnMap(double latitud, double longitud) async {
     try {
-      List<Location> locations =
-          await locationFromAddress(searchController.text);
-      if (locations.isNotEmpty) {
-        searchLocation.value =
-            LatLng(locations[0].latitude, locations[0].longitude);
-        mapController.move(searchLocation.value!,
-            12.0); // Mover el mapa a la ubicación buscada
-      } else {
-        Get.snackbar('Error', 'Ubicación no encontrada');
-      }
+      final newLocation = LatLng(latitud, longitud);
+
+      // Actualizar la ubicación de búsqueda
+      searchLocation.value = newLocation;
+
+      // Mover el mapa a las nuevas coordenadas
+      mapController.move(newLocation, 15.0);
     } catch (e) {
-      Get.snackbar('Error', 'Error al buscar la ubicación: ${e.toString()}');
+      Get.snackbar('Error', 'No se pudo mover al punto: $e');
     }
   }
 
@@ -86,8 +110,6 @@ class MapControllerX extends GetxController {
 
   // Método para centrar el mapa en la ubicación actual del usuario
   Future<void> centerMapOnUserLocation() async {
-    // Aquí puedes usar el paquete `geolocator` para obtener la ubicación actual del usuario
-    // Por ahora, usaremos una ubicación fija como ejemplo
     searchLocation.value = LatLng(41.382894, 2.177432); // Barcelona, España
     mapController.move(searchLocation.value!, 12.0); // Mover el mapa
   }
