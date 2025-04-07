@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:get/get.dart';
 import '../controllers/qr_controller.dart';
+import 'package:euexia/app/routes/app_pages.dart' as pages;
 
 class QrView extends StatefulWidget {
   @override
@@ -44,6 +45,9 @@ class _QrViewState extends State<QrView> {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
+
+         Get.toNamed(pages.Routes.USER_ROUTINES, arguments: userId);
+        
       } catch (e) {
         Get.snackbar(
           'Error',

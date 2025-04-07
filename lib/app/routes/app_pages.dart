@@ -31,6 +31,8 @@ import 'package:euexia/app/modules/profile/bindings/profile_binding.dart';
 import 'package:euexia/app/modules/profile/views/profile_view.dart';
 import 'package:euexia/app/modules/qr/bindings/qr_binding.dart';
 import 'package:euexia/app/modules/qr/views/qr_view.dart';
+import 'package:euexia/app/modules/user_routines/bindings/user_routines_binding.dart';
+import 'package:euexia/app/modules/user_routines/views/user_routines_view.dart';
 /*
 import 'package:euexia/app/modules/exercises/bindings/exercises_binding.dart';
 import 'package:euexia/app/modules/exercises/views/exercises_view.dart';*/
@@ -117,13 +119,12 @@ class AppPages {
       name: _Paths.QR,
       page: () => QrView(),
       binding: QrBinding(),
-    )
-     /*
-    GetPage(
-      name: _Paths.EXERCISES,
-      page: () => ExercisesView(),
-      binding: ExercisesBinding(),
     ),
-    */
+    GetPage(
+      name: _Paths.USER_ROUTINES,
+      page: () => UserRoutinesView(),
+      binding: UserRoutinesBinding(),
+    ),
+
   ];
 }
