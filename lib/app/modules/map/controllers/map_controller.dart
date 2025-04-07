@@ -30,26 +30,36 @@ class MapControllerX extends GetxController {
       // Realiza la consulta a la tabla gimnasios
       final response = await supabase
           .from('gimnasios')
-          .select('idgimnasio, nombre, latitud, longitud');
+          .select('idgimnasio, nombre, latitud, longitud, ubicacion');
 
-      if (response == null || response.isEmpty) {
+      if (response == null) {
+        print("La respuesta de Supabase es nula");
+        return;
+      }
+
+      // Conversión explícita del tipo
+      final List<Map<String, dynamic>> gyms =
+          List<Map<String, dynamic>>.from(response);
+
+      if (gyms.isEmpty) {
         print("No hay gimnasios en la base de datos");
         return;
       }
 
-      gymsList.assignAll(response);
-      filteredGyms.assignAll(response);
-
-      // Limpia los marcadores existentes
+      gymsList.assignAll(gyms);
+      filteredGyms.assignAll(gyms);
       markers.clear();
 
       // Añade los nuevos marcadores desde la base de datos
-      for (final gimnasio in response) {
-        addMarker(LatLng(
-            gimnasio['latitud'], gimnasio['longitud'])); // Agrega el marcador
+      for (final gimnasio in gyms) {
+        if (gimnasio['latitud'] != null && gimnasio['longitud'] != null) {
+          addMarker(LatLng(double.parse(gimnasio['latitud'].toString()),
+              double.parse(gimnasio['longitud'].toString())));
+        }
       }
     } catch (e) {
       print('Error al obtener los gimnasios: $e');
+      Get.snackbar('Error', 'Error al cargar gimnasios: ${e.toString()}');
     }
   }
 
