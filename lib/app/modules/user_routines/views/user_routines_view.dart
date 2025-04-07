@@ -51,33 +51,42 @@ class UserRoutinesView extends StatelessWidget {
                     color: Colors.grey[800],
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Column(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        rutina.nombre, // Accede directamente a la propiedad
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              rutina
+                                  .nombre, // Accede directamente a la propiedad
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              rutina.descripcion ?? 'Sin descripción',
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "Ejercicios: ${rutina.ejercicios?.length ?? 0}",
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        rutina.descripcion ?? 'Sin descripción',
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "Ejercicios: ${rutina.ejercicios?.length ?? 0}",
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
-                      ),
+                      SaveButton(), // Botón con animación
                     ],
                   ),
                 ),
@@ -85,6 +94,65 @@ class UserRoutinesView extends StatelessWidget {
             },
           );
         }),
+      ),
+    );
+  }
+}
+
+class SaveButton extends StatefulWidget {
+  @override
+  _SaveButtonState createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<SaveButton> {
+  bool isSaved = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          isSaved = !isSaved; // Cambia el estado entre guardado y no guardado
+        });
+
+        // Lógica adicional para guardar la rutina
+        if (isSaved) {
+          Get.snackbar(
+            'Rutina guardada',
+            'Has guardado esta rutina.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+        } else {
+          Get.snackbar(
+            'Rutina eliminada',
+            'Has eliminado esta rutina de tus guardadas.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      },
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) {
+          return ScaleTransition(scale: animation, child: child);
+        },
+        child: Container(
+          key: ValueKey(isSaved),
+          decoration: BoxDecoration(
+            color: isSaved
+                ? Colors.green[100]
+                : Colors.blue[100], // Fondo dinámico
+            shape: BoxShape.circle, // Forma circular
+          ),
+          padding: const EdgeInsets.all(8.0), // Espaciado interno
+          child: Icon(
+            isSaved ? Icons.check : Icons.add,
+            color: isSaved ? Colors.green : Colors.blue, // Color del ícono
+          ),
+        ),
       ),
     );
   }

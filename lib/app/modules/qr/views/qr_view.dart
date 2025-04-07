@@ -38,14 +38,6 @@ class _QrViewState extends State<QrView> {
       try {
         final userId = int.parse(rawValue);
         controller.updateUserId(userId);
-        Get.snackbar(
-          'Éxito',
-          'ID de usuario escaneado: $userId',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
-
          Get.toNamed(pages.Routes.USER_ROUTINES, arguments: userId);
         
       } catch (e) {
