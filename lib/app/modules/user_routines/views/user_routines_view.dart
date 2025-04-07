@@ -117,6 +117,7 @@ class _SaveButtonState extends State<SaveButton> {
 
         // Lógica adicional para guardar la rutina
         if (isSaved) {
+
           Get.snackbar(
             'Rutina guardada',
             'Has guardado esta rutina.',
