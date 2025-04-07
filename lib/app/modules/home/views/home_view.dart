@@ -210,7 +210,7 @@ class HomeView extends GetView<HomeController> {
                     }),
                   ),
 
-                  const SizedBox(width: 24),
+                  const SizedBox(width: 20),
 
                   // Botón Train con texto abajo a la izquierda
                   GestureDetector(

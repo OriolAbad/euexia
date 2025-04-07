@@ -1,16 +1,21 @@
+import 'package:euexia/app/data/models/ejercicios.dart';
+import 'package:euexia/app/data/models/ejercicios_rutinas.dart';
+import 'package:euexia/app/data/models/rutinas.dart';
+import 'package:euexia/app/modules/trainings/view/start_training_view.dart';
+import 'package:euexia/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:euexia/app/modules/trainings/controller/sing_training_controller.dart';
 
 class SingTrainingView extends StatelessWidget {
-  final int trainingId;
 
-  const SingTrainingView({super.key, required this.trainingId});
+  const SingTrainingView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final SingTrainingController trainingsController = Get.put(SingTrainingController(trainingId));
-
+    // Obtén la rutina desde los argumentos
+    final Rutina rutina = Get.arguments['rutina'];
+    final SingTrainingController trainingsController = Get.put(SingTrainingController(rutina));
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -34,15 +39,15 @@ class SingTrainingView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  trainingsController.selectedRutina.value.nombre.toUpperCase(),
+                  trainingsController.rutina.value.nombre.toUpperCase(),
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                if (trainingsController.selectedRutina.value.descripcion != null)
+                if (trainingsController.rutina.value.descripcion != null)
                   Text(
-                    trainingsController.selectedRutina.value.descripcion!,
+                    trainingsController.rutina.value.descripcion!,
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.normal,
@@ -62,9 +67,21 @@ class SingTrainingView extends StatelessWidget {
           return Column(
             children: [
               GestureDetector(
-                onTap: () {
-                  showAddExerciseModal(context, trainingsController); // Llama a la función para mostrar la modal
-                },
+                onTap: () async {
+                  trainingsController.adding.value = true; // Cambia el estado a "agregando"
+                  // Navega a ExercisesView y espera el resultado
+                  final selectedExercise = await Get.toNamed(
+                    Routes.EJERCICIOS,
+                    arguments: {'trainingId': rutina.idRutina}, // Pasa el trainingId como argumento
+                  );
+                  // Maneja el objeto ejercicio seleccionado
+                  if (selectedExercise != null && selectedExercise is Ejercicio) {
+                    // Actualiza el ejercicio seleccionado en el controlador
+                    trainingsController.ejercicioRutina.value.idEjercicio = selectedExercise.idEjercicio!;
+                    trainingsController.ejercicioRutina.value.ejercicio = selectedExercise;
+                    showModalNewExercise(context, trainingsController);
+                  }
+},
                 child: Container(
                   margin: const EdgeInsets.all(16),
                   padding: const EdgeInsets.all(16),
@@ -92,12 +109,14 @@ class SingTrainingView extends StatelessWidget {
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: trainingsController.selectedRutina.value.ejercicios?.length ?? 0,
+                  itemCount: trainingsController.rutina.value.ejercicios?.length ?? 0,
                   itemBuilder: (context, index) {
-                    final ejercicioRutina = trainingsController.selectedRutina.value.ejercicios![index];
+                    final ejercicioRutina = trainingsController.rutina.value.ejercicios![index];
                     return GestureDetector(
                       onTap: () {
-                        // Evento de clic (de momento no hace nada)
+                        trainingsController.ejercicioRutina.value = ejercicioRutina;
+                        trainingsController.updating.value = true;
+                        showModalNewExercise(context, trainingsController);
                       },
                       child: Container(
                         margin: const EdgeInsets.symmetric(vertical: 8),
@@ -112,7 +131,7 @@ class SingTrainingView extends StatelessWidget {
                               width: 50,
                               height: 50,
                               decoration: BoxDecoration(
-                                color: Colors.grey[700],
+                                color: Colors.blue,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Icon(Icons.fitness_center, color: Colors.white),
@@ -131,8 +150,7 @@ class SingTrainingView extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    "${ejercicioRutina.series} sets, ${ejercicioRutina.repeticiones} reps"
-                                    "${ejercicioRutina.kilogramos != null && ejercicioRutina.kilogramos! > 0 ? ', ${ejercicioRutina.kilogramos} kg' : ''}",
+                                    "Series: ${ejercicioRutina.series}, Reps: ${ejercicioRutina.repeticiones}, Kilogramos: ${ejercicioRutina.kilogramos ?? 0}",
                                     style: const TextStyle(
                                       color: Colors.white70,
                                       fontSize: 14,
@@ -140,6 +158,15 @@ class SingTrainingView extends StatelessWidget {
                                   ),
                                 ],
                               ),
+                            ),
+                            const SizedBox(width: 16),
+                            // Botón de papelera
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                showDeleteModal(context, trainingsController, ejercicioRutina);
+                              },
+                              tooltip: "Eliminar ejercicio",
                             ),
                           ],
                         ),
@@ -159,6 +186,7 @@ class SingTrainingView extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
+                    Get.to(() => StartTrainingView(rutina: rutina));
                   },
                   child: const Center(
                     child: Text(
@@ -178,62 +206,266 @@ class SingTrainingView extends StatelessWidget {
       }),
     );
   }
+}
 
-  // Función para mostrar la modal
-  void showAddExerciseModal(BuildContext context, SingTrainingController controller) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.grey[900], // Fondo negro/gris
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: const Text(
-            "Agregar Ejercicio",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: SizedBox(
-            height: 300,
-            child: Column(
+void showModalNewExercise(BuildContext context, SingTrainingController trainingsController) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.black,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Botón de cerrar
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.white, // Texto blanco
-                    backgroundColor: Colors.blue, // Botón azul
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                const Text(
+                  "Editar Ejercicio",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white),
                   onPressed: () {
-                    
+                    trainingsController.resetEjercicioRutina();// Cambia el estado a "no agregando"
+                    Navigator.of(context).pop();
                   },
-                  child: const Text('Agregar Ejercicio'),
                 ),
               ],
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Cierra la modal
-              },
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.white, // Texto blanco
-                backgroundColor: Colors.grey[700], // Botón gris
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            const SizedBox(height: 16),
+            // Textbox para mostrar el nombre del ejercicio seleccionado
+            Obx(() {
+              return TextField(
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: "Ejercicio",
+                  labelStyle: const TextStyle(color: Colors.white70),
+                  filled: true,
+                  fillColor: Colors.grey[800],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                style: const TextStyle(color: Colors.white),
+                controller: TextEditingController(
+                  text: trainingsController.ejercicioRutina.value.ejercicio?.nombre ?? "Selecciona un ejercicio",
+                ),
+              );
+            }),
+            const SizedBox(height: 16),
+            // NumberInput para series
+            Obx(() {
+              return TextField(
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  trainingsController.ejercicioRutina.value.series = int.tryParse(value) ?? 0;
+                },
+                decoration: InputDecoration(
+                  labelText: trainingsController.ejercicioRutina.value.series == 0
+                      ? "Series"
+                      : null, // Muestra "Series" si el valor es 0
+                  labelStyle: const TextStyle(color: Colors.white70),
+                  filled: true,
+                  fillColor: Colors.grey[800],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                style: const TextStyle(color: Colors.white),
+                controller: TextEditingController(
+                  text: trainingsController.ejercicioRutina.value.series == 0
+                      ? ""
+                      : trainingsController.ejercicioRutina.value.series.toString(),
+                ),
+              );
+            }),
+            const SizedBox(height: 16),
+            // NumberInput para repeticiones
+            Obx(() {
+              return TextField(
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  trainingsController.ejercicioRutina.value.repeticiones = int.tryParse(value) ?? 0;
+                },
+                decoration: InputDecoration(
+                  labelText: trainingsController.ejercicioRutina.value.repeticiones == 0
+                      ? "Repeticiones"
+                      : null, // Muestra "Repeticiones" si el valor es 0
+                  labelStyle: const TextStyle(color: Colors.white70),
+                  filled: true,
+                  fillColor: Colors.grey[800],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                style: const TextStyle(color: Colors.white),
+                controller: TextEditingController(
+                  text: trainingsController.ejercicioRutina.value.repeticiones == 0
+                      ? ""
+                      : trainingsController.ejercicioRutina.value.repeticiones.toString(),
+                ),
+              );
+            }),
+            const SizedBox(height: 16),
+            // NumberInput para kilogramos
+            Obx(() {
+              return TextField(
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                onChanged: (value) {
+                  trainingsController.ejercicioRutina.value.kilogramos = double.tryParse(value) ?? 0.0;
+                },
+                decoration: InputDecoration(
+                  labelText: "Kilogramos",
+                  labelStyle: const TextStyle(color: Colors.white70),
+                  filled: true,
+                  fillColor: Colors.grey[800],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                style: const TextStyle(color: Colors.white),
+                controller: TextEditingController(
+                  text: trainingsController.ejercicioRutina.value.kilogramos?.toString() ?? '',
+                ),
+              );
+            }),
+            const SizedBox(height: 24),
+            // Botón de guardar
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {
+                  if (trainingsController.updating.value) {
+                    trainingsController.updateEjercicio();
+                    trainingsController.resetEjercicioRutina();
+                  } else if (trainingsController.adding.value) {
+                    trainingsController.addEjercicioToRutina();
+                    trainingsController.resetEjercicioRutina(); // Cambia el estado a "no actualizando"
+                  }
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  "Guardar",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
-              child: const Text("Cancelar"),
             ),
           ],
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
+
+void showDeleteModal(BuildContext context, SingTrainingController trainingsController, EjercicioRutina ejercicioRutina) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.black,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Texto de confirmación
+            const Text(
+              "¿Desea eliminar este ejercicio?",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              ejercicioRutina.ejercicio?.nombre ?? "Nombre desconocido",
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Botones de acción
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Botón de eliminar
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    onPressed: () async {
+                      await trainingsController.deleteEjercicioRutina(ejercicioRutina);
+                      Navigator.of(context).pop(); // Cierra la modal después de eliminar
+                    },
+                    child: const Text(
+                      "Eliminar",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                // Botón de cancelar
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[800],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Cierra la modal sin hacer nada
+                    },
+                    child: const Text(
+                      "Cancelar",
+                      style: TextStyle(color: Colors.white70, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
