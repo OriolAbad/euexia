@@ -1,6 +1,7 @@
 import 'package:euexia/app/data/models/ejercicios.dart';
 import 'package:euexia/app/data/models/ejercicios_rutinas.dart';
 import 'package:euexia/app/data/models/rutinas.dart';
+import 'package:euexia/app/modules/trainings/view/start_training_view.dart';
 import 'package:euexia/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -185,6 +186,7 @@ class SingTrainingView extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
+                    Get.to(() => StartTrainingView(rutina: rutina));
                   },
                   child: const Center(
                     child: Text(
