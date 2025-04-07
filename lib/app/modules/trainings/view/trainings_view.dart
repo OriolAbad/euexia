@@ -185,7 +185,7 @@ class TrainingsView extends StatelessWidget {
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     Switch(
-                      value: trainingsController.usuarioRutina.value.publicada ?? false,
+                      value: trainingsController.usuarioRutina.value.publicada,
                       onChanged: (value) {
                         trainingsController.usuarioRutina.value.publicada = value;
                         trainingsController.usuarioRutina.refresh(); // Refresca el observable
