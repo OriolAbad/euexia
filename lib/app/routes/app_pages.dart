@@ -125,6 +125,5 @@ class AppPages {
       page: () => UserRoutinesView(),
       binding: UserRoutinesBinding(),
     ),
-
   ];
 }

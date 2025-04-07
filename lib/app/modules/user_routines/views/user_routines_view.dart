@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/user_routines_controller.dart';
+import 'package:euexia/app/modules/user_routines/views/routine_exercicese_view.dart';
 
 class UserRoutinesView extends StatelessWidget {
   @override
@@ -38,41 +39,47 @@ class UserRoutinesView extends StatelessWidget {
             itemCount: controller.rutinas.length,
             itemBuilder: (context, index) {
               final rutina = controller.rutinas[index];
-              return Container(
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[800],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      rutina.nombre, // Accede directamente a la propiedad
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+              return GestureDetector(
+                onTap: () {
+                  // Navegar a la vista de ejercicios de la rutina
+                  Get.to(() => RoutineExercisesView(rutina: rutina));
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        rutina.nombre, // Accede directamente a la propiedad
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      rutina.descripcion ?? 'Sin descripción', // Accede directamente a la propiedad
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
+                      const SizedBox(height: 8),
+                      Text(
+                        rutina.descripcion ?? 'Sin descripción',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "Ejercicios: ${rutina.ejercicios?.length ?? 0}", // Accede directamente a la propiedad
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
+                      const SizedBox(height: 8),
+                      Text(
+                        "Ejercicios: ${rutina.ejercicios?.length ?? 0}",
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
