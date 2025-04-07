@@ -103,7 +103,7 @@ class MapControllerX extends GetxController {
     }
   }
 
-  // Método para agregar un marcador al hacer clic en el mapa
+  // Método para agregar un marcador
   void addMarker(LatLng point) {
     markers.add(point); // Agregar marcador a la lista
   }
