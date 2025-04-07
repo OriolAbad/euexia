@@ -5,12 +5,7 @@ import '../controllers/user_routines_controller.dart';
 class UserRoutinesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Obtén el argumento (id del usuario) pasado a esta vista
     final UserRoutinesController controller = Get.put(UserRoutinesController());
-    final int userId = Get.arguments;
-
-    // Llama a la función para obtener las rutinas del usuario
-    controller.getRutinasOfUserWithExercises(userId);
 
     return Scaffold(
       backgroundColor: Colors.black, // Fondo negro
@@ -50,39 +45,31 @@ class UserRoutinesView extends StatelessWidget {
                   color: Colors.grey[800],
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(8),
+                    Text(
+                      rutina.nombre, // Accede directamente a la propiedad
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
-                      child:
-                          const Icon(Icons.fitness_center, color: Colors.white),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            rutina['nombre'] ?? 'Sin nombre',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            "Exercises: ${rutina['ejercicios']?.length ?? 0}",
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
+                    const SizedBox(height: 8),
+                    Text(
+                      rutina.descripcion ?? 'Sin descripción', // Accede directamente a la propiedad
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Ejercicios: ${rutina.ejercicios?.length ?? 0}", // Accede directamente a la propiedad
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
                       ),
                     ),
                   ],
