@@ -13,6 +13,8 @@ class StartTrainingController extends GetxController
   var updating = false.obs;
   var adding = false.obs;
 
+  
+
   StartTrainingController(Rutina rutina) : rutina = rutina.obs;
 
   @override
