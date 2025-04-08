@@ -20,6 +20,7 @@ class UserRoutinesView extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
+            controller.saveAllSavedRoutines(); // Guarda las rutinas que esten en isSaved == true al salir
             Get.back(); // Vuelve a la pantalla anterior
           },
         ),
@@ -86,7 +87,7 @@ class UserRoutinesView extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SaveButton(), // Botón con animación
+                      SaveButton(), // Botón con animación, if IsSaved true, savedRoutines.Add(rutina)
                     ],
                   ),
                 ),
@@ -117,7 +118,6 @@ class _SaveButtonState extends State<SaveButton> {
 
         // Lógica adicional para guardar la rutina
         if (isSaved) {
-
           Get.snackbar(
             'Rutina guardada',
             'Has guardado esta rutina.',
