@@ -133,8 +133,15 @@ class _StartTrainingViewState extends State<StartTrainingView> {
                         ),
                         const SizedBox(height: 8),
                         Text(
+                          "Series: ${ejercicioActual.series}",
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
                           [
-                            if (ejercicioActual.series > 0) "Series: ${ejercicioActual.series}",
                             if (ejercicioActual.repeticiones > 0)
                               "Reps: ${ejercicioActual.repeticiones}",
                             if (ejercicioActual.kilogramos != null &&
@@ -152,6 +159,8 @@ class _StartTrainingViewState extends State<StartTrainingView> {
                   ),
                 ),
               ),
+
+              
               // Botón para completar la serie
               Padding(
                 padding: const EdgeInsets.all(16.0),

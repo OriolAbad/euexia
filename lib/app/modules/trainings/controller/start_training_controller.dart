@@ -9,6 +9,7 @@ class StartTrainingController extends GetxController {
   final Rx<Rutina> rutina;
   var ejerciciosRutina = [].obs; // Lista de ejercicios de la rutina
   var currentExerciseIndex = 0.obs; // Índice del ejercicio actual
+  var seriesSelectedExercise = 0.obs; // Series restantes del ejercicio seleccionado
   var countdown = 3.obs; // Contador inicial
   final _supabaseService = SupabaseService();
   custom_response.Response result = custom_response.Response(success: false);
@@ -27,6 +28,9 @@ class StartTrainingController extends GetxController {
     super.onInit();
 
     ejerciciosRutina.value = (rutina.value.ejercicios ?? []).cast<dynamic>(); // Asignar ejercicios de la rutina
+    if (ejerciciosRutina.isNotEmpty) {
+      seriesSelectedExercise.value = ejerciciosRutina[0].series; // Inicializar con las series del primer ejercicio
+    }
   }
 
   void startCountdown(Function onCountdownComplete) {
@@ -54,6 +58,7 @@ class StartTrainingController extends GetxController {
   void nextExercise(Function onTrainingComplete) {
     if (currentExerciseIndex.value < ejerciciosRutina.length - 1) {
       currentExerciseIndex.value++;
+      seriesSelectedExercise.value = ejerciciosRutina[currentExerciseIndex.value].series; // Actualizar las series del nuevo ejercicio
     } else {
       stopTimer(); // Detener el temporizador al finalizar
       onTrainingComplete(); // Llamar a la función pasada como callback
@@ -61,22 +66,14 @@ class StartTrainingController extends GetxController {
   }
 
   void reduceSeriesAndRest(int restTime, Function onRestComplete, Function onTrainingComplete) {
-    final currentExercise = ejerciciosRutina[currentExerciseIndex.value];
-    
-    if (currentExercise.series > 0) {
-      currentExercise.series--; // Reducir el número de series
-      ejerciciosRutina.refresh(); // Actualizar la lista para reflejar los cambios
+    if (seriesSelectedExercise.value > 0) {
+      seriesSelectedExercise.value--; // Reducir el número de series restantes
     }
 
-    // Si las series llegan a 0, pasar al siguiente ejercicio
-    if (currentExercise.series <= 0) {
-      if (currentExerciseIndex.value < ejerciciosRutina.length - 1) {
-        currentExerciseIndex.value++; // Avanzar al siguiente ejercicio
-      } else {
-        stopTimer(); // Detener el temporizador si no hay más ejercicios
-        onTrainingComplete(); // Llamar al callback de finalización del entrenamiento
-        return;
-      }
+    // Si las series restantes llegan a 0, pasar al siguiente ejercicio
+    if (seriesSelectedExercise.value <= 0) {
+      nextExercise(onTrainingComplete);
+      return;
     }
 
     // Iniciar el tiempo de descanso

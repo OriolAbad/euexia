@@ -19,6 +19,8 @@ import 'package:euexia/app/data/models/usuarios_gimnasios.dart';
 import 'package:euexia/app/data/models/usuarios_retos.dart';
 import 'package:euexia/app/data/models/usuarios_rutinas.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase/supabase.dart';
+
 
 SupabaseClient client = Supabase.instance.client;
 
@@ -1718,26 +1720,24 @@ class _RutinasService {
   }
   Future<custom_response.Response> getNumberOfRutinas() async {
     custom_response.Response result = custom_response.Response(success: false);
-  
+
     try {
-      // Realiza una consulta para contar el número de rutinas
-      final data = await client
+      final response = await client
           .from('rutinas')
-          .select('idrutina', const FetchOptions(count: CountOption.exact)) // Solicita el conteo exacto
-          .limit(1); // No necesitas traer datos, solo el conteo
-  
-      final count = data.count; // Obtiene el número total de rutinas
-  
+          .select('idrutina')
+          .count(CountOption.exact); // Correct way to get count
+            
+      final count = response.count; // Now count will be available
+
       result.success = true;
       result.data = count;
     } catch (e) {
       result.success = false;
       result.errorMessage = e.toString();
     }
-  
+
     return result;
   }
-
 }
 
 class _TiposRetosService {
