@@ -20,7 +20,8 @@ class UserRoutinesView extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            controller.saveAllSavedRoutines(); // Guarda las rutinas que esten en isSaved == true al salir
+            controller
+                .saveAllSavedRoutines(); // Guarda las rutinas que esten en isSaved == true al salir
             Get.back(); // Vuelve a la pantalla anterior
           },
         ),
@@ -87,7 +88,9 @@ class UserRoutinesView extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SaveButton(), // Botón con animación, if IsSaved true, savedRoutines.Add(rutina)
+                      SaveButton(
+                          rutina:
+                              rutina), // Botón con animación, if IsSaved true, savedRoutines.Add(rutina)
                     ],
                   ),
                 ),
@@ -101,23 +104,35 @@ class UserRoutinesView extends StatelessWidget {
 }
 
 class SaveButton extends StatefulWidget {
+  final dynamic rutina;
+
+  SaveButton({required this.rutina});
+
   @override
   _SaveButtonState createState() => _SaveButtonState();
 }
 
 class _SaveButtonState extends State<SaveButton> {
   bool isSaved = false;
+  late final UserRoutinesController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<UserRoutinesController>();
+    isSaved = controller.savedRoutines.contains(widget.rutina);
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () { // Da error de ValueKey duplicado, ARREGLARLO
         setState(() {
-          isSaved = !isSaved; // Cambia el estado entre guardado y no guardado
+          isSaved = !isSaved;
         });
 
-        // Lógica adicional para guardar la rutina
         if (isSaved) {
+          controller.savedRoutines.add(widget.rutina);
           Get.snackbar(
             'Rutina guardada',
             'Has guardado esta rutina.',
@@ -126,6 +141,7 @@ class _SaveButtonState extends State<SaveButton> {
             colorText: Colors.white,
           );
         } else {
+          controller.savedRoutines.remove(widget.rutina);
           Get.snackbar(
             'Rutina eliminada',
             'Has eliminado esta rutina de tus guardadas.',
@@ -143,15 +159,13 @@ class _SaveButtonState extends State<SaveButton> {
         child: Container(
           key: ValueKey(isSaved),
           decoration: BoxDecoration(
-            color: isSaved
-                ? Colors.green[100]
-                : Colors.blue[100], // Fondo dinámico
-            shape: BoxShape.circle, // Forma circular
+            color: isSaved ? Colors.green[100] : Colors.blue[100],
+            shape: BoxShape.circle,
           ),
-          padding: const EdgeInsets.all(8.0), // Espaciado interno
+          padding: const EdgeInsets.all(8.0),
           child: Icon(
             isSaved ? Icons.check : Icons.add,
-            color: isSaved ? Colors.green : Colors.blue, // Color del ícono
+            color: isSaved ? Colors.green : Colors.blue,
           ),
         ),
       ),
