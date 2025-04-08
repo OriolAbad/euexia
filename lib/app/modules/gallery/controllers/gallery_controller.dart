@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -62,7 +63,7 @@ class GalleryController extends GetxController {
 
   Future<void> takeAndUploadPhoto() async {
   try {
-    if (client.auth.currentUser == null) {
+    if (_client.auth.currentUser == null) {
       Get.snackbar('Error', 'You must be logged in to upload photos');
       return;
     }
@@ -77,14 +78,14 @@ class GalleryController extends GetxController {
 
     // Manejo específico para Web
     if (GetPlatform.isWeb) {
-      await client.storage.from('gallery').uploadBinary(
+      await _client.storage.from('gallery').uploadBinary(
         fileName,
         bytes,
         fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
       );
     } else {
       final File imageFile = File(photo.path);
-      await client.storage.from('gallery').upload(
+      await _client.storage.from('gallery').upload(
         fileName,
         imageFile,
         fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
