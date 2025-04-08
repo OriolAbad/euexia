@@ -60,11 +60,23 @@ class StartTrainingController extends GetxController {
     }
   }
 
-  void reduceSeriesAndRest(int restTime, Function onRestComplete) {
+  void reduceSeriesAndRest(int restTime, Function onRestComplete, Function onTrainingComplete) {
     final currentExercise = ejerciciosRutina[currentExerciseIndex.value];
+    
     if (currentExercise.series > 0) {
       currentExercise.series--; // Reducir el número de series
       ejerciciosRutina.refresh(); // Actualizar la lista para reflejar los cambios
+    }
+
+    // Si las series llegan a 0, pasar al siguiente ejercicio
+    if (currentExercise.series <= 0) {
+      if (currentExerciseIndex.value < ejerciciosRutina.length - 1) {
+        currentExerciseIndex.value++; // Avanzar al siguiente ejercicio
+      } else {
+        stopTimer(); // Detener el temporizador si no hay más ejercicios
+        onTrainingComplete(); // Llamar al callback de finalización del entrenamiento
+        return;
+      }
     }
 
     // Iniciar el tiempo de descanso

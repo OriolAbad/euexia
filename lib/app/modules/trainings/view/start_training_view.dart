@@ -206,7 +206,7 @@ class _StartTrainingViewState extends State<StartTrainingView> {
                                         setState(() {
                                           isResting = false;
                                         });
-                                      });
+                                      }, () {}); // Pass an empty function or appropriate callback
                                     },
                                     child: Text(
                                       "$time s",
