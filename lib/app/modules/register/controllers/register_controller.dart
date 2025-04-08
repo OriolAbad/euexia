@@ -39,7 +39,7 @@ class RegisterController extends GetxController {
           location: location.text
         );
 
-        // result = await _supabaseService.usuarios.addUser(usuario, passwordC.text);
+        result = await _supabaseService.usuarios.addUser(usuario, passwordC.text);
         isLoading.value = false;
 
         if(result.success){

@@ -109,7 +109,7 @@ class RegisterView extends GetView<RegisterController> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextField(
-                      controller: controller.nameC,
+                      controller: controller.nombreusuario,
                       decoration: InputDecoration(
                         hintText: "User Name",
                         hintStyle: const TextStyle(color: Colors.black),
