@@ -20,8 +20,9 @@ class UserRoutinesView extends StatelessWidget {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Get.toNamed(Routes.HOME);
+          onPressed: () async {
+            await controller.saveAllSavedRoutines(); // Espera a que se guarden las rutinas
+            Get.toNamed(Routes.HOME); // Vuelve a la pantalla anterior después de guardar
           },
         ),
       ),
@@ -98,13 +99,6 @@ class UserRoutinesView extends StatelessWidget {
           );
         }),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          controller.saveAllSavedRoutines(); // Configura tu lógica aquí
-        },
-        backgroundColor: Colors.blue, // Color del botón
-        child: const Icon(Icons.save, color: Colors.white), // Ícono del botón
-      ),
     );
   }
 }
@@ -132,8 +126,7 @@ class _SaveButtonState extends State<SaveButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        // Da error de ValueKey duplicado, ARREGLARLO
+      onTap: () { // Da error de ValueKey duplicado, ARREGLARLO
         setState(() {
           isSaved = !isSaved;
         });
