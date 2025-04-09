@@ -18,7 +18,7 @@ class TipsController extends GetxController {
     getTips();
     // var data = _supabaseService.
 
-    }
+  }
 
   Future<void> getTips() async {
     isLoading.value = true;
