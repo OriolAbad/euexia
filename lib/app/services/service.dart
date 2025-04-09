@@ -1737,7 +1737,6 @@ class _RutinasService {
   
     return result;
   }
-
 }
 
 class _TiposRetosService {
