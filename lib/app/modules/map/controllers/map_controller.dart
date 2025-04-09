@@ -3,6 +3,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart'; // Importa flutter_map
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 
 class MapControllerX extends GetxController {
   final MapController mapController =
@@ -118,9 +119,46 @@ class MapControllerX extends GetxController {
     markers.add(point); // Agregar marcador a la lista
   }
 
+  // IMPLEMENTAR QUE ESTA UBICACION VENGA DE LA BASE DE DATOS DE LA
+  // UBICACIÓN DEL USUARIO CUANDO SE REGISTRÓ
   // Método para centrar el mapa en la ubicación actual del usuario
+
   Future<void> centerMapOnUserLocation() async {
-    searchLocation.value = LatLng(41.382894, 2.177432); // Barcelona, España
-    mapController.move(searchLocation.value!, 12.0); // Mover el mapa
+    try {
+      // Verificar permisos de ubicación
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        // Si el servicio de ubicación no está activado, puedes mostrar un mensaje
+        // o pedir al usuario que lo active.
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          // Permisos denegados, puedes manejar esto según tu aplicación
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        // Permisos denegados permanentemente, puedes guiar al usuario a la configuración
+        return;
+      }
+
+      // Obtener la ubicación actual
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high, // Precisión alta
+      );
+
+      // Centrar el mapa en la ubicación obtenida
+      searchLocation.value = LatLng(position.latitude, position.longitude);
+      mapController.move(
+          searchLocation.value!, 12.0); // Ajusta el zoom según necesites
+    } catch (e) {
+      // Manejar errores (por ejemplo, timeout o problemas de GPS)
+      print("Error al obtener la ubicación: $e");
+    }
   }
 }
