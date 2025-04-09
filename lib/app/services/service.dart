@@ -1720,22 +1720,23 @@ class _RutinasService {
   }
   Future<custom_response.Response> getNumberOfRutinas() async {
     custom_response.Response result = custom_response.Response(success: false);
-
+  
     try {
-      final response = await client
+      // Realiza una consulta para contar el número de rutinas
+      final data = await client
           .from('rutinas')
-          .select('idrutina')
-          .count(CountOption.exact); // Correct way to get count
-            
-      final count = response.count; // Now count will be available
-
+          .select('idrutina', const FetchOptions(count: CountOption.exact)) // Solicita el conteo exacto
+          .limit(1); // No necesitas traer datos, solo el conteo
+  
+      final count = data.count; // Obtiene el número total de rutinas
+  
       result.success = true;
       result.data = count;
     } catch (e) {
       result.success = false;
       result.errorMessage = e.toString();
     }
-
+  
     return result;
   }
 }
