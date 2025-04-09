@@ -119,7 +119,12 @@ class MapControllerX extends GetxController {
     markers.add(point); // Agregar marcador a la lista
   }
 
-  // Método para centrar el mapa en la ubicación actual del usuario
+  /*Future<void> centerMapOnUserLocation() async {
+    searchLocation.value = LatLng(41.382894, 2.177432); // Barcelona, España
+    mapController.move(searchLocation.value!, 12.0); // Mover el mapa
+  }*/
+  
+  // Método para centrar el mapa en la ubicación actual del usuarioy
   Future<void> centerMapOnUserLocation() async {
     try {
       // Verificar permisos de ubicación
