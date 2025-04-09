@@ -34,13 +34,13 @@ class StartTrainingController extends GetxController {
   }
 
   void startCountdown(Function onCountdownComplete) {
+    countdown.value = 3; // Asegúrate de que el contador comience en 3
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (countdown.value > 0) {
         countdown.value--;
       } else {
         timer.cancel(); // Detener el temporizador cuando llegue a 0
-        onCountdownComplete(); // Llamar a la función pasada como callback
-        startTimer(); // Iniciar el contador de tiempo
+        onCountdownComplete(); // Llamar al callback para continuar
       }
     });
   }

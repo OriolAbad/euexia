@@ -133,7 +133,7 @@ class _StartTrainingViewState extends State<StartTrainingView> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "Series: ${ejercicioActual.series}",
+                          "Series totales: ${ejercicioActual.series}", // Mostrar las series originales del ejercicio
                           style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 16,
@@ -159,8 +159,20 @@ class _StartTrainingViewState extends State<StartTrainingView> {
                   ),
                 ),
               ),
-
-              
+              // Mostrar las series restantes en un texto aparte
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Obx(() {
+                  return Text(
+                    "Series restantes: ${controller.seriesSelectedExercise.value}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                }),
+              ),
               // Botón para completar la serie
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -211,11 +223,83 @@ class _StartTrainingViewState extends State<StartTrainingView> {
                                       setState(() {
                                         isResting = true;
                                       });
-                                      controller.reduceSeriesAndRest(time, () {
-                                        setState(() {
-                                          isResting = false;
-                                        });
-                                      }, () {}); // Pass an empty function or appropriate callback
+                                      controller.reduceSeriesAndRest(
+                                        time,
+                                        () {
+                                          setState(() {
+                                            isResting = false;
+                                          });
+                                        },
+                                        () {
+                                          // Mostrar el modal de descanso al finalizar el ejercicio
+                                          showModalBottomSheet(
+                                            context: context,
+                                            backgroundColor: Colors.black,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                                            ),
+                                            builder: (context) {
+                                              return Padding(
+                                                padding: const EdgeInsets.all(16.0),
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    const Text(
+                                                      "Selecciona el tiempo de descanso",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 18,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 16),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                      children: [15, 30, 60].map((time) {
+                                                        return ElevatedButton(
+                                                          style: ElevatedButton.styleFrom(
+                                                            backgroundColor: Colors.blue,
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(12),
+                                                            ),
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.of(context).pop(); // Cerrar el modal
+                                                            setState(() {
+                                                              isResting = true;
+                                                            });
+                                                            controller.reduceSeriesAndRest(
+                                                              time,
+                                                              () {
+                                                                setState(() {
+                                                                  isResting = false;
+                                                                });
+                                                              },
+                                                              () {
+                                                                Get.snackbar(
+                                                                  "Entrenamiento finalizado",
+                                                                  "¡Buen trabajo!",
+                                                                );
+                                                              },
+                                                            );
+                                                          },
+                                                          child: Text(
+                                                            "$time s",
+                                                            style: const TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                      );
                                     },
                                     child: Text(
                                       "$time s",
@@ -233,14 +317,18 @@ class _StartTrainingViewState extends State<StartTrainingView> {
                       },
                     );
                   },
-                  child: Text(
-                    ejercicioActual.series > 1 ? "Completar Serie" : "Finalizar Ejercicio",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: Obx(() {
+                    return Text(
+                      controller.seriesSelectedExercise.value == 1
+                          ? "Finalizar Ejercicio"
+                          : "Completar Serie",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  }),
                 ),
               ),
             ],
