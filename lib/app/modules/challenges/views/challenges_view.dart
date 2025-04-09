@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/challenges_controller.dart';
 import 'package:euexia/app/modules/home/views/home_view.dart'; 
+import 'package:euexia/app/modules/challenges/views/pomodoro_view.dart';
 
 class ChallengesView extends StatelessWidget {
   @override
@@ -74,9 +75,16 @@ class ChallengesView extends StatelessWidget {
                               ? Icon(Icons.check_circle, color: Colors.purple)
                               : Icon(Icons.circle_outlined, color: Colors.white),
                           onTap: () {
-                            controller.challenges[index].isCompleted = !controller.challenges[index].isCompleted;
-                            controller.challenges.refresh();
+                            final challenge = controller.challenges[index]; // Obtén el desafío completo
+                            Get.to(() => PomodoroView(challenge: challenge))?.then((result) {
+                              if (result == true) { 
+                                challenge.isCompleted = true;  // Marca el desafío como completado
+                                controller.challenges.refresh();  // Refresca la lista para actualizar la UI
+                              }
+                            });
                           },
+
+
                         ),
                       );
                     },

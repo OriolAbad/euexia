@@ -209,6 +209,11 @@ class SingTrainingView extends StatelessWidget {
 }
 
 void showModalNewExercise(BuildContext context, SingTrainingController trainingsController) {
+  if(trainingsController.adding.value) {
+    trainingsController.ejercicioRutina.value.kilogramos = null;
+    trainingsController.ejercicioRutina.value.series = 0;
+    trainingsController.ejercicioRutina.value.repeticiones = 0;
+  }
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -272,16 +277,14 @@ void showModalNewExercise(BuildContext context, SingTrainingController trainings
             }),
             const SizedBox(height: 16),
             // NumberInput para series
-            Obx(() {
+             Obx(() {
               return TextField(
-                keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 onChanged: (value) {
                   trainingsController.ejercicioRutina.value.series = int.tryParse(value) ?? 0;
                 },
                 decoration: InputDecoration(
-                  labelText: trainingsController.ejercicioRutina.value.series == 0
-                      ? "Series"
-                      : null, // Muestra "Series" si el valor es 0
+                  labelText: "Series",
                   labelStyle: const TextStyle(color: Colors.white70),
                   filled: true,
                   fillColor: Colors.grey[800],
@@ -292,24 +295,22 @@ void showModalNewExercise(BuildContext context, SingTrainingController trainings
                 ),
                 style: const TextStyle(color: Colors.white),
                 controller: TextEditingController(
-                  text: trainingsController.ejercicioRutina.value.series == 0
-                      ? ""
-                      : trainingsController.ejercicioRutina.value.series.toString(),
+                  text: trainingsController.ejercicioRutina.value.series > 0
+                      ? trainingsController.ejercicioRutina.value.series.toString()
+                      : '',
                 ),
               );
             }),
             const SizedBox(height: 16),
             // NumberInput para repeticiones
-            Obx(() {
+             Obx(() {
               return TextField(
-                keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 onChanged: (value) {
                   trainingsController.ejercicioRutina.value.repeticiones = int.tryParse(value) ?? 0;
                 },
                 decoration: InputDecoration(
-                  labelText: trainingsController.ejercicioRutina.value.repeticiones == 0
-                      ? "Repeticiones"
-                      : null, // Muestra "Repeticiones" si el valor es 0
+                  labelText: "Repeticiones",
                   labelStyle: const TextStyle(color: Colors.white70),
                   filled: true,
                   fillColor: Colors.grey[800],
@@ -320,9 +321,9 @@ void showModalNewExercise(BuildContext context, SingTrainingController trainings
                 ),
                 style: const TextStyle(color: Colors.white),
                 controller: TextEditingController(
-                  text: trainingsController.ejercicioRutina.value.repeticiones == 0
-                      ? ""
-                      : trainingsController.ejercicioRutina.value.repeticiones.toString(),
+                  text: trainingsController.ejercicioRutina.value.repeticiones > 0
+                      ? trainingsController.ejercicioRutina.value.repeticiones.toString()
+                      : '',
                 ),
               );
             }),

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -61,8 +62,56 @@ class GalleryController extends GetxController {
   }
 
   Future<void> takeAndUploadPhoto() async {
-    await _handleImagePick(ImageSource.camera);
+  try {
+    if (_client.auth.currentUser == null) {
+      Get.snackbar('Error', 'You must be logged in to upload photos');
+      return;
+    }
+
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    if (photo == null) return;
+
+    final Uint8List bytes = await photo.readAsBytes();
+    final String fileName = 'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final filePath = '$userUid/$fileName';
+
+
+    isLoading.value = true;
+
+    // Manejo específico para Web
+    if (GetPlatform.isWeb) {
+      await _client.storage.from('gallery').uploadBinary(
+        filePath,
+        bytes,
+        fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+      );
+    } else {
+      final File imageFile = File(photo.path);
+      await _client.storage.from('gallery').upload(
+        filePath,
+        imageFile,
+        fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+      );
+    }
+
+    await fetchImages();
+
+    Get.snackbar(
+      'Success',
+      'Photo uploaded successfully!',
+      colorText: Colors.white,
+    );
+  } catch (e) {
+    Get.snackbar(
+      'Error',
+      'Failed to upload photo: $e',
+      colorText: Colors.white,
+    );
+  } finally {
+    isLoading.value = false;
   }
+}
+
 
   Future<void> pickAndUploadPhoto() async {
     await _handleImagePick(ImageSource.gallery);
