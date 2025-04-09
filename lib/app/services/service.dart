@@ -2237,7 +2237,7 @@ class _UsuariosRutinasService {
   
     return result;
   }
-  Future<custom_response.Response> getRutinasOfUserWithExercises(int idUsuario) async {
+  Future<custom_response.Response> getRutinasOfUserWithExercises(int? idUsuario) async {
     List<Rutina> rutinas = [];
     custom_response.Response result = custom_response.Response(success: false);
 
