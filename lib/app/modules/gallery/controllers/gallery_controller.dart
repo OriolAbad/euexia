@@ -73,20 +73,22 @@ class GalleryController extends GetxController {
 
     final Uint8List bytes = await photo.readAsBytes();
     final String fileName = 'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final filePath = '$userUid/$fileName';
+
 
     isLoading.value = true;
 
     // Manejo específico para Web
     if (GetPlatform.isWeb) {
       await _client.storage.from('gallery').uploadBinary(
-        fileName,
+        filePath,
         bytes,
         fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
       );
     } else {
       final File imageFile = File(photo.path);
       await _client.storage.from('gallery').upload(
-        fileName,
+        filePath,
         imageFile,
         fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
       );
