@@ -1,3 +1,4 @@
+import 'package:euexia/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/user_routines_controller.dart';
@@ -19,9 +20,8 @@ class UserRoutinesView extends StatelessWidget {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () async {
-            await controller.saveAllSavedRoutines(); // Espera a que se guarden las rutinas
-            Get.back(); // Vuelve a la pantalla anterior después de guardar
+          onPressed: () {
+            Get.toNamed(Routes.HOME);
           },
         ),
       ),
@@ -98,6 +98,13 @@ class UserRoutinesView extends StatelessWidget {
           );
         }),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          controller.saveAllSavedRoutines(); // Configura tu lógica aquí
+        },
+        backgroundColor: Colors.blue, // Color del botón
+        child: const Icon(Icons.save, color: Colors.white), // Ícono del botón
+      ),
     );
   }
 }
@@ -125,7 +132,8 @@ class _SaveButtonState extends State<SaveButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () { // Da error de ValueKey duplicado, ARREGLARLO
+      onTap: () {
+        // Da error de ValueKey duplicado, ARREGLARLO
         setState(() {
           isSaved = !isSaved;
         });
