@@ -1718,20 +1718,26 @@ class _RutinasService {
   
     return result;
   }
-  Future<custom_response.Response> getNumberOfRutinas() async {
+    Future<custom_response.Response> getNumberOfRutinas() async {
     custom_response.Response result = custom_response.Response(success: false);
   
     try {
-      // Realiza una consulta para contar el número de rutinas
+      // Realiza una consulta para obtener el ID de la última rutina
       final data = await client
           .from('rutinas')
-          .select('idrutina', const FetchOptions(count: CountOption.exact)) // Solicita el conteo exacto
-          .limit(1); // No necesitas traer datos, solo el conteo
+          .select('idrutina') // Selecciona solo el campo idrutina
+          .order('idrutina', ascending: false) // Ordena por idrutina en orden descendente
+          .limit(1) // Obtén solo el primer registro
+          .single(); // Obtén un único registro
   
-      final count = data.count; // Obtiene el número total de rutinas
-  
-      result.success = true;
-      result.data = count;
+      if (data != null) {
+        final lastId = data['idrutina']; // Obtiene el ID de la última rutina
+        result.success = true;
+        result.data = lastId;
+      } else {
+        result.success = false;
+        result.errorMessage = 'No se encontraron rutinas.';
+      }
     } catch (e) {
       result.success = false;
       result.errorMessage = e.toString();

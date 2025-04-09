@@ -79,7 +79,7 @@ class UserRoutinesController extends GetxController {
     try {
       // Crear una nueva rutina basada en la rutina original
       final newRutina = Rutina(
-        idRutina: idNewRutina,
+        idRutina: idNewRutina ,
         nombre: rutina.nombre,
         descripcion: rutina.descripcion,
         ejercicios: rutina.ejercicios, // Copia los ejercicios si es necesario

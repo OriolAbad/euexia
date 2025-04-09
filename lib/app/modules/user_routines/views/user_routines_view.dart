@@ -19,10 +19,9 @@ class UserRoutinesView extends StatelessWidget {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            controller
-                .saveAllSavedRoutines(); // Guarda las rutinas que esten en isSaved == true al salir
-            Get.back(); // Vuelve a la pantalla anterior
+          onPressed: () async {
+            await controller.saveAllSavedRoutines(); // Espera a que se guarden las rutinas
+            Get.back(); // Vuelve a la pantalla anterior después de guardar
           },
         ),
       ),
