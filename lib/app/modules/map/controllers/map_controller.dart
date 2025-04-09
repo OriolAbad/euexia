@@ -119,10 +119,7 @@ class MapControllerX extends GetxController {
     markers.add(point); // Agregar marcador a la lista
   }
 
-  // IMPLEMENTAR QUE ESTA UBICACION VENGA DE LA BASE DE DATOS DE LA
-  // UBICACIÓN DEL USUARIO CUANDO SE REGISTRÓ
   // Método para centrar el mapa en la ubicación actual del usuario
-
   Future<void> centerMapOnUserLocation() async {
     try {
       // Verificar permisos de ubicación
