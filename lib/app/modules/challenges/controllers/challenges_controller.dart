@@ -1,37 +1,55 @@
-// lib/controllers/challenges_controller.dart
+import 'package:euexia/app/data/help/response.dart' as custom_response;
+import 'package:euexia/app/data/models/retos.dart';
+import 'package:euexia/app/data/models/usuarios.dart';
+import 'package:euexia/app/data/models/usuarios_retos.dart';
+import 'package:euexia/app/services/service.dart';
 import 'package:get/get.dart';
 
-class Challenge {
-  String name;
-  String description;
-  String image;
-  bool isCompleted;
-  String tipo;
+class ChallengesController extends GetxController{
+  final _supabaseService = SupabaseService();
 
-  Challenge({
-    required this.name,
-    required this.description,
-    required this.image,
-    required this.tipo,
-    this.isCompleted = false, // Valor manual por ahora
-  });
-}
+  var isLoading = false.obs;
+  var retos = [].obs;
+  late int idUsuarioLogged = 0;
 
-class ChallengesController extends GetxController {
-  var points = 100.obs; 
-  var challenges = <Challenge>[
-    Challenge(name: "Curl martillo", description: "3 sets, 8-12 reps", image: "assets/curl_martillo.png", isCompleted: false, tipo: "Semanal"),
-    Challenge(name: "Curl inclinado", description: "3 sets, 8-12 reps", image: "assets/curl_inclinado.png", isCompleted: false, tipo: "Semanal"),
-    Challenge(name: "Curl predicador", description: "3 sets, 8-12 reps", image: "assets/curl_predicador.png", isCompleted: false, tipo: "Semanal"),
-    Challenge(name: "Extensión de tríceps", description: "3 sets, 8-12 reps", image: "assets/extension_triceps.png", isCompleted: false, tipo: "Semanal"),
-    Challenge(name: "Extensión de tríceps tras nuca", description: "3 sets, 8-12 reps", image: "assets/extension_nuca.png", isCompleted: false, tipo: "Semanal"),
-    Challenge(name: "Fondos en máquina", description: "3 sets, 8-12 reps", image: "assets/fondos_maquina.png", isCompleted: false, tipo: "Semanal"),
-  ].obs;
+  custom_response.Response result = custom_response.Response(success: false);
 
-  int get completedCount => challenges.where((c) => c.isCompleted).length;
+  @override
 
-  void completeChallenge(int index) {
-    challenges[index].isCompleted = true;
-    challenges.refresh();  // Refresca la lista para actualizar la UI
+  Future<void> onInit() async {
+    super.onInit();
+
+    await getLoggedUser();
+    await getRetosOfUser();
   }
+
+  Future<void> getLoggedUser() async{
+    isLoading.value = true;
+    result = await _supabaseService.usuarios.getLoggedInUser();
+
+    if(result.success){
+      Usuario loggedUser = result.data as Usuario;
+      idUsuarioLogged = loggedUser.idUsuario!;
+    }
+    else{
+      Get.snackbar("Error", result.errorMessage ?? "Unknown error");
+    }
+
+    isLoading.value = false;  
+  }
+
+  Future<void> getRetosOfUser() async{
+    isLoading.value = true;
+    result = await _supabaseService.usuarios_retos.getUsuariosRetosByIdWithRetos(idUsuarioLogged);
+
+    if(result.success){
+      retos.assignAll(result.data as Iterable<Reto>); // Asignar correctamente los datos a la lista observable
+    }
+    else{
+      Get.snackbar("Error", result.errorMessage ?? "Unknown error");
+    }
+
+    isLoading.value = false;  
+  }
+
 }
