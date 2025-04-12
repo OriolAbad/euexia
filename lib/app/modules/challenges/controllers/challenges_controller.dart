@@ -43,12 +43,12 @@ class ChallengesController extends GetxController{
     result = await _supabaseService.usuarios_retos.getUsuariosRetosByIdWithRetos(idUsuarioLogged);
 
     if(result.success){
-      retos.assignAll(result.data as Iterable<Reto>); // Asignar correctamente los datos a la lista observable
+      retos.assignAll(result.data as Iterable<UsuarioReto>); // Asignar correctamente los datos a la lista observable
     }
     else{
       Get.snackbar("Error", result.errorMessage ?? "Unknown error");
     }
-
+ 
     isLoading.value = false;  
   }
 
