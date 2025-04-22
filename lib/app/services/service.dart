@@ -1976,32 +1976,47 @@ class _UsuariosRetosService {
     return result;
   }
   Future<custom_response.Response> getUsuariosRetosByIdWithRetos(int idUsuario) async {
-    List<Reto> retos = [];
-    custom_response.Response result = custom_response.Response(success: false);
-  
-    try {
-      final data = await client
-          .from('usuarios_retos')
-          .select('retos(*)') // Incluye la relación con la tabla retos
-          .eq('idusuario', idUsuario); // Filtra por idUsuario
-  
-      retos = data.map<Reto>((json) {
-        if (json['retos'] != null) {
-          return Reto.fromJson(json['retos']);
-        }
-        throw Exception('Datos de reto no encontrados');
-      }).toList();
-  
-      result.success = true;
-      result.data = retos;
-  
-    } catch (e) {
-      result.success = false;
-      result.errorMessage = e.toString();
-    }
-  
-    return result;
+  List<UsuarioReto> usuariosRetos = [];
+  custom_response.Response result = custom_response.Response(success: false);
+
+  try {
+    final data = await client
+        .from('usuarios_retos')
+        .select('*, retos(*)') // Incluye la relación con la tabla 'retos'
+        .eq('idusuario', idUsuario); // Filtra por idUsuario
+
+    // Asegúrate de mapear correctamente la relación
+    usuariosRetos = data.map<UsuarioReto>((json) {
+      // Verificamos si la relación 'retos' existe
+      if (json['retos'] != null) {
+        // Creamos un objeto Reto a partir de la relación
+        Reto reto = Reto.fromJson(json['retos'][0]); // Usamos el primer elemento de la lista
+        
+        // Creamos un objeto UsuarioReto
+        return UsuarioReto(
+          idReto: json['idreto'],
+          idUsuario: json['idusuario'],
+          fechaInicio: DateTime.parse(json['fechainicio']),
+          fechaFin: json['fechafin'] != null ? DateTime.parse(json['fechafin']) : null,
+          completado: json['completado'] ?? false,
+          // Asignamos el objeto Reto
+        );
+      }
+      throw Exception('Datos de reto no encontrados');
+    }).toList();
+
+    result.success = true;
+    result.data = usuariosRetos;
+
+  } catch (e) {
+    result.success = false;
+    result.errorMessage = e.toString();
   }
+
+  return result;
+}
+
+
   Future<custom_response.Response> getUsuarioRetoById(int idUsuario, int idReto) async {
     dynamic usuarioReto;
     custom_response.Response result = custom_response.Response(success: false);
