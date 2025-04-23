@@ -17,6 +17,7 @@ class UsuarioReto {
     required this.fechaInicio,
     this.fechaFin,
     this.completado = false,
+    this.reto
   });
 
   factory UsuarioReto.fromJson(Map<String, dynamic> json) {
@@ -26,6 +27,7 @@ class UsuarioReto {
       fechaInicio: DateTime.parse(json['fechainicio']),
       fechaFin: json['fechafin'] != null ? DateTime.parse(json['fechafin']) : null,
       completado: json['completado'] ?? false,
+      reto: json['reto'] != null ? Reto.fromJson(json['reto']) : null,
     );
   }
 
