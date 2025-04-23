@@ -1980,30 +1980,30 @@ class _UsuariosRetosService {
   custom_response.Response result = custom_response.Response(success: false);
 
   try {
-    final data = await client
-        .from('usuarios_retos')
-        .select('*, retos(*)') // Incluye la relación con la tabla 'retos'
-        .eq('idusuario', idUsuario); // Filtra por idUsuario
+      final data = await client
+          .from('usuarios_retos')
+          .select('*, retos(*)') // Incluye la relación con la tabla 'retos'
+          .eq('idusuario', idUsuario); // Filtra por idUsuario
 
-    // Asegúrate de mapear correctamente la relación
-    usuariosRetos = data.map<UsuarioReto>((json) {
-      // Verificamos si la relación 'retos' existe
-      if (json['retos'] != null) {
-        // Creamos un objeto Reto a partir de la relación
-        Reto reto = Reto.fromJson(json['retos'][0]); // Usamos el primer elemento de la lista
-        
-        // Creamos un objeto UsuarioReto
-        return UsuarioReto(
-          idReto: json['idreto'],
-          idUsuario: json['idusuario'],
-          fechaInicio: DateTime.parse(json['fechainicio']),
-          fechaFin: json['fechafin'] != null ? DateTime.parse(json['fechafin']) : null,
-          completado: json['completado'] ?? false,
-          // Asignamos el objeto Reto
-        );
-      }
-      throw Exception('Datos de reto no encontrados');
-    }).toList();
+      // Asegúrate de mapear correctamente la relación
+      usuariosRetos = data.map<UsuarioReto>((json) {
+        // Verificamos si la relación 'retos' existe
+        if (json['retos'] != null) {
+          // Creamos un objeto Reto a partir de la relación
+          Reto reto = Reto.fromJson(json['retos'][0]); // Usamos el primer elemento de la lista
+          
+          // Creamos un objeto UsuarioReto
+          return UsuarioReto(
+            idReto: json['idreto'],
+            idUsuario: json['idusuario'],
+            fechaInicio: DateTime.parse(json['fechainicio']),
+            fechaFin: json['fechafin'] != null ? DateTime.parse(json['fechafin']) : null,
+            completado: json['completado'] ?? false,
+            // Asignamos el objeto Reto
+          );
+        }
+        throw Exception('Datos de reto no encontrados');
+      }).toList();
 
     result.success = true;
     result.data = usuariosRetos;

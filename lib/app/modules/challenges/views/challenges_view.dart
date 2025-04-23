@@ -1,6 +1,8 @@
+// views/challenges_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/challenges_controller.dart';
+import 'pomodoro_view.dart'; // Importamos la vista de Pomodoro
 import 'package:euexia/app/data/models/usuarios_retos.dart';
 
 class ChallengesView extends StatelessWidget {
@@ -58,6 +60,10 @@ class ChallengesView extends StatelessWidget {
                   usuarioReto.completado ? Icons.check_circle : Icons.circle_outlined,
                   color: usuarioReto.completado ? Colors.greenAccent : Colors.white,
                 ),
+                onTap: () {
+                  // Al hacer tap en el reto, navegamos a la vista de Pomodoro
+                  Get.to(() => PomodoroChallengeView(reto: reto));
+                },
               ),
             );
           },
