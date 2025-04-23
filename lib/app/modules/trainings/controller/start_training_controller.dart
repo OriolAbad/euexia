@@ -6,6 +6,7 @@ import 'package:euexia/app/data/models/records_personales.dart';
 import 'package:euexia/app/data/models/rutinas.dart';
 import 'package:euexia/app/data/models/usuarios.dart';
 import 'package:euexia/app/services/service.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class StartTrainingController extends GetxController {
@@ -59,7 +60,13 @@ class StartTrainingController extends GetxController {
       idUsuarioLogged = loggedUser.idUsuario!;
     }
     else{
-      Get.snackbar("Error", result.errorMessage ?? "Unknown error");
+       Get.snackbar(
+      "Error", 
+      result.errorMessage ?? "Unknown error",
+      backgroundColor: Colors.red, // Fondo rojo
+      colorText: Colors.white, // Texto blanco
+      duration: const Duration(seconds: 6), // Duración de 6 segundos
+    );
     }
 
     isLoading.value = false;  
@@ -116,33 +123,77 @@ class StartTrainingController extends GetxController {
     result = await _supabaseService.dias_entrenados.addTrainedDay(newDiaEntrenado);
 
     if (result.success) {
-
-
+      await insertarStats(); // Inserta los stats al finalizar el entrenamiento
       Get.back(); // Regresa a la pantalla anterior
     } else {
-      Get.snackbar("Error", result.errorMessage ?? "Unknown error");
+       Get.snackbar(
+      "Error", 
+      result.errorMessage ?? "Unknown error",
+      backgroundColor: Colors.red, // Fondo rojo
+      colorText: Colors.white, // Texto blanco
+      duration: const Duration(seconds: 6), // Duración de 6 segundos
+    );
     }
   }
 
-  // Future<void> insertarStats() async{
-  //   result = await _supabaseService.records_personales.getRecordsPersonalesByUserId(idUsuarioLogged);
+  Future<void> insertarStats() async{
+    result = await _supabaseService.records_personales.getRecordsPersonalesByUserId(idUsuarioLogged);
 
-  //   if(result.success){
-  //     List<RecordPersonal> records = result.data as List<RecordPersonal>;
-    
-  //     if (records.any((record) => rutina.value.ejercicios?.any((ejercicio) => ejercicio.idEjercicio == record.idEjercicio) ?? false)) {
-  //       var record = records.firstWhere((record) => rutina.value.ejercicios?.any((ejercicio) => ejercicio.idEjercicio == record.idEjercicio) ?? false);
-  //       if(){
+    if(result.success){
+      List<RecordPersonal> records = result.data as List<RecordPersonal>;
 
-  //       }
-  //     } else {
-        
-  //     }
-  //   }
-  //   else{
-  //     Get.snackbar("Error", result.errorMessage ?? "Unknown error");
-  //   }
-  // }
+      if (rutina.value.ejercicios != null) {
+        for (var ejercicio_rutina in rutina.value.ejercicios!) {
+
+          if (records.any((r) => r.idEjercicio == ejercicio_rutina.idEjercicio && r.idUsuario == idUsuarioLogged)) {
+            var record = records.firstWhere((r) => r.idEjercicio == ejercicio_rutina.idEjercicio && r.idUsuario == idUsuarioLogged);
+
+            if (ejercicio_rutina.kilogramos! > record.record) {
+              record.record = ejercicio_rutina.kilogramos!; // Actualiza el record existente
+              result = await _supabaseService.records_personales.updateRecordPersonal(record);
+              if(!result.success){
+                Get.snackbar(
+                  "Error", 
+                  result.errorMessage ?? "Unknown error",
+                  backgroundColor: Colors.red, // Fondo rojo
+                  colorText: Colors.white, // Texto blanco
+                  duration: const Duration(seconds: 6), // Duración de 6 segundos
+                );
+              }
+            }
+          }
+          else{
+            var newRecord = RecordPersonal(
+              idEjercicio: ejercicio_rutina.idEjercicio,
+              idUsuario: idUsuarioLogged,
+              record: ejercicio_rutina.kilogramos!,
+            );
+            result = await _supabaseService.records_personales.addRecordPersonal(newRecord);
+            if(!result.success){
+              Get.snackbar(
+                "Error", 
+                result.errorMessage ?? "Unknown error",
+                backgroundColor: Colors.red, // Fondo rojo
+                colorText: Colors.white, // Texto blanco
+                duration: const Duration(seconds: 6), // Duración de 6 segundos
+              );
+            }
+          }
+
+          
+        }
+      }
+    }
+    else{
+      Get.snackbar(
+        "Error", 
+        result.errorMessage ?? "Unknown error",
+        backgroundColor: Colors.red, // Fondo rojo
+        colorText: Colors.white, // Texto blanco
+        duration: const Duration(seconds: 6), // Duración de 6 segundos
+      );
+    }
+  }
 
   @override
   void onClose() {
