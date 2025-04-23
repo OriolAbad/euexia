@@ -1976,45 +1976,40 @@ class _UsuariosRetosService {
     return result;
   }
   Future<custom_response.Response> getUsuariosRetosByIdWithRetos(int idUsuario) async {
-  List<UsuarioReto> usuariosRetos = [];
-  custom_response.Response result = custom_response.Response(success: false);
-
-  try {
-    final data = await client
-        .from('usuarios_retos')
-        .select('*, retos(*)') // Incluye la relación con la tabla 'retos'
-        .eq('idusuario', idUsuario); // Filtra por idUsuario
-
-    // Asegúrate de mapear correctamente la relación
-    usuariosRetos = data.map<UsuarioReto>((json) {
-      // Verificamos si la relación 'retos' existe
-      if (json['retos'] != null) {
-        // Creamos un objeto Reto a partir de la relación
-        Reto reto = Reto.fromJson(json['retos'][0]); // Usamos el primer elemento de la lista
-        
-        // Creamos un objeto UsuarioReto
-        return UsuarioReto(
-          idReto: json['idreto'],
-          idUsuario: json['idusuario'],
-          fechaInicio: DateTime.parse(json['fechainicio']),
-          fechaFin: json['fechafin'] != null ? DateTime.parse(json['fechafin']) : null,
-          completado: json['completado'] ?? false,
-          // Asignamos el objeto Reto
-        );
-      }
-      throw Exception('Datos de reto no encontrados');
-    }).toList();
-
-    result.success = true;
-    result.data = usuariosRetos;
-
-  } catch (e) {
-    result.success = false;
-    result.errorMessage = e.toString();
+    List<UsuarioReto> usuariosRetos = [];
+    custom_response.Response result = custom_response.Response(success: false);
+  
+    try {
+      final data = await client
+          .from('usuarios_retos')
+          .select('*, retos(*)') // Incluye la relación con la tabla 'retos'
+          .eq('idusuario', idUsuario); // Filtra por idUsuario
+  
+      // Mapeamos los datos utilizando los métodos toJson y fromJson
+      usuariosRetos = data.map<UsuarioReto>((json) {
+        // Verificamos si la relación 'retos' existe
+        if (json['retos'] != null) {
+          // Creamos un objeto Reto a partir de la relación
+          Reto reto = Reto.fromJson(json['retos']);
+          
+          // Creamos un objeto UsuarioReto y asignamos el objeto Reto
+          return UsuarioReto.fromJson({
+            ...json,
+            'retos': reto.toJson(),
+          });
+        }
+        throw Exception('Datos de reto no encontrados');
+      }).toList();
+  
+      result.success = true;
+      result.data = usuariosRetos;
+  
+    } catch (e) {
+      result.success = false;
+      result.errorMessage = e.toString();
+    }
+    return result;
   }
-
-  return result;
-}
 
 
   Future<custom_response.Response> getUsuarioRetoById(int idUsuario, int idReto) async {
@@ -2150,6 +2145,30 @@ class _UsuariosRutinasService {
 
     return result;
   }
+  Future<custom_response.Response> getUsuarioRutinaById(int idUsuario, int idRutina) async {
+    custom_response.Response result = custom_response.Response(success: false);
+  
+    try {
+      final data = await client
+          .from('usuarios_rutinas')
+          .select('*') // Selecciona todos los campos
+          .eq('idusuario', idUsuario) // Filtra por idUsuario
+          .eq('idrutina', idRutina) // Filtra por idRutina
+          .single(); // Obtiene un único registro
+  
+      // Convierte el resultado en un objeto UsuarioRutina
+      UsuarioRutina usuarioRutina = UsuarioRutina.fromJson(data);
+  
+      result.success = true;
+      result.data = usuarioRutina;
+    } catch (e) {
+      result.success = false;
+      result.errorMessage = e.toString();
+    }
+  
+    return result;
+  }
+ 
   Future<custom_response.Response> getUsuariosRutinasByUserIdWithRutinas(int idUsuario) async {
     List<Rutina> rutinas = [];
     custom_response.Response result = custom_response.Response(success: false);

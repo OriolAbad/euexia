@@ -1,96 +1,152 @@
 import 'dart:async';
 import 'package:euexia/app/data/help/response.dart' as custom_response;
+import 'package:euexia/app/data/models/dias_entrenados.dart';
 import 'package:euexia/app/data/models/ejercicios_rutinas.dart';
+import 'package:euexia/app/data/models/records_personales.dart';
 import 'package:euexia/app/data/models/rutinas.dart';
+import 'package:euexia/app/data/models/usuarios.dart';
 import 'package:euexia/app/services/service.dart';
 import 'package:get/get.dart';
 
 class StartTrainingController extends GetxController {
+  StartTrainingController(Rutina rutina) : rutina = rutina.obs;
+
   final Rx<Rutina> rutina;
-  var ejerciciosRutina = [].obs; // Lista de ejercicios de la rutina
-  var currentExerciseIndex = 0.obs; // Índice del ejercicio actual
-  var seriesSelectedExercise = 0.obs; // Series restantes del ejercicio seleccionado
-  var countdown = 3.obs; // Contador inicial
+  int idUsuarioLogged = 0; // ID del usuario logueado
   final _supabaseService = SupabaseService();
   custom_response.Response result = custom_response.Response(success: false);
 
   var isLoading = false.obs;
-  var updating = false.obs;
-  var adding = false.obs;
+  var initialTimerBool = true.obs; // Estado del temporizador inicial (cuenta regresiva)
+  var isResting = false.obs; // Estado de descanso
 
   var elapsedTime = 0.obs; // Tiempo transcurrido en segundos
+  var restTime = 0.obs; // Tiempo de descanso en segundos
   Timer? timer; // Timer para el contador
 
-  StartTrainingController(Rutina rutina) : rutina = rutina.obs;
+  var currentSerie = 1.obs;
+  var currenExerciseIndex = 0.obs; // Índice del ejercicio actual
+  var currenExercise = Rx<EjercicioRutina?>(null);
 
   @override
   Future<void> onInit() async {
     super.onInit();
+    initialTimer(); // Llama a la cuenta regresiva al iniciar
+    getLoggedUser(); // Obtiene el usuario logueado
 
-    ejerciciosRutina.value = (rutina.value.ejercicios ?? []).cast<dynamic>(); // Asignar ejercicios de la rutina
-    if (ejerciciosRutina.isNotEmpty) {
-      seriesSelectedExercise.value = ejerciciosRutina[0].series; // Inicializar con las series del primer ejercicio
-    }
+    currenExercise.value = rutina.value.ejercicios?[currenExerciseIndex.value]; // Inicializa el primer ejercicio si no es null
   }
 
-  void startCountdown(Function onCountdownComplete) {
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (countdown.value > 0) {
-        countdown.value--;
-      } else {
-        timer.cancel(); // Detener el temporizador cuando llegue a 0
-        onCountdownComplete(); // Llamar a la función pasada como callback
-        startTimer(); // Iniciar el contador de tiempo
-      }
-    });
-  }
-
-  void startTimer() {
+  void initialTimer() {
+    elapsedTime.value = 3; // Inicia la cuenta regresiva desde 3
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      elapsedTime.value++;
-    });
-  }
-
-  void stopTimer() {
-    timer?.cancel();
-  }
-
-  void nextExercise(Function onTrainingComplete) {
-    if (currentExerciseIndex.value < ejerciciosRutina.length - 1) {
-      currentExerciseIndex.value++;
-      seriesSelectedExercise.value = ejerciciosRutina[currentExerciseIndex.value].series; // Actualizar las series del nuevo ejercicio
-    } else {
-      stopTimer(); // Detener el temporizador al finalizar
-      onTrainingComplete(); // Llamar a la función pasada como callback
-    }
-  }
-
-  void reduceSeriesAndRest(int restTime, Function onRestComplete, Function onTrainingComplete) {
-    if (seriesSelectedExercise.value > 0) {
-      seriesSelectedExercise.value--; // Reducir el número de series restantes
-    }
-
-    // Si las series restantes llegan a 0, pasar al siguiente ejercicio
-    if (seriesSelectedExercise.value <= 0) {
-      nextExercise(onTrainingComplete);
-      return;
-    }
-
-    // Iniciar el tiempo de descanso
-    countdown.value = restTime;
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (countdown.value > 0) {
-        countdown.value--;
+      if (elapsedTime.value > 0) {
+        elapsedTime.value--; // Decrementa el tiempo
       } else {
-        timer.cancel(); // Detener el temporizador cuando termine el descanso
-        onRestComplete(); // Llamar al callback para continuar
+        timer.cancel(); // Detiene el temporizador cuando llega a 0
+        initialTimerBool.value = false; // Cambia el estado para mostrar el temporizador principal
+        startMainTimer(); // Inicia el temporizador principal
       }
     });
   }
+
+  Future<void> getLoggedUser() async{
+    isLoading.value = true;
+    result = await _supabaseService.usuarios.getLoggedInUser();
+
+    if(result.success){
+      Usuario loggedUser = result.data as Usuario;
+      idUsuarioLogged = loggedUser.idUsuario!;
+    }
+    else{
+      Get.snackbar("Error", result.errorMessage ?? "Unknown error");
+    }
+
+    isLoading.value = false;  
+  }
+
+  void startMainTimer() {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      elapsedTime.value++; // Incrementa el tiempo transcurrido
+    });
+  }
+
+  void stopMainTimer() {
+    timer?.cancel(); // Detiene el temporizador principal
+  }
+
+  void startRestTimer(int seconds) {
+    isResting.value = true; // Cambia el estado a descanso
+
+    restTime.value = seconds; // Establece el tiempo de descanso
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (restTime.value > 0) {
+        restTime.value--; // Decrementa el tiempo de descanso
+      } else {
+        timer.cancel();
+        restTime.value = 0; 
+        isResting.value = false;// Detiene el temporizador de descanso cuando llega a 0
+        nextSerie(); // Cambia a la siguiente serie
+      }
+    });
+  }
+
+  void nextSerie(){
+    if (currentSerie < currenExercise.value!.series) {
+      currentSerie++; // Incrementa la serie actual
+    } else {
+      currentSerie.value = 1; 
+      currenExerciseIndex.value++; // Cambia al siguiente ejercicio
+      if (currenExerciseIndex.value < rutina.value.ejercicios!.length) {
+        currenExercise.value = rutina.value.ejercicios?[currenExerciseIndex.value]; // Inicializa el primer ejercicio si no es null// Reinicia el índice si se ha llegado al final de la lista
+      } else {
+        finalizarEntrenamiento(); // Finaliza el entrenamiento si se ha llegado al final de la lista
+      }
+    } 
+  }
+
+  Future<void> finalizarEntrenamiento() async {
+    DiaEntrenado newDiaEntrenado = DiaEntrenado(
+      idRutina: rutina.value.idRutina ?? 0,
+      fechaEntrenamiento: DateTime.now(),
+      tiempoEntrenamiento: Duration(seconds: elapsedTime.value),
+      idUsuario: idUsuarioLogged // Obtiene el ID del usuario actual
+    );
+
+    result = await _supabaseService.dias_entrenados.addTrainedDay(newDiaEntrenado);
+
+    if (result.success) {
+
+
+      Get.back(); // Regresa a la pantalla anterior
+    } else {
+      Get.snackbar("Error", result.errorMessage ?? "Unknown error");
+    }
+  }
+
+  // Future<void> insertarStats() async{
+  //   result = await _supabaseService.records_personales.getRecordsPersonalesByUserId(idUsuarioLogged);
+
+  //   if(result.success){
+  //     List<RecordPersonal> records = result.data as List<RecordPersonal>;
+    
+  //     if (records.any((record) => rutina.value.ejercicios?.any((ejercicio) => ejercicio.idEjercicio == record.idEjercicio) ?? false)) {
+  //       var record = records.firstWhere((record) => rutina.value.ejercicios?.any((ejercicio) => ejercicio.idEjercicio == record.idEjercicio) ?? false);
+  //       if(){
+
+  //       }
+  //     } else {
+        
+  //     }
+  //   }
+  //   else{
+  //     Get.snackbar("Error", result.errorMessage ?? "Unknown error");
+  //   }
+  // }
 
   @override
   void onClose() {
-    stopTimer(); // Detener el temporizador al cerrar el controlador
+    timer?.cancel(); // Cancela el temporizador al cerrar el controlador
     super.onClose();
   }
 }
