@@ -215,8 +215,7 @@ class HomeView extends GetView<HomeController> {
                   // Botón Train con texto abajo a la izquierda
                   GestureDetector(
                     onTap: () {
-                      print("Train button pressed");
-                      // Aquí tu lógica para el botón Train
+                      Get.toNamed(Routes.RUTINAS);
                     },
                     child: Container(
                       width: 170,
