@@ -93,9 +93,10 @@ class HomeView extends GetView<HomeController> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.format_list_bulleted, color: Colors.black),
-              title: const Text('Rutinas',
-                  style: TextStyle(color: Colors.black)),
+              leading:
+                  const Icon(Icons.format_list_bulleted, color: Colors.black),
+              title:
+                  const Text('Rutinas', style: TextStyle(color: Colors.black)),
               onTap: () {
                 Get.offAllNamed(Routes.RUTINAS);
               },
@@ -211,7 +212,6 @@ class HomeView extends GetView<HomeController> {
                   ),
 
                   const SizedBox(width: 20),
-
                   // Botón Train con texto abajo a la izquierda
                   GestureDetector(
                     onTap: () {
@@ -371,19 +371,19 @@ class HomeView extends GetView<HomeController> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-    if (Platform.isAndroid || Platform.isIOS) {
-      Get.toNamed(Routes.QR);
-    } else {
-      Get.snackbar(
-        'Función no disponible',
-        'El escaneo QR solo está disponible en dispositivos móviles',
-        snackPosition: SnackPosition.BOTTOM,
-        duration: Duration(seconds: 2),
-        colorText: Colors.white,
-        backgroundColor: const Color(0xFFD32F2F),
-      );
-    }
-  },
+          if (Platform.isAndroid || Platform.isIOS) {
+            Get.toNamed(Routes.QR);
+          } else {
+            Get.snackbar(
+              'Función no disponible',
+              'El escaneo QR solo está disponible en dispositivos móviles',
+              snackPosition: SnackPosition.BOTTOM,
+              duration: Duration(seconds: 2),
+              colorText: Colors.white,
+              backgroundColor: const Color(0xFFD32F2F),
+            );
+          }
+        },
         backgroundColor: const Color(0xFF4CAF50), // Verde lima
         child: const Icon(Icons.qr_code, color: Colors.white),
       ),
