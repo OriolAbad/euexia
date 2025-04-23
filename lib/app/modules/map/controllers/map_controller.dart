@@ -3,7 +3,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart'; // Importa flutter_map
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:geolocator/geolocator.dart';
 
 class MapControllerX extends GetxController {
   final MapController mapController =
@@ -119,11 +118,13 @@ class MapControllerX extends GetxController {
     markers.add(point); // Agregar marcador a la lista
   }
 
-  // IMPLEMENTAR QUE ESTA UBICACION VENGA DE LA BASE DE DATOS DE LA
-  // UBICACIÓN DEL USUARIO CUANDO SE REGISTRÓ
-  // Método para centrar el mapa en la ubicación actual del usuario
-
   Future<void> centerMapOnUserLocation() async {
+    searchLocation.value = LatLng(41.382894, 2.177432); // Barcelona, España
+    mapController.move(searchLocation.value!, 12.0); // Mover el mapa
+  }
+
+  // Método para centrar el mapa en la ubicación actual del usuario
+  /*Future<void> centerMapOnUserLocation() async {
     try {
       // Verificar permisos de ubicación
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -160,5 +161,5 @@ class MapControllerX extends GetxController {
       // Manejar errores (por ejemplo, timeout o problemas de GPS)
       print("Error al obtener la ubicación: $e");
     }
-  }
+  }*/
 }
