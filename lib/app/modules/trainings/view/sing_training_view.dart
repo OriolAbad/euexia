@@ -195,7 +195,10 @@ class SingTrainingView extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Get.to(() => StartTrainingView(rutina: rutina));
+                    Get.to(
+                        () => StartTrainingView(),
+                        arguments: {'rutina': rutina}, // Pasa la rutina completa como argumento
+                      );
                   },
                   child: const Center(
                     child: Text(

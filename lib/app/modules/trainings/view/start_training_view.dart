@@ -1,68 +1,76 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:euexia/app/data/models/rutinas.dart';
 import 'package:euexia/app/modules/trainings/controller/start_training_controller.dart';
+import 'package:get/get.dart';
 
-class StartTrainingView extends StatefulWidget {
-  final Rutina rutina;
-
-  const StartTrainingView({super.key, required this.rutina});
-
-  @override
-  _StartTrainingViewState createState() => _StartTrainingViewState();
-}
-
-class _StartTrainingViewState extends State<StartTrainingView> {
-  late final StartTrainingController controller;
-  bool isResting = false; // Indica si estamos en tiempo de descanso
-
-  @override
-  void initState() {
-    super.initState();
-    controller = Get.put(StartTrainingController(widget.rutina));
-    controller.startCountdown(() {
-      setState(() {});
-    });
-  }
+class StartTrainingView extends StatelessWidget {
+  StartTrainingView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final Rutina rutina = Get.arguments['rutina'];
+    final StartTrainingController trainingsController = Get.put(StartTrainingController(rutina));
+
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.black, // Fondo negro
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.black, // Fondo negro
         elevation: 0,
-        title: Text(
-          'Start Training: ${widget.rutina.nombre}',
-          style: const TextStyle(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white), // Cambia el color de la flecha a blanco
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              rutina.nombre.toUpperCase(), // Nombre de la rutina en grande
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            if (rutina.descripcion != null)
+              Text(
+                rutina.descripcion!,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+          ],
         ),
         actions: [
           Obx(() {
-            final minutes = (controller.elapsedTime.value ~/ 60).toString().padLeft(2, '0');
-            final seconds = (controller.elapsedTime.value % 60).toString().padLeft(2, '0');
-            return Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Center(
-                child: Text(
-                  '$minutes:$seconds',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+            if (!trainingsController.initialTimerBool.value) {
+              // Muestra el timer HH:MM:SS después de la cuenta regresiva
+              final int elapsedSeconds = trainingsController.elapsedTime.value;
+              final String hours = (elapsedSeconds ~/ 3600).toString().padLeft(2, '0'); // Horas
+              final String minutes = ((elapsedSeconds % 3600) ~/ 60).toString().padLeft(2, '0'); // Minutos
+              final String seconds = (elapsedSeconds % 60).toString().padLeft(2, '0'); // Segundos
+              return Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: Center(
+                  child: Text(
+                    '$hours:$minutes:$seconds',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-            );
+              );
+            }
+            return const SizedBox.shrink(); // No muestra nada durante la cuenta regresiva
           }),
         ],
       ),
       body: Obx(() {
-        if (controller.countdown.value > 0 && isResting) {
-          // Mostrar el contador de descanso
+        if (trainingsController.initialTimerBool.value) {
+          // Mostrar la cuenta regresiva si initialTimerBool es true
           return Center(
             child: Text(
-              'Descanso: ${controller.countdown.value}s',
+              '${trainingsController.elapsedTime.value}', // Muestra el tiempo restante
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 48,
@@ -70,258 +78,111 @@ class _StartTrainingViewState extends State<StartTrainingView> {
               ),
             ),
           );
-        } else {
-          final ejercicios = controller.ejerciciosRutina;
-          final totalEjercicios = ejercicios.length;
+        } 
+        else if (trainingsController.isResting.value) {
+          // Mostrar el tiempo de descanso en formato MM:SS
+          final int minutes = trainingsController.restTime.value ~/ 60; // Minutos
+          final int seconds = trainingsController.restTime.value % 60; // Segundos
 
-          if (totalEjercicios == 0) {
-            return const Center(
-              child: Text(
-                "No hay ejercicios en esta rutina.",
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
-            );
-          }
-
-          final ejercicioActual = ejercicios[controller.currentExerciseIndex.value];
-
-          return Column(
-            children: [
-              // Stepper/Progress Steps
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Ejercicio ${controller.currentExerciseIndex.value + 1} de $totalEjercicios',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    LinearProgressIndicator(
-                      value: (controller.currentExerciseIndex.value + 1) / totalEjercicios,
-                      backgroundColor: Colors.grey[800],
-                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-                    ),
-                  ],
-                ),
-              ),
-              // Mostrar el ejercicio actual
-              Expanded(
-                child: Center(
-                  child: Container(
-                    margin: const EdgeInsets.all(16),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[800],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          ejercicioActual.ejercicio?.nombre ?? "Unknown Exercise",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          "Series totales: ${ejercicioActual.series}", // Mostrar las series originales del ejercicio
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          [
-                            if (ejercicioActual.repeticiones > 0)
-                              "Reps: ${ejercicioActual.repeticiones}",
-                            if (ejercicioActual.kilogramos != null &&
-                                ejercicioActual.kilogramos! > 0)
-                              "Kg: ${ejercicioActual.kilogramos}",
-                          ].join(", "),
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 16,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "RESTING TIME:",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-              // Mostrar las series restantes en un texto aparte
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Obx(() {
-                  return Text(
-                    "Series restantes: ${controller.seriesSelectedExercise.value}",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  );
-                }),
-              ),
-              // Botón para completar la serie
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton(
+                const SizedBox(height: 8),
+                Text(
+                  "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}", // Formato MM:SS
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+        else {
+          // Mostrar el ejercicio actual y la serie actual
+          final currentExercise = trainingsController.currenExercise.value;
+
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Rectángulo gris con la información del ejercicio
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800], // Fondo gris
+                    borderRadius: BorderRadius.circular(12), // Bordes redondeados
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        currentExercise?.ejercicio?.nombre ?? "NOMBRE EJERCICIO",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "Series: ${currentExercise?.series ?? 0}",
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Kilogramos: ${currentExercise?.kilogramos ?? 0}",
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // Texto de la serie actual
+                Text(
+                  "SERIE: ${trainingsController.currentSerie.value}",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // Botón "Siguiente Entrenamiento"
+                ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Colors.blue, // Botón azul
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: const Size(double.infinity, 48),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12), // Bordes redondeados
                     ),
                   ),
                   onPressed: () {
-                    // Mostrar selector de tiempo de descanso
-                    showModalBottomSheet(
-                      context: context,
-                      backgroundColor: Colors.black,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                      ),
-                      builder: (context) {
-                        return Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                "Selecciona el tiempo de descanso",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [15, 30, 60].map((time) {
-                                  return ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(); // Cerrar el modal
-                                      setState(() {
-                                        isResting = true;
-                                      });
-                                      controller.reduceSeriesAndRest(
-                                        time,
-                                        () {
-                                          setState(() {
-                                            isResting = false;
-                                          });
-                                        },
-                                        () {
-                                          // Mostrar el modal de descanso al finalizar el ejercicio
-                                          showModalBottomSheet(
-                                            context: context,
-                                            backgroundColor: Colors.black,
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                                            ),
-                                            builder: (context) {
-                                              return Padding(
-                                                padding: const EdgeInsets.all(16.0),
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    const Text(
-                                                      "Selecciona el tiempo de descanso",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 18,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 16),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                      children: [15, 30, 60].map((time) {
-                                                        return ElevatedButton(
-                                                          style: ElevatedButton.styleFrom(
-                                                            backgroundColor: Colors.blue,
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(12),
-                                                            ),
-                                                          ),
-                                                          onPressed: () {
-                                                            Navigator.of(context).pop(); // Cerrar el modal
-                                                            setState(() {
-                                                              isResting = true;
-                                                            });
-                                                            controller.reduceSeriesAndRest(
-                                                              time,
-                                                              () {
-                                                                setState(() {
-                                                                  isResting = false;
-                                                                });
-                                                              },
-                                                              () {
-                                                                Get.snackbar(
-                                                                  "Entrenamiento finalizado",
-                                                                  "¡Buen trabajo!",
-                                                                );
-                                                              },
-                                                            );
-                                                          },
-                                                          child: Text(
-                                                            "$time s",
-                                                            style: const TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 16,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }).toList(),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Text(
-                                      "$time s",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
+                    showRestModal(context, trainingsController); // Cambia a la siguiente serie
                   },
                   child: Obx(() {
+                    // Cambia el texto dinámicamente según la condición
                     return Text(
-                      controller.seriesSelectedExercise.value == 1
-                          ? "Finalizar Ejercicio"
-                          : "Completar Serie",
+                      trainingsController.currentSerie.value < (trainingsController.currenExercise.value?.series ?? 0)
+                          ? "SIGUIENTE SERIE"
+                          : "SIGUIENTE EJERCICIO",
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -330,11 +191,103 @@ class _StartTrainingViewState extends State<StartTrainingView> {
                     );
                   }),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         }
       }),
     );
   }
+}
+
+void showRestModal(BuildContext context, StartTrainingController controller) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.black,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (context) {
+      // Inicializa los valores seleccionados como observables
+      var selectedMinutes = 0.obs;
+      var selectedSeconds = 0.obs;
+
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "Selecciona el tiempo de descanso",
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Dropdown para seleccionar minutos
+                Obx(() {
+                  return DropdownButton<int>(
+                    dropdownColor: Colors.grey[900],
+                    value: selectedMinutes.value, // Valor actual o predeterminado
+                    items: List.generate(10, (index) => index)
+                        .map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(
+                                "$e min",
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      selectedMinutes.value = value ?? 0; // Si es null, asigna 0
+                    },
+                  );
+                }),
+                const SizedBox(width: 16),
+                // Dropdown para seleccionar segundos
+                Obx(() {
+                  return DropdownButton<int>(
+                    dropdownColor: Colors.grey[900],
+                    value: selectedSeconds.value, // Valor actual o predeterminado
+                    items: List.generate(60, (index) => index)
+                        .map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(
+                                "$e sec",
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      selectedSeconds.value = value ?? 0; // Si es null, asigna 0
+                    },
+                  );
+                }),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context); // Cierra el modal
+                int totalSeconds = (selectedMinutes.value * 60) + selectedSeconds.value;
+                controller.startRestTimer(totalSeconds); // Llama a la función del controlador
+              },
+              child: const Text(
+                "SELECCIONAR",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
