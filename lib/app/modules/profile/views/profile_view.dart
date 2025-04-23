@@ -55,7 +55,6 @@ class ProfileView extends StatelessWidget {
           SizedBox(height: 20),
           _buildButton("Stats", () => Get.to(() => StatsView())),
           _buildButton("Gallery", () => Get.to(() => GalleryView())),
-          _buildButton("Account", () => Get.to(() => AccountView())),
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {},
