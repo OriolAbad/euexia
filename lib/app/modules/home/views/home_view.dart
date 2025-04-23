@@ -222,7 +222,6 @@ class HomeView extends GetView<HomeController> {
                       width: 170,
                       height: 170,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF4CAF50),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
@@ -231,18 +230,21 @@ class HomeView extends GetView<HomeController> {
                             offset: const Offset(0, 4),
                           ),
                         ],
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            const Color(0xFF4CAF50).withOpacity(0.9),
-                            const Color(0xFF2E7D32),
-                          ],
-                        ),
                       ),
-                      child: const Stack(
+                      child: Stack(
                         children: [
-                          Positioned(
+                          // Fondo con el GIF
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.asset(
+                              'assets/trainVideo.gif',
+                              fit: BoxFit.cover,
+                              width: 170,
+                              height: 170,
+                            ),
+                          ),
+                          // Texto "TRAIN"
+                          const Positioned(
                             left: 8,
                             bottom: 12,
                             child: Text(
