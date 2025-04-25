@@ -1,12 +1,12 @@
-// views/challenges_view.dart
+import 'package:euexia/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/challenges_controller.dart';
-import 'pomodoro_view.dart'; // Importamos la vista de Pomodoro
+import 'pomodoro_view.dart';
 import 'package:euexia/app/data/models/usuarios_retos.dart';
 
 class ChallengesView extends StatelessWidget {
-  ChallengesView({super.key});
+  ChallengesView({Key? key}) : super(key: key);
 
   final ChallengesController challengesController = Get.put(ChallengesController());
 
@@ -18,6 +18,10 @@ class ChallengesView extends StatelessWidget {
         title: const Text("CHALLENGES", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () =>  Get.offNamed(Routes.HOME), // Vuelve al home
+        ),
       ),
       body: Obx(() {
         if (challengesController.isLoading.value) {
@@ -39,9 +43,7 @@ class ChallengesView extends StatelessWidget {
             final UsuarioReto usuarioReto = challengesController.retos[index];
             final reto = usuarioReto.reto;
 
-            if (reto == null) {
-              return const SizedBox(); // En caso de que el reto no esté cargado
-            }
+            if (reto == null) return const SizedBox();
 
             return Card(
               color: Colors.grey[900],
@@ -61,8 +63,11 @@ class ChallengesView extends StatelessWidget {
                   color: usuarioReto.completado ? Colors.greenAccent : Colors.white,
                 ),
                 onTap: () {
-                  // Al hacer tap en el reto, navegamos a la vista de Pomodoro
-                  Get.to(() => PomodoroChallengeView(reto: reto));
+                  if (!usuarioReto.completado) {
+                    Get.to(() => PomodoroChallengeView(reto: reto));
+                  } else {
+                    Get.snackbar("Info", "¡Ya completaste este reto!");
+                  }
                 },
               ),
             );

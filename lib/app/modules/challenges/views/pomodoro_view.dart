@@ -6,7 +6,7 @@ import 'package:euexia/app/data/models/retos.dart';
 class PomodoroChallengeView extends StatefulWidget {
   final Reto reto;
 
-  PomodoroChallengeView({required this.reto});
+  const PomodoroChallengeView({Key? key, required this.reto}) : super(key: key);
 
   @override
   State<PomodoroChallengeView> createState() => _PomodoroChallengeViewState();
@@ -14,11 +14,24 @@ class PomodoroChallengeView extends StatefulWidget {
 
 class _PomodoroChallengeViewState extends State<PomodoroChallengeView> {
   final ChallengesController challengesController = Get.find<ChallengesController>();
+  late final RetoState retoState;
+  bool showStartButton = true;
+
+  @override
+  void initState() {
+    super.initState();
+    retoState = challengesController.getRetoState(widget.reto.idReto!);
+    showStartButton = !retoState.isTimerRunning.value && retoState.seriesCompletadas.value == 0;
+  }
 
   @override
   void dispose() {
-    challengesController.resetPomodoro();
+    retoState.reset();
     super.dispose();
+  }
+
+  double get currentSerieProgress {
+    return 1 - (retoState.currentTime.value / challengesController.duracionRetoActual);
   }
 
   @override
@@ -31,77 +44,135 @@ class _PomodoroChallengeViewState extends State<PomodoroChallengeView> {
       ),
       body: Center(
         child: Obx(() {
-          final isTimerRunning = challengesController.isTimerRunning.value;
-          final currentTime = challengesController.currentTime.value;
-          final isRetoCompleted = challengesController.isRetoCompleted.value;
-          final seriesCompletadas = challengesController.seriesCompletadas.value;
-          final seriesTotales = challengesController.seriesTotales;
-
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Contador de tiempo principal
               Text(
-                "Serie: $seriesCompletadas/$seriesTotales",
-                style: const TextStyle(color: Colors.white70, fontSize: 20),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                isRetoCompleted
-                    ? "¡Reto completado!"
-                    : _formatTime(currentTime),
+                retoState.isRetoCompleted.value
+                    ? "¡Descanso terminado!"
+                    : _formatTime(retoState.currentTime.value),
                 style: TextStyle(
-                  color: isRetoCompleted ? Colors.greenAccent : Colors.white,
-                  fontSize: 32,
+                  color: retoState.isRetoCompleted.value ? Colors.greenAccent : Colors.white,
+                  fontSize: 48,
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              
               const SizedBox(height: 30),
-              if (!challengesController.isTimerInitialized.value) ...[
-                ElevatedButton(
-                  onPressed: () {
-                    challengesController.startRetoFromView(widget.reto);
-                  },
-                  child: const Text("Iniciar reto"),
+              
+              // Indicador de serie actual (Modificado)
+              Text(
+                retoState.seriesCompletadas.value >= challengesController.seriesTotales
+                    ? "¡Reto completado!"
+                    : "Serie ${retoState.seriesCompletadas.value + 1} de ${challengesController.seriesTotales}",
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 20,
                 ),
-              ] else if (isRetoCompleted && seriesCompletadas < seriesTotales) ...[
+              ),
+              
+              const SizedBox(height: 40),
+              
+              // Barra de progreso segmentada
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(challengesController.seriesTotales, (index) {
+                    final serieIndex = index + 1;
+                    final isCurrentSerie = serieIndex == retoState.seriesCompletadas.value + 1;
+                    final isCompleted = serieIndex <= retoState.seriesCompletadas.value;
+                    
+                    return Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[800],
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Stack(
+                          children: [
+                            if (isCompleted)
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.greenAccent,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                width: double.infinity,
+                              ),
+                            if (isCurrentSerie && !retoState.isRetoCompleted.value)
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                decoration: BoxDecoration(
+                                  color: Colors.greenAccent[400],
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                width: isCompleted 
+                                    ? double.infinity 
+                                    : currentSerieProgress * MediaQuery.of(context).size.width / challengesController.seriesTotales,
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              
+              const SizedBox(height: 40),
+              
+              // Botón único (Start/Pause/Next)
+              if (showStartButton) ...[
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    backgroundColor: Colors.green,
+                  ),
                   onPressed: () {
-                    challengesController.nextSerie();
+                    retoState.startTimer();
+                    setState(() => showStartButton = false);
                   },
-                  child: const Text("Siguiente descanso"),
+                  child: const Text("COMENZAR RETO", style: TextStyle(fontSize: 18)),
                 )
-              ] else if (isRetoCompleted && seriesCompletadas >= seriesTotales) ...[
+              ] else if (retoState.isRetoCompleted.value && 
+                        retoState.seriesCompletadas.value < challengesController.seriesTotales) ...[
                 ElevatedButton(
-                  onPressed: () {},
-                  child: const Text("🎉 ¡Felicidades, completaste el reto!"),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    backgroundColor: Colors.blueAccent,
+                  ),
+                  onPressed: () {
+                    retoState.nextSerie();
+                  },
+                  child: const Text("SIGUIENTE SERIE", style: TextStyle(fontSize: 18)),
+                )
+              ] else if (retoState.seriesCompletadas.value >= challengesController.seriesTotales) ...[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    backgroundColor: Colors.green,
+                  ),
+                  onPressed: () {
+                    challengesController.completeReto(widget.reto);
+                  },
+                  child: const Text("🎉 ¡RETO COMPLETADO!", style: TextStyle(fontSize: 18)),
                 )
               ] else ...[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        isTimerRunning ? Icons.pause : Icons.play_arrow,
-                        color: Colors.white,
-                        size: 40,
-                      ),
-                      onPressed: () {
-                        if (isTimerRunning) {
-                          challengesController.pauseTimer();
-                        } else {
-                          challengesController.resumeTimer();
-                        }
-                      },
-                    ),
-                    const SizedBox(width: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        challengesController.completeReto();
-                      },
-                      child: const Text("Finalizar reto"),
-                    ),
-                  ],
+                IconButton(
+                  icon: Icon(
+                    retoState.isTimerRunning.value ? Icons.pause_circle_outline : Icons.play_circle_outline,
+                    color: Colors.white,
+                    size: 70,
+                  ),
+                  onPressed: () {
+                    if (retoState.isTimerRunning.value) {
+                      retoState.pauseTimer();
+                    } else {
+                      retoState.resumeTimer();
+                    }
+                  },
                 )
               ],
             ],
@@ -114,6 +185,6 @@ class _PomodoroChallengeViewState extends State<PomodoroChallengeView> {
   String _formatTime(int totalSeconds) {
     int minutes = totalSeconds ~/ 60;
     int seconds = totalSeconds % 60;
-    return "$minutes:${seconds.toString().padLeft(2, '0')}";
+    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
   }
 }

@@ -7,75 +7,17 @@ import 'package:euexia/app/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ChallengesController extends GetxController {
-  final _supabaseService = SupabaseService();
-
-  var isLoading = false.obs;
-  var retos = <UsuarioReto>[].obs;
-  late int idUsuarioLogged = 0;
-
-  custom_response.Response result = custom_response.Response(success: false);
-
-  // Temporizador
+class RetoState {
+  final int duracionRetoActual;
+  final int seriesTotales;
+  
   RxInt currentTime = 0.obs;
   RxBool isTimerRunning = false.obs;
   RxBool isRetoCompleted = false.obs;
-  RxBool isTimerInitialized = false.obs;
+  RxInt seriesCompletadas = 0.obs;
   Timer? _timer;
 
-  // Lógica de series
-  final int seriesTotales = 3;
-  RxInt seriesCompletadas = 0.obs;
-  final int duracionRetoActual = 60; // solo se controla el descanso (60s)
-
-  late UsuarioReto retoActual;
-
-  @override
-  Future<void> onInit() async {
-    super.onInit();
-    await getLoggedUser();
-    await getRetosOfUser();
-  }
-
-  Future<void> getLoggedUser() async {
-    isLoading.value = true;
-    result = await _supabaseService.usuarios.getLoggedInUser();
-
-    if (result.success) {
-      Usuario loggedUser = result.data as Usuario;
-      idUsuarioLogged = loggedUser.idUsuario!;
-    } else {
-      Get.snackbar("Error", result.errorMessage ?? "Unknown error");
-    }
-
-    isLoading.value = false;
-  }
-
-  Future<void> getRetosOfUser() async {
-    isLoading.value = true;
-    result = await _supabaseService.usuarios_retos.getUsuariosRetosByIdWithRetos(idUsuarioLogged);
-
-    if (result.success) {
-      retos.assignAll(result.data as Iterable<UsuarioReto>);
-    } else {
-      Get.snackbar("Error", result.errorMessage ?? "Unknown error");
-    }
-
-    isLoading.value = false;
-  }
-
-  void startReto(UsuarioReto usuarioReto) {
-    retoActual = usuarioReto;
-    seriesCompletadas.value = 0;
-    isRetoCompleted.value = false;
-    startTimer();
-  }
-
-  void startRetoFromView(Reto reto) {
-    final usuarioReto = retos.firstWhere((ur) => ur.reto?.idReto == reto.idReto);
-    startReto(usuarioReto);
-    isTimerInitialized.value = true;
-  }
+  RetoState({required this.duracionRetoActual, required this.seriesTotales});
 
   void startTimer() {
     currentTime.value = duracionRetoActual;
@@ -92,15 +34,7 @@ class ChallengesController extends GetxController {
         timer.cancel();
         isTimerRunning.value = false;
         seriesCompletadas.value += 1;
-
-        if (seriesCompletadas.value >= seriesTotales) {
-          completeReto();
-          isRetoCompleted.value = true;
-        } else {
-          Future.delayed(const Duration(seconds: 1), () {
-            isRetoCompleted.value = true;
-          });
-        }
+        isRetoCompleted.value = true;
       }
     });
   }
@@ -121,40 +55,110 @@ class ChallengesController extends GetxController {
     }
   }
 
-  void resetPomodoro() {
-    if (isTimerInitialized.value && seriesCompletadas.value < seriesTotales) {
-      _timer?.cancel();
-      currentTime.value = duracionRetoActual;
-      seriesCompletadas.value = 0;
-      isTimerRunning.value = false;
-      isTimerInitialized.value = false;
-      isRetoCompleted.value = false;
-    }
+  void reset() {
+    _timer?.cancel();
+    currentTime.value = duracionRetoActual;
+    seriesCompletadas.value = 0;
+    isTimerRunning.value = false;
+    isRetoCompleted.value = false;
   }
 
-  Future<void> completeReto() async {
+  void dispose() {
+    _timer?.cancel();
+  }
+}
+
+class ChallengesController extends GetxController {
+  final _supabaseService = SupabaseService();
+
+  var isLoading = false.obs;
+  var retos = <UsuarioReto>[].obs;
+  late int idUsuarioLogged = 0;
+  final int seriesTotales = 3;
+  final int duracionRetoActual = 60;
+
+  custom_response.Response result = custom_response.Response(success: false);
+  final Map<int, RetoState> _retoStates = {};
+
+  // Cambiado a público
+  RetoState getRetoState(int idReto) {
+    if (!_retoStates.containsKey(idReto)) {
+      _retoStates[idReto] = RetoState(
+        duracionRetoActual: duracionRetoActual,
+        seriesTotales: seriesTotales,
+      );
+    }
+    return _retoStates[idReto]!;
+  }
+
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    await getLoggedUser();
+    await getRetosOfUser();
+  }
+
+  Future<void> getLoggedUser() async {
     isLoading.value = true;
+    result = await _supabaseService.usuarios.getLoggedInUser();
+
+    if (result.success) {
+      Usuario loggedUser = result.data as Usuario;
+      idUsuarioLogged = loggedUser.idUsuario!;
+    } else {
+      Get.snackbar("Error", result.errorMessage ?? "Unknown error");
+    }
+    isLoading.value = false;
+  }
+
+  Future<void> getRetosOfUser() async {
+    isLoading.value = true;
+    result = await _supabaseService.usuarios_retos.getUsuariosRetosByIdWithRetos(idUsuarioLogged);
+
+    if (result.success) {
+      retos.assignAll(result.data as Iterable<UsuarioReto>);
+    } else {
+      Get.snackbar("Error", result.errorMessage ?? "Unknown error");
+    }
+    isLoading.value = false;
+  }
+
+  void startRetoFromView(Reto reto) {
+    final retoState = getRetoState(reto.idReto!);
+    retoState.reset();
+    retoState.startTimer();
+  }
+
+  Future<void> completeReto(Reto reto) async {
+    isLoading.value = true;
+    final retoState = getRetoState(reto.idReto!);
 
     result = await _supabaseService.usuarios_retos.updateUsuarioReto(UsuarioReto(
       idUsuario: idUsuarioLogged,
-      idReto: retoActual.reto?.idReto ?? 0,
+      idReto: reto.idReto!,
       completado: true,
       fechaInicio: DateTime.now(),
       fechaFin: DateTime.now(),
     ));
 
     if (result.success) {
+      retoState.dispose();
+      _retoStates.remove(reto.idReto);
+      Get.back();
       Get.snackbar("Éxito", "Reto completado");
+      await getRetosOfUser();
     } else {
       Get.snackbar("Error", result.errorMessage ?? "Unknown error");
     }
-
     isLoading.value = false;
   }
 
   @override
   void onClose() {
-    _timer?.cancel();
+    for (var state in _retoStates.values) {
+      state.dispose();
+    }
+    _retoStates.clear();
     super.onClose();
   }
 }
