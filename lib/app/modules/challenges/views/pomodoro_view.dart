@@ -1,25 +1,32 @@
-// views/pomodoro_challenge_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/challenges_controller.dart';
 import 'package:euexia/app/data/models/retos.dart';
 
-class PomodoroChallengeView extends StatelessWidget {
+class PomodoroChallengeView extends StatefulWidget {
   final Reto reto;
 
   PomodoroChallengeView({required this.reto});
 
+  @override
+  State<PomodoroChallengeView> createState() => _PomodoroChallengeViewState();
+}
+
+class _PomodoroChallengeViewState extends State<PomodoroChallengeView> {
   final ChallengesController challengesController = Get.find<ChallengesController>();
 
   @override
-  Widget build(BuildContext context) {
-    // Duración del temporizador en segundos (por ejemplo, 25 minutos)
-    final int durationInSeconds = 1500; // 25 minutos = 1500 segundos
+  void dispose() {
+    challengesController.resetPomodoro();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text(reto.titulo, style: const TextStyle(color: Colors.white)),
+        title: Text(widget.reto.titulo, style: const TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
       ),
       body: Center(
@@ -27,59 +34,76 @@ class PomodoroChallengeView extends StatelessWidget {
           final isTimerRunning = challengesController.isTimerRunning.value;
           final currentTime = challengesController.currentTime.value;
           final isRetoCompleted = challengesController.isRetoCompleted.value;
+          final seriesCompletadas = challengesController.seriesCompletadas.value;
+          final seriesTotales = challengesController.seriesTotales;
 
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Mostramos el tiempo restante o el mensaje de reto completado
+              Text(
+                "Serie: $seriesCompletadas/$seriesTotales",
+                style: const TextStyle(color: Colors.white70, fontSize: 20),
+              ),
+              const SizedBox(height: 20),
               Text(
                 isRetoCompleted
                     ? "¡Reto completado!"
-                    : _formatTime(currentTime), // Formateamos el tiempo a minutos:segundos
+                    : _formatTime(currentTime),
                 style: TextStyle(
                   color: isRetoCompleted ? Colors.greenAccent : Colors.white,
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 30),
-
-              // Botones de control
-              isRetoCompleted
-                  ? ElevatedButton(
+              const SizedBox(height: 30),
+              if (!challengesController.isTimerInitialized.value) ...[
+                ElevatedButton(
+                  onPressed: () {
+                    challengesController.startRetoFromView(widget.reto);
+                  },
+                  child: const Text("Iniciar reto"),
+                ),
+              ] else if (isRetoCompleted && seriesCompletadas < seriesTotales) ...[
+                ElevatedButton(
+                  onPressed: () {
+                    challengesController.nextSerie();
+                  },
+                  child: const Text("Siguiente descanso"),
+                )
+              ] else if (isRetoCompleted && seriesCompletadas >= seriesTotales) ...[
+                ElevatedButton(
+                  onPressed: () {},
+                  child: const Text("🎉 ¡Felicidades, completaste el reto!"),
+                )
+              ] else ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        isTimerRunning ? Icons.pause : Icons.play_arrow,
+                        color: Colors.white,
+                        size: 40,
+                      ),
                       onPressed: () {
-                        // Inicia una nueva serie del reto
-                        challengesController.nextSerie(durationInSeconds);
+                        if (isTimerRunning) {
+                          challengesController.pauseTimer();
+                        } else {
+                          challengesController.resumeTimer();
+                        }
                       },
-                      child: const Text("Siguiente serie"),
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            isTimerRunning ? Icons.pause : Icons.play_arrow,
-                            color: Colors.white,
-                            size: 40,
-                          ),
-                          onPressed: () {
-                            if (isTimerRunning) {
-                              challengesController.pauseTimer(); // Pausa el timer
-                            } else {
-                              challengesController.resumeTimer(); // Reanuda el timer
-                            }
-                          },
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Completa el reto
-                            challengesController.completeReto();
-                          },
-                          child: const Text("Finalizar reto"),
-                        ),
-                      ],
                     ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        challengesController.completeReto();
+                      },
+                      child: const Text("Finalizar reto"),
+                    ),
+                  ],
+                )
+              ],
             ],
           );
         }),
@@ -87,10 +111,9 @@ class PomodoroChallengeView extends StatelessWidget {
     );
   }
 
-  // Función para formatear el tiempo restante en minutos:segundos
   String _formatTime(int totalSeconds) {
-    int minutes = totalSeconds ~/ 60; // Divide por 60 para obtener los minutos
-    int seconds = totalSeconds % 60; // Resto de la división para obtener los segundos
-    return "$minutes:${seconds.toString().padLeft(2, '0')}"; // Devuelve el tiempo como "mm:ss"
+    int minutes = totalSeconds ~/ 60;
+    int seconds = totalSeconds % 60;
+    return "$minutes:${seconds.toString().padLeft(2, '0')}";
   }
 }

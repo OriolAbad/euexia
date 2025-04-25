@@ -1,9 +1,10 @@
-// controllers/challenges_controller.dart
+import 'dart:async';
 import 'package:euexia/app/data/help/response.dart' as custom_response;
 import 'package:euexia/app/data/models/retos.dart';
 import 'package:euexia/app/data/models/usuarios.dart';
 import 'package:euexia/app/data/models/usuarios_retos.dart';
 import 'package:euexia/app/services/service.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ChallengesController extends GetxController {
@@ -15,15 +16,17 @@ class ChallengesController extends GetxController {
 
   custom_response.Response result = custom_response.Response(success: false);
 
-  // Pomodoro
-  Rx<int> currentTime = 0.obs;
-  Rx<bool> isTimerRunning = false.obs;
-  Rx<bool> isRetoCompleted = false.obs;
+  // Temporizador
+  RxInt currentTime = 0.obs;
+  RxBool isTimerRunning = false.obs;
+  RxBool isRetoCompleted = false.obs;
+  RxBool isTimerInitialized = false.obs;
+  Timer? _timer;
 
-  // Nueva lógica para manejar series
+  // Lógica de series
   final int seriesTotales = 3;
-  Rx<int> seriesCompletadas = 0.obs;
-  final int descansoEntreSeries = 60;
+  RxInt seriesCompletadas = 0.obs;
+  final int duracionRetoActual = 60; // solo se controla el descanso (60s)
 
   late UsuarioReto retoActual;
 
@@ -61,25 +64,32 @@ class ChallengesController extends GetxController {
     isLoading.value = false;
   }
 
-  void startReto(UsuarioReto usuarioReto, int durationInSeconds) {
+  void startReto(UsuarioReto usuarioReto) {
     retoActual = usuarioReto;
     seriesCompletadas.value = 0;
     isRetoCompleted.value = false;
-    startTimer(durationInSeconds);
+    startTimer();
   }
 
-  void startTimer(int durationInSeconds) {
-    currentTime.value = durationInSeconds;
+  void startRetoFromView(Reto reto) {
+    final usuarioReto = retos.firstWhere((ur) => ur.reto?.idReto == reto.idReto);
+    startReto(usuarioReto);
+    isTimerInitialized.value = true;
+  }
+
+  void startTimer() {
+    currentTime.value = duracionRetoActual;
     isTimerRunning.value = true;
     _runTimer();
   }
 
   void _runTimer() {
-    Future.delayed(const Duration(seconds: 1), () {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (currentTime.value > 0 && isTimerRunning.value) {
         currentTime.value -= 1;
-        _runTimer();
       } else if (currentTime.value == 0 && isTimerRunning.value) {
+        timer.cancel();
         isTimerRunning.value = false;
         seriesCompletadas.value += 1;
 
@@ -87,18 +97,17 @@ class ChallengesController extends GetxController {
           completeReto();
           isRetoCompleted.value = true;
         } else {
-          // Espera antes de permitir siguiente serie
-          Future.delayed(Duration(seconds: descansoEntreSeries), () {
-            isRetoCompleted.value = true; // Marca disponible para siguiente serie
+          Future.delayed(const Duration(seconds: 1), () {
+            isRetoCompleted.value = true;
           });
         }
       }
     });
   }
 
-  void nextSerie(int durationInSeconds) {
+  void nextSerie() {
     isRetoCompleted.value = false;
-    startTimer(durationInSeconds);
+    startTimer();
   }
 
   void pauseTimer() {
@@ -106,8 +115,21 @@ class ChallengesController extends GetxController {
   }
 
   void resumeTimer() {
-    isTimerRunning.value = true;
-    _runTimer();
+    if (currentTime.value > 0) {
+      isTimerRunning.value = true;
+      _runTimer();
+    }
+  }
+
+  void resetPomodoro() {
+    if (isTimerInitialized.value && seriesCompletadas.value < seriesTotales) {
+      _timer?.cancel();
+      currentTime.value = duracionRetoActual;
+      seriesCompletadas.value = 0;
+      isTimerRunning.value = false;
+      isTimerInitialized.value = false;
+      isRetoCompleted.value = false;
+    }
   }
 
   Future<void> completeReto() async {
@@ -128,5 +150,11 @@ class ChallengesController extends GetxController {
     }
 
     isLoading.value = false;
+  }
+
+  @override
+  void onClose() {
+    _timer?.cancel();
+    super.onClose();
   }
 }
