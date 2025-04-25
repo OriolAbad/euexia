@@ -10,25 +10,30 @@ class ChallengesController extends GetxController {
   final _supabaseService = SupabaseService();
 
   var isLoading = false.obs;
-  var retos = [].obs;
+  var retos = <UsuarioReto>[].obs;
   late int idUsuarioLogged = 0;
 
   custom_response.Response result = custom_response.Response(success: false);
 
-  // Variables para el control del tiempo y el estado del reto
+  // Pomodoro
   Rx<int> currentTime = 0.obs;
   Rx<bool> isTimerRunning = false.obs;
   Rx<bool> isRetoCompleted = false.obs;
 
+  // Nueva lógica para manejar series
+  final int seriesTotales = 3;
+  Rx<int> seriesCompletadas = 0.obs;
+  final int descansoEntreSeries = 60;
+
+  late UsuarioReto retoActual;
+
   @override
   Future<void> onInit() async {
     super.onInit();
-
     await getLoggedUser();
     await getRetosOfUser();
   }
 
-  // Función para obtener el usuario logueado
   Future<void> getLoggedUser() async {
     isLoading.value = true;
     result = await _supabaseService.usuarios.getLoggedInUser();
@@ -43,13 +48,12 @@ class ChallengesController extends GetxController {
     isLoading.value = false;
   }
 
-  // Función para obtener los retos del usuario
   Future<void> getRetosOfUser() async {
     isLoading.value = true;
     result = await _supabaseService.usuarios_retos.getUsuariosRetosByIdWithRetos(idUsuarioLogged);
 
     if (result.success) {
-      retos.assignAll(result.data as Iterable<UsuarioReto>); // Asignar correctamente los datos a la lista observable
+      retos.assignAll(result.data as Iterable<UsuarioReto>);
     } else {
       Get.snackbar("Error", result.errorMessage ?? "Unknown error");
     }
@@ -57,35 +61,61 @@ class ChallengesController extends GetxController {
     isLoading.value = false;
   }
 
-  // Función para iniciar el timer (pomodoro)
+  void startReto(UsuarioReto usuarioReto, int durationInSeconds) {
+    retoActual = usuarioReto;
+    seriesCompletadas.value = 0;
+    isRetoCompleted.value = false;
+    startTimer(durationInSeconds);
+  }
+
   void startTimer(int durationInSeconds) {
     currentTime.value = durationInSeconds;
     isTimerRunning.value = true;
     _runTimer();
   }
 
-  // Lógica para el ciclo del timer
   void _runTimer() {
     Future.delayed(const Duration(seconds: 1), () {
       if (currentTime.value > 0 && isTimerRunning.value) {
         currentTime.value -= 1;
         _runTimer();
-      } else if (currentTime.value == 0) {
-        // Cuando el tiempo llega a 0, termina el bloque de la serie
+      } else if (currentTime.value == 0 && isTimerRunning.value) {
         isTimerRunning.value = false;
-        isRetoCompleted.value = true;
-        // Aquí deberíamos actualizar el reto en Supabase
-        completeReto();
+        seriesCompletadas.value += 1;
+
+        if (seriesCompletadas.value >= seriesTotales) {
+          completeReto();
+          isRetoCompleted.value = true;
+        } else {
+          // Espera antes de permitir siguiente serie
+          Future.delayed(Duration(seconds: descansoEntreSeries), () {
+            isRetoCompleted.value = true; // Marca disponible para siguiente serie
+          });
+        }
       }
     });
   }
 
-  // Función para completar el reto
+  void nextSerie(int durationInSeconds) {
+    isRetoCompleted.value = false;
+    startTimer(durationInSeconds);
+  }
+
+  void pauseTimer() {
+    isTimerRunning.value = false;
+  }
+
+  void resumeTimer() {
+    isTimerRunning.value = true;
+    _runTimer();
+  }
+
   Future<void> completeReto() async {
     isLoading.value = true;
+
     result = await _supabaseService.usuarios_retos.updateUsuarioReto(UsuarioReto(
       idUsuario: idUsuarioLogged,
-      idReto: retos[0].reto?.idReto ?? 0, // Asegúrate de obtener el ID correcto
+      idReto: retoActual.reto?.idReto ?? 0,
       completado: true,
       fechaInicio: DateTime.now(),
       fechaFin: DateTime.now(),
@@ -93,28 +123,10 @@ class ChallengesController extends GetxController {
 
     if (result.success) {
       Get.snackbar("Éxito", "Reto completado");
-      // Puedes actualizar la lista de retos si es necesario
     } else {
       Get.snackbar("Error", result.errorMessage ?? "Unknown error");
     }
 
     isLoading.value = false;
-  }
-
-  // Función para marcar el siguiente bloque (si hay más series)
-  void nextSerie(int durationInSeconds) {
-    isRetoCompleted.value = false;
-    startTimer(durationInSeconds);
-  }
-
-  // Función para pausar el timer
-  void pauseTimer() {
-    isTimerRunning.value = false;
-  }
-
-  // Función para reanudar el timer
-  void resumeTimer() {
-    isTimerRunning.value = true;
-    _runTimer();
   }
 }
