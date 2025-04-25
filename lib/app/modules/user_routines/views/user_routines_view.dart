@@ -1,3 +1,4 @@
+import 'package:euexia/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/user_routines_controller.dart';
@@ -21,7 +22,7 @@ class UserRoutinesView extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () async {
             await controller.saveAllSavedRoutines(); // Espera a que se guarden las rutinas
-            Get.back(); // Vuelve a la pantalla anterior después de guardar
+            Get.toNamed(Routes.HOME); // Vuelve a la pantalla anterior después de guardar
           },
         ),
       ),

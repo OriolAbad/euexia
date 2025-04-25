@@ -23,12 +23,12 @@ class Reto {
 
   factory Reto.fromJson(Map<String, dynamic> json) {
     return Reto(
-      idReto: json['idreto'],
+      idReto: json['idreto'] != null ? int.tryParse(json['idreto'].toString()) : null,
       titulo: json['titulo'],
       descripcion: json['descripcion'],
-      puntos: json['puntos'],
-      idTipoReto: json['idtiporeto'],
-      idDificultad: json['iddificultad'],
+      puntos: int.tryParse(json['puntos'].toString()) ?? 0,
+      idTipoReto: int.tryParse(json['idtiporeto'].toString()) ?? 0,
+      idDificultad: int.tryParse(json['iddificultad'].toString()) ?? 0,
     );
   }
 

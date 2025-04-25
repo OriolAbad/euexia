@@ -57,6 +57,15 @@ class SingTrainingView extends StatelessWidget {
             );
           }
         }),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
+            onPressed: () {
+              showModalEditRutina(context, trainingsController);
+            },
+            tooltip: "Editar rutina",
+          ),
+        ],
       ),
       body: Obx(() {
         if (trainingsController.isLoading.value) {
@@ -186,7 +195,10 @@ class SingTrainingView extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Get.to(() => StartTrainingView(rutina: rutina));
+                    Get.to(
+                        () => StartTrainingView(),
+                        arguments: {'rutina': rutina}, // Pasa la rutina completa como argumento
+                      );
                   },
                   child: const Center(
                     child: Text(
@@ -470,3 +482,131 @@ void showDeleteModal(BuildContext context, SingTrainingController trainingsContr
     },
   );
 }
+
+void showModalEditRutina(BuildContext context, SingTrainingController trainingsController) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.black,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Edit Rutina",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Campo de texto para el nombre de la rutina
+            Obx(() {
+              return TextField(
+                onChanged: (value) {
+                  trainingsController.rutina.value.nombre = value; // Actualiza el nombre
+                },
+                decoration: InputDecoration(
+                  labelText: "Nombre de la rutina",
+                  labelStyle: const TextStyle(color: Colors.white70),
+                  filled: true,
+                  fillColor: Colors.grey[800],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                style: const TextStyle(color: Colors.white),
+                controller: TextEditingController(
+                  text: trainingsController.rutina.value.nombre,
+                )..selection = TextSelection.fromPosition(
+                    TextPosition(offset: trainingsController.rutina.value.nombre.length),
+                  ),
+              );
+            }),
+            const SizedBox(height: 16),
+            // Campo de texto para la descripción de la rutina
+            Obx(() {
+              return TextField(
+                onChanged: (value) {
+                  trainingsController.rutina.value.descripcion = value; // Actualiza la descripción
+                },
+                decoration: InputDecoration(
+                  labelText: "Descripción de la rutina",
+                  labelStyle: const TextStyle(color: Colors.white70),
+                  filled: true,
+                  fillColor: Colors.grey[800],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                style: const TextStyle(color: Colors.white),
+                controller: TextEditingController(
+                  text: trainingsController.rutina.value.descripcion ?? '',
+                )..selection = TextSelection.fromPosition(
+                    TextPosition(offset: trainingsController.rutina.value.descripcion?.length ?? 0),
+                  ),
+              );
+            }),
+            const SizedBox(height: 16),
+            // Toggle switch para "publicada"
+            Obx(() {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "¿Publicar rutina?",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  Switch(
+                    value: trainingsController.usuarioRutina.value.publicada,
+                    onChanged: (value) {
+                      trainingsController.usuarioRutina.value.publicada = value;
+                      trainingsController.usuarioRutina.refresh(); // Refresca el observable
+                    },
+                    activeColor: Colors.blue,
+                  ),
+                ],
+              );
+            }),
+            const SizedBox(height: 24),
+            // Botón de guardar
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () async {
+                  await trainingsController.editRutina();
+                  Navigator.of(context).pop(); // Cierra la modal después de guardar
+                },
+                child: const Text(
+                  "Guardar",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+

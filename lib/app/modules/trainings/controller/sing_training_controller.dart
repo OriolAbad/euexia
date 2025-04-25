@@ -1,6 +1,8 @@
 import 'package:euexia/app/data/help/response.dart' as custom_response;
 import 'package:euexia/app/data/models/ejercicios_rutinas.dart';
 import 'package:euexia/app/data/models/rutinas.dart';
+import 'package:euexia/app/data/models/usuarios.dart';
+import 'package:euexia/app/data/models/usuarios_rutinas.dart';
 import 'package:euexia/app/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,6 +16,11 @@ class SingTrainingController extends GetxController {
   var updating = false.obs;
   var adding = false.obs;
 
+  var usuarioRutina = UsuarioRutina(
+    idUsuario: 0,
+    idRutina: 0,
+  ).obs;
+  
   var ejercicioRutina = EjercicioRutina(
     idRutina: 0,
     idEjercicio: 0,
@@ -26,7 +33,46 @@ class SingTrainingController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    await getLoggedUser();
+    await getUsuarioRutina();
     ejercicioRutina.value.idRutina = rutina.value.idRutina!;
+  }
+
+  Future<void> getUsuarioRutina() async {
+    isLoading.value = true;
+    result = await _supabaseService.usuarios_rutinas.getUsuarioRutinaById(usuarioRutina.value.idUsuario, rutina.value.idRutina!);
+
+    if (!result.success) {
+      Get.snackbar(
+        "Error",
+        result.errorMessage ?? "Unknown error",
+        duration: const Duration(seconds: 5),
+        backgroundColor: Colors.red, // Fondo rojo
+        colorText: Colors.white, // Texto blanco
+      );
+    } else {
+      usuarioRutina.value = result.data as UsuarioRutina;
+    }
+    isLoading.value = false;
+  }
+
+  Future<void> getLoggedUser() async {
+    isLoading.value = true;
+    result = await _supabaseService.usuarios.getLoggedInUser();
+
+    if (!result.success) {
+      Get.snackbar(
+        "Error",
+        result.errorMessage ?? "Unknown error",
+        duration: const Duration(seconds: 5),
+        backgroundColor: Colors.red, // Fondo rojo
+        colorText: Colors.white, // Texto blanco
+      );
+    } else {
+      usuarioRutina.value.idUsuario = (result.data as Usuario).idUsuario!;
+      usuarioRutina.value.idRutina = rutina.value.idRutina!;
+    }
+    isLoading.value = false;
   }
 
   Future<void> addEjercicioToRutina() async {
@@ -78,6 +124,35 @@ class SingTrainingController extends GetxController {
       );
     } else {
       rutina.value.ejercicios!.remove(ejercicio);
+    }
+    isLoading.value = false;
+  }
+
+  Future<void> editRutina() async{
+    isLoading.value = true;
+    result = await _supabaseService.rutinas.updateRutina(rutina.value);
+
+    if (!result.success) {
+      Get.snackbar(
+        "Error",
+        result.errorMessage ?? "Unknown error",
+        duration: const Duration(seconds: 5),
+        backgroundColor: Colors.red, // Fondo rojo
+        colorText: Colors.white, // Texto blanco
+      );
+    }
+    else{
+      result = await _supabaseService.usuarios_rutinas.updateUsuarioRutina(usuarioRutina.value);
+  
+      if (!result.success) {
+        Get.snackbar(
+          "Error",
+          result.errorMessage ?? "Unknown error",
+          duration: const Duration(seconds: 5),
+          backgroundColor: Colors.red, // Fondo rojo
+          colorText: Colors.white, // Texto blanco
+        );
+      }
     }
     isLoading.value = false;
   }

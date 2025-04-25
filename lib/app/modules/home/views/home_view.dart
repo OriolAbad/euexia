@@ -93,9 +93,10 @@ class HomeView extends GetView<HomeController> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.format_list_bulleted, color: Colors.black),
-              title: const Text('Rutinas',
-                  style: TextStyle(color: Colors.black)),
+              leading:
+                  const Icon(Icons.format_list_bulleted, color: Colors.black),
+              title:
+                  const Text('Rutinas', style: TextStyle(color: Colors.black)),
               onTap: () {
                 Get.offAllNamed(Routes.RUTINAS);
               },
@@ -211,18 +212,15 @@ class HomeView extends GetView<HomeController> {
                   ),
 
                   const SizedBox(width: 20),
-
                   // Botón Train con texto abajo a la izquierda
                   GestureDetector(
                     onTap: () {
-                      print("Train button pressed");
-                      // Aquí tu lógica para el botón Train
+                      Get.toNamed(Routes.RUTINAS);
                     },
                     child: Container(
                       width: 170,
                       height: 170,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF4CAF50),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
@@ -231,18 +229,21 @@ class HomeView extends GetView<HomeController> {
                             offset: const Offset(0, 4),
                           ),
                         ],
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            const Color(0xFF4CAF50).withOpacity(0.9),
-                            const Color(0xFF2E7D32),
-                          ],
-                        ),
                       ),
-                      child: const Stack(
+                      child: Stack(
                         children: [
-                          Positioned(
+                          // Fondo con el GIF
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.asset(
+                              'assets/trainVideo.gif',
+                              fit: BoxFit.cover,
+                              width: 170,
+                              height: 170,
+                            ),
+                          ),
+                          // Texto "TRAIN"
+                          const Positioned(
                             left: 8,
                             bottom: 12,
                             child: Text(
@@ -371,19 +372,19 @@ class HomeView extends GetView<HomeController> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-    if (Platform.isAndroid || Platform.isIOS) {
-      Get.toNamed(Routes.QR);
-    } else {
-      Get.snackbar(
-        'Función no disponible',
-        'El escaneo QR solo está disponible en dispositivos móviles',
-        snackPosition: SnackPosition.BOTTOM,
-        duration: Duration(seconds: 2),
-        colorText: Colors.white,
-        backgroundColor: const Color(0xFFD32F2F),
-      );
-    }
-  },
+          if (Platform.isAndroid || Platform.isIOS) {
+            Get.toNamed(Routes.QR);
+          } else {
+            Get.snackbar(
+              'Función no disponible',
+              'El escaneo QR solo está disponible en dispositivos móviles',
+              snackPosition: SnackPosition.BOTTOM,
+              duration: Duration(seconds: 2),
+              colorText: Colors.white,
+              backgroundColor: const Color(0xFFD32F2F),
+            );
+          }
+        },
         backgroundColor: const Color(0xFF4CAF50), // Verde lima
         child: const Icon(Icons.qr_code, color: Colors.white),
       ),
