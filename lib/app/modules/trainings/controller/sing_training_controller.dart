@@ -40,7 +40,7 @@ class SingTrainingController extends GetxController {
 
   Future<void> getUsuarioRutina() async {
     isLoading.value = true;
-    result = await _supabaseService.usuarios_rutinas.getUsuariosRutinasByUserId(usuarioRutina.value.idUsuario);
+    result = await _supabaseService.usuarios_rutinas.getUsuarioRutinaById(usuarioRutina.value.idUsuario, usuarioRutina.value.idRutina);
 
     if (!result.success) {
       Get.snackbar(

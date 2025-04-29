@@ -2136,26 +2136,27 @@ class _UsuariosRetosService {
 }
 
 class _UsuariosRutinasService {
-  Future<custom_response.Response> getUsuariosRutinasByUserId(int idUsuario) async {
-    List<dynamic> usuariosRutinas = [];
+  Future<custom_response.Response> getUsuarioRutinaById(int idUsuario, int idRutina) async {
     custom_response.Response result = custom_response.Response(success: false);
-
+  
     try {
       final data = await client
           .from('usuarios_rutinas')
-          .select() // Selecciona solo los datos de la tabla usuarios_rutinas
-          .eq('idusuario', idUsuario); // Filtra por idUsuario
-
-      usuariosRutinas = data as List<dynamic>;
-
+          .select('*') // Selecciona todos los campos
+          .eq('idusuario', idUsuario) // Filtra por idUsuario
+          .eq('idrutina', idRutina) // Filtra por idRutina
+          .single(); // Obtiene un único registro
+  
+      // Convierte el resultado en un objeto UsuarioRutina
+      UsuarioRutina usuarioRutina = UsuarioRutina.fromJson(data);
+  
       result.success = true;
-      result.data = usuariosRutinas;
-
+      result.data = usuarioRutina;
     } catch (e) {
       result.success = false;
       result.errorMessage = e.toString();
     }
-
+  
     return result;
   }
   Future<custom_response.Response> getUsuariosRutinasByUserIdWithRutinas(int idUsuario) async {
