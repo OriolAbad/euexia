@@ -11,18 +11,27 @@ class StatsView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('TUS ESTADÍSTICAS', 
-               style: TextStyle(color: Colors.white)),
+        foregroundColor: Colors.white,
         backgroundColor: Colors.black,
-        centerTitle: true,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
         ),
+        title: const Text(
+          'TUS RECORDS',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white
+          ),
+        ),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.blue),
+          );
         }
 
         if (controller.records.isEmpty) {
@@ -30,47 +39,56 @@ class StatsView extends StatelessWidget {
             child: Text(
               "No tienes records registrados",
               style: TextStyle(color: Colors.white, fontSize: 18),
-          ));
+            ),
+          );
         }
 
-        return Center( // Widget Center añadido aquí
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Container( // Container para márgenes
-              margin: const EdgeInsets.symmetric(vertical: 20), // Margen vertical
-              child: DataTable(
-                columnSpacing: 40,
-                dataRowHeight: 60,
-                headingTextStyle: const TextStyle(
-                  color: Colors.greenAccent,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16
-                ),
-                dataTextStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14
-                ),
-                columns: const [
-                  DataColumn(label: Text('Ejercicio')),
-                  DataColumn(label: Text('Record')),
-                ],
-                rows: controller.records.map((record) {
-                  return DataRow(
-                    cells: [
-                      DataCell(
-                        Text(record.ejercicio?.nombre ?? "Sin nombre",
-                          style: const TextStyle(color: Colors.white))
-                      ),
-                      DataCell(
-                        Text(record.record?.toString() ?? "--",
-                          style: const TextStyle(color: Colors.white))
-                      ),
-                    ],
-                  );
-                }).toList(),
+        return ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          itemCount: controller.records.length,
+          itemBuilder: (context, index) {
+            final record = controller.records[index];
+            return Container(
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey[800],
+                borderRadius: BorderRadius.circular(12),
               ),
-            ),
-          ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.fitness_center, color: Colors.white),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      record.ejercicio?.nombre?.toUpperCase() ?? "EJERCICIO DESCONOCIDO",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "${record.record?.toStringAsFixed(1) ?? "--"} kg",
+                    style: const TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       }),
     );
