@@ -1,52 +1,44 @@
-// lib/controllers/stats_controller.dart
+import 'package:euexia/app/data/models/records_personales.dart';
 import 'package:get/get.dart';
+import 'package:euexia/app/data/help/response.dart' as custom_response;
+import 'package:euexia/app/data/models/usuarios.dart';
+import 'package:euexia/app/services/service.dart';
 
 class StatsController extends GetxController {
-  var totalVolumeData = [
-    {"day": "1jan", "weight": 50},
-    {"day": "2jan", "weight": 55},
-    {"day": "3jan", "weight": 53},
-    {"day": "4jan", "weight": 60},
-    {"day": "5jan", "weight": 65},
-    {"day": "6jan", "weight": 70},
-    {"day": "4jan", "weight": 60},
-    {"day": "5jan", "weight": 65},
-    {"day": "6jan", "weight": 70},
-    {"day": "4jan", "weight": 60},
-    {"day": "5jan", "weight": 65},
-    {"day": "6jan", "weight": 70},
-    {"day": "4jan", "weight": 60},
-    {"day": "5jan", "weight": 65},
-    {"day": "6jan", "weight": 70},
-  ].obs;
-
-  var bestSetData = [
-    {"reps": 10, "weight": 50},
-    {"reps": 20, "weight": 55},
-    {"reps": 30, "weight": 53},
-    {"reps": 40, "weight": 60},
-    {"reps": 50, "weight": 65},
-    {"reps": 60, "weight": 70},
-    {"reps": 40, "weight": 60},
-    {"reps": 50, "weight": 65},
-    {"reps": 60, "weight": 70},
-    {"reps": 40, "weight": 60},
-    {"reps": 50, "weight": 65},
-    {"reps": 60, "weight": 70},
-    {"reps": 40, "weight": 60},
-    {"reps": 50, "weight": 65},
-    {"reps": 60, "weight": 70},
-  ].obs;
-
-  Future<void> fetchStatsFromDB() async {
-    await Future.delayed(Duration(seconds: 2)); 
-
-   
-  }
+  final _supabaseService = SupabaseService();
+  var isLoading = false.obs;
+  var records = <RecordPersonal>[].obs;
+  late int idUsuarioLogged = 0;
 
   @override
-  void onInit() {
-    fetchStatsFromDB();
+  Future<void> onInit() async {
     super.onInit();
+    await getLoggedUser();
+    await getPersonalRecords();
+  }
+
+  Future<void> getLoggedUser() async {
+    isLoading.value = true;
+    final result = await _supabaseService.usuarios.getLoggedInUser();
+
+    if (result.success) {
+      Usuario loggedUser = result.data as Usuario;
+      idUsuarioLogged = loggedUser.idUsuario!;
+    } else {
+      Get.snackbar("Error", result.errorMessage ?? "Unknown error");
+    }
+    isLoading.value = false;
+  }
+
+  Future<void> getPersonalRecords() async {
+    isLoading.value = true;
+    final result = await _supabaseService.records_personales.getRecordsPersonalesByUserIdWithExercise(idUsuarioLogged);
+
+    if (result.success) {
+      records.assignAll(result.data as List<RecordPersonal>);
+    } else {
+      Get.snackbar("Error", result.errorMessage ?? "Error al cargar records");
+    }
+    isLoading.value = false;
   }
 }
