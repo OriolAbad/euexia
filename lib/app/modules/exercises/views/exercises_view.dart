@@ -28,7 +28,7 @@ class ExercisesView extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add, color: Colors.blue),
+            icon: const Icon(Icons.add, color: Color(0xFFD32F2F)),
             onPressed: () {
               showAddExerciseModal(context, controller);
             },
@@ -44,7 +44,7 @@ class ExercisesView extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: "Search exercises",
                 hintStyle: const TextStyle(color: Colors.white70),
-                prefixIcon: const Icon(Icons.search, color: Colors.blue),
+                prefixIcon: const Icon(Icons.search, color: Color(0xFFD32F2F)),
                 filled: true,
                 fillColor: Colors.grey[800],
                 border: OutlineInputBorder(
@@ -94,7 +94,7 @@ class ExercisesView extends StatelessWidget {
               child: Obx(() {
                 if (controller.isLoading.value) {
                   return const Center(
-                    child: CircularProgressIndicator(color: Colors.blue),
+                    child: CircularProgressIndicator(color: Color(0xFFD32F2F)),
                   );
                 }
                 if (controller.filteredEjercicios.isEmpty) {
@@ -127,7 +127,7 @@ class ExercisesView extends StatelessWidget {
                               width: 50,
                               height: 50,
                               decoration: BoxDecoration(
-                                color: Colors.blue,
+                                color: Color(0xFFD32F2F),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Icon(Icons.fitness_center,
@@ -273,7 +273,7 @@ void showAddExerciseModal(BuildContext context, ExercisesController controller) 
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Color(0xFFD32F2F),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -351,7 +351,7 @@ void showConfirmationModal(BuildContext context, ExercisesController controller)
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Color(0xFFD32F2F),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

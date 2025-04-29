@@ -31,7 +31,7 @@ class MapView extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.my_location, color: Colors.blue),
+            icon: const Icon(Icons.my_location, color: Color(0xFFD32F2F)),
             onPressed: mapControllerX.centerMapOnUserLocation,
           ),
         ],
@@ -48,7 +48,7 @@ class MapView extends StatelessWidget {
                   decoration: InputDecoration(
                     hintText: "Buscar gimnasio...",
                     hintStyle: const TextStyle(color: Colors.white70),
-                    prefixIcon: const Icon(Icons.search, color: Colors.blue),
+                    prefixIcon: const Icon(Icons.search, color: Color(0xFFD32F2F)),
                     filled: true,
                     fillColor: Colors.grey[800],
                     border: OutlineInputBorder(
@@ -148,7 +148,7 @@ class MapView extends StatelessWidget {
                                       height: 40,
                                       builder: (context) => const Icon(
                                         Icons.location_pin,
-                                        color: Colors.blue,
+                                        color: Color(0xFFD32F2F),
                                         size: 40,
                                       ),
                                     ))

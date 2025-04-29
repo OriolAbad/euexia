@@ -26,7 +26,7 @@ class TrainingsView extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add, color: Colors.blue),
+            icon: const Icon(Icons.add, color: Color(0xFFD32F2F)),
             onPressed: () {
               showModalNewRutina(context, trainingsController);
             },
@@ -57,7 +57,7 @@ class TrainingsView extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.blue, // Color azul
+                        color: Color(0xFFD32F2F), // Color azul
                         borderRadius: BorderRadius.circular(12), // Bordes redondos
                       ),
                       child: Row(
@@ -92,7 +92,7 @@ class TrainingsView extends StatelessWidget {
                           const SizedBox(width: 16),
                           // Botón de papelera
                           IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
+                            icon: const Icon(Icons.delete, color: Colors.white),
                             onPressed: () {
                               showDeleteModal(context, trainingsController, rutina);
                             },
@@ -190,7 +190,7 @@ class TrainingsView extends StatelessWidget {
                         trainingsController.usuarioRutina.value.publicada = value;
                         trainingsController.usuarioRutina.refresh(); // Refresca el observable
                       },
-                      activeColor: Colors.blue,
+                      activeColor: Color(0xFFD32F2F),
                     ),
                   ],
                 );
@@ -201,7 +201,7 @@ class TrainingsView extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Color(0xFFD32F2F),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

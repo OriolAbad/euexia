@@ -95,7 +95,7 @@ class SingTrainingView extends StatelessWidget {
                   margin: const EdgeInsets.all(16),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: Color(0xFFD32F2F),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Row(
@@ -140,7 +140,7 @@ class SingTrainingView extends StatelessWidget {
                               width: 50,
                               height: 50,
                               decoration: BoxDecoration(
-                                color: Colors.blue,
+                                color: Color(0xFFD32F2F),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Icon(Icons.fitness_center, color: Colors.white),
@@ -188,7 +188,7 @@ class SingTrainingView extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, // Color del botón
+                    backgroundColor: Color(0xFFD32F2F), // Color del botón
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -369,7 +369,7 @@ void showModalNewExercise(BuildContext context, SingTrainingController trainings
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Color(0xFFD32F2F),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -577,7 +577,7 @@ void showModalEditRutina(BuildContext context, SingTrainingController trainingsC
                       trainingsController.usuarioRutina.value.publicada = value;
                       trainingsController.usuarioRutina.refresh(); // Refresca el observable
                     },
-                    activeColor: Colors.blue,
+                    activeColor: Color(0xFFD32F2F),
                   ),
                 ],
               );
@@ -588,7 +588,7 @@ void showModalEditRutina(BuildContext context, SingTrainingController trainingsC
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Color(0xFFD32F2F),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

@@ -168,7 +168,7 @@ class StartTrainingView extends StatelessWidget {
                 // Botón "Siguiente Entrenamiento"
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, // Botón azul
+                    backgroundColor: Color(0xFFD32F2F), // Botón azul
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12), // Bordes redondeados
@@ -269,7 +269,7 @@ void showRestModal(BuildContext context, StartTrainingController controller) {
             const SizedBox(height: 16),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: Color(0xFFD32F2F),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
