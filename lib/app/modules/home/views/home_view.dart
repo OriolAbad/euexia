@@ -123,7 +123,15 @@ class HomeView extends GetView<HomeController> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Gráfico de ejemplo
+            // Logo de Euexia
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Image.asset(
+                'assets/euexia_logo.png',
+                height: 100,
+                width: 100,
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: SizedBox(
