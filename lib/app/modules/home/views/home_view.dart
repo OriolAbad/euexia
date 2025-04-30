@@ -23,7 +23,7 @@ class HomeView extends GetView<HomeController> {
       key: _scaffoldKey, // Asignar el GlobalKey al Scaffold
       backgroundColor: Color(0xFF212121), // Fondo gris claro
       appBar: AppBar(
-        title: const Text('MENÚ'),
+        title: const Text('HOME'),
         centerTitle: true,
         backgroundColor: const Color(0xFFD32F2F), // Rojo intenso
         foregroundColor: Colors.white,
