@@ -1,4 +1,3 @@
-import 'package:euexia/app/data/models/rutinas.dart';
 import 'package:euexia/app/modules/trainings/controller/start_training_controller.dart';
 import 'package:get/get.dart';
 

@@ -1,6 +1,5 @@
 import 'package:euexia/app/data/models/records_personales.dart';
 import 'package:get/get.dart';
-import 'package:euexia/app/data/help/response.dart' as custom_response;
 import 'package:euexia/app/data/models/usuarios.dart';
 import 'package:euexia/app/services/service.dart';
 
