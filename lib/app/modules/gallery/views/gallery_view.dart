@@ -46,9 +46,15 @@ class _GalleryViewState extends State<GalleryView> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text("Gallery", style: TextStyle(color: Colors.white)),
+        title: Text("Galería", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white), // Flecha blanca
+          onPressed: () {
+            Navigator.of(context).pop(); // Acción para volver atrás
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -62,7 +68,7 @@ class _GalleryViewState extends State<GalleryView> {
               if (controller.images.isEmpty) {
                 return Center(
                   child: Text(
-                    "No images available",
+                    "No hay imágenes en la galería",
                     style: TextStyle(color: Colors.white),
                   ),
                 );
@@ -107,14 +113,14 @@ class _GalleryViewState extends State<GalleryView> {
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content:
-                              Text("Taking photos is only available in mobile"),
+                          content: Text(
+                              "La cámara no está disponible en este dispositivo."),
                           duration: Duration(seconds: 2),
                         ),
                       );
                     }
                   },
-                  child: Text("Camera"),
+                  child: Icon(Icons.camera_alt, color: Colors.white),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFD32F2F),
                     foregroundColor: Colors.white,
@@ -123,7 +129,7 @@ class _GalleryViewState extends State<GalleryView> {
                 ),
                 ElevatedButton(
                   onPressed: () => controller.pickAndUploadPhoto(),
-                  child: Text("Upload"),
+                  child: Icon(Icons.upload, color: Colors.white),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFD32F2F),
                     foregroundColor: Colors.white,
@@ -142,7 +148,7 @@ class _GalleryViewState extends State<GalleryView> {
                 if (controller.images.isEmpty) {
                   return Center(
                     child: Text(
-                      "No images in gallery",
+                      "No hay imágenes en la galería",
                       style: TextStyle(color: Colors.white),
                     ),
                   );
@@ -256,16 +262,16 @@ class _GalleryViewState extends State<GalleryView> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.grey[900],
-        title: Text("Delete Image", style: TextStyle(color: Colors.white)),
-        content: Text("Are you sure you want to delete this image?",
+        title: Text("Eliminar imagen", style: TextStyle(color: Colors.white)),
+        content: Text("¿Estás seguro de que deseas eliminar esta imagen?",
             style: TextStyle(color: Colors.white70)),
         actions: [
           TextButton(
-            child: Text("Cancel", style: TextStyle(color: Colors.grey)),
+            child: Text("Cancelar", style: TextStyle(color: Colors.grey)),
             onPressed: () => Navigator.of(context).pop(),
           ),
           TextButton(
-            child: Text("Delete", style: TextStyle(color: Colors.red)),
+            child: Text("Eliminar", style: TextStyle(color: Colors.red)),
             onPressed: () {
               Navigator.of(context).pop();
               controller.deleteImage(imageUrl);

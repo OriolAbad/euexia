@@ -16,7 +16,7 @@ class TrainingsView extends StatelessWidget {
       backgroundColor: Colors.black, // Fondo negro
       appBar: AppBar(
         foregroundColor: Colors.white,
-        title: const Text('Trainings'),
+        title: const Text('Rutinas'),
         backgroundColor: Colors.black,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),

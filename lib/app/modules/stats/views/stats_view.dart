@@ -11,6 +11,7 @@ class StatsView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        centerTitle: true,
         foregroundColor: Colors.white,
         backgroundColor: Colors.black,
         elevation: 0,
@@ -19,10 +20,10 @@ class StatsView extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: const Text(
-          'TUS RECORDS',
+          'Estadísticas',
           style: TextStyle(
             fontSize: 24,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.normal,
             color: Colors.white
           ),
         ),

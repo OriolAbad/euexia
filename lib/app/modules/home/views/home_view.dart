@@ -23,7 +23,7 @@ class HomeView extends GetView<HomeController> {
       key: _scaffoldKey, // Asignar el GlobalKey al Scaffold
       backgroundColor: Color(0xFF212121), // Fondo gris claro
       appBar: AppBar(
-        title: const Text('HOME'),
+        title: const Text('MENÚ'),
         centerTitle: true,
         backgroundColor: const Color(0xFFD32F2F), // Rojo intenso
         foregroundColor: Colors.white,
@@ -70,7 +70,7 @@ class HomeView extends GetView<HomeController> {
             ),
             ListTile(
               leading: const Icon(Icons.person, color: Colors.black),
-              title: const Text('My Profile',
+              title: const Text('Mi perfil',
                   style: TextStyle(color: Colors.black)),
               onTap: () {
                 Get.offNamed(Routes.PROFILE);
@@ -86,7 +86,7 @@ class HomeView extends GetView<HomeController> {
             ),
             ListTile(
               leading: const Icon(Icons.track_changes, color: Colors.black),
-              title: const Text('Challenges',
+              title: const Text('Retos',
                   style: TextStyle(color: Colors.black)),
               onTap: () {
                 Get.offAllNamed(Routes.CHALLENGES);
@@ -126,42 +126,15 @@ class HomeView extends GetView<HomeController> {
             // Logo de Euexia
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Image.asset(
-                'assets/euexia_logo.png',
-                height: 100,
-                width: 100,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                height: 200, // Altura definida para evitar problemas de layout
-                child: LineChart(
-                  LineChartData(
-                    gridData: FlGridData(show: false),
-                    titlesData: FlTitlesData(show: false),
-                    borderData: FlBorderData(show: false),
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: [
-                          FlSpot(0, 1),
-                          FlSpot(1, 3),
-                          FlSpot(2, 2),
-                          FlSpot(3, 5),
-                          FlSpot(4, 3),
-                          FlSpot(5, 4),
-                          FlSpot(6, 3),
-                        ],
-                        isCurved: true,
-                        color: Colors.blue,
-                        barWidth: 4,
-                        isStrokeCapRound: true,
-                        dotData: FlDotData(show: false),
-                        belowBarData: BarAreaData(show: false),
-                      ),
-                    ],
-                  ),
+              child: Text(
+                '"Euexia: el arte de alcanzar el bienestar y la excelencia de manera inteligente."',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w400,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
             // Contenedores para botones

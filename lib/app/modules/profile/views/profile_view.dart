@@ -45,7 +45,7 @@ class ProfileView extends StatelessWidget {
                     return const SizedBox.shrink();
                   }
                   return Text(
-                    "Hi ${controller.username}!", // Muestra el nombre del usuario
+                    "Hola ${controller.username}!", // Muestra el nombre del usuario
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 24,
@@ -57,8 +57,8 @@ class ProfileView extends StatelessWidget {
             ],
           ),
           SizedBox(height: 20),
-          _buildButton("Stats", () => Get.to(() => StatsView())),
-          _buildButton("Gallery", () => Get.to(() => GalleryView())),
+          _buildButton("Estadísticas", () => Get.to(() => StatsView())),
+          _buildButton("Galería", () => Get.to(() => GalleryView())),
         ],
       ),
     );

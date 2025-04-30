@@ -16,7 +16,7 @@ class ExercisesView extends StatelessWidget {
         backgroundColor: Colors.black,
         elevation: 0,
         title: const Text(
-          "Exercises",
+          "Ejercicios",
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
@@ -42,7 +42,7 @@ class ExercisesView extends StatelessWidget {
             // Buscador
             TextField(
               decoration: InputDecoration(
-                hintText: "Search exercises",
+                hintText: "Buscar ejercicio",
                 hintStyle: const TextStyle(color: Colors.white70),
                 prefixIcon: const Icon(Icons.search, color: Color(0xFFD32F2F)),
                 filled: true,
@@ -73,7 +73,7 @@ class ExercisesView extends StatelessWidget {
                 items: [
                   const DropdownMenuItem<int>(
                     value: 0,
-                    child: Text("All Categories"),
+                    child: Text("Todas las categorías"),
                   ),
                   ...categorias.map((categoria) => DropdownMenuItem<int>(
                         value: categoria.idCategoria,
@@ -100,7 +100,7 @@ class ExercisesView extends StatelessWidget {
                 if (controller.filteredEjercicios.isEmpty) {
                   return const Center(
                     child: Text(
-                      "No exercises found",
+                      "Ejercicios no encontrados",
                       style: TextStyle(color: Colors.white70),
                     ),
                   );
@@ -147,7 +147,7 @@ class ExercisesView extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    "Category: ${ejercicio.categoria?.nombre}",
+                                    "Categoría: ${ejercicio.categoria?.nombre}",
                                     style: const TextStyle(
                                       color: Colors.white70,
                                       fontSize: 14,
@@ -192,7 +192,7 @@ void showAddExerciseModal(BuildContext context, ExercisesController controller) 
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Add Exercise",
+              "Añadir ejercicio",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -206,7 +206,7 @@ void showAddExerciseModal(BuildContext context, ExercisesController controller) 
                 controller.ejercicio.value.nombre = value;
               },
               decoration: InputDecoration(
-                labelText: "Exercise Name",
+                labelText: "Nombre del ejercicio",
                 labelStyle: const TextStyle(color: Colors.white70),
                 filled: true,
                 fillColor: Colors.grey[800],
@@ -225,7 +225,7 @@ void showAddExerciseModal(BuildContext context, ExercisesController controller) 
               },
               maxLines: 4,
               decoration: InputDecoration(
-                labelText: "Description",
+                labelText: "Descripción",
                 labelStyle: const TextStyle(color: Colors.white70),
                 filled: true,
                 fillColor: Colors.grey[800],
@@ -262,7 +262,7 @@ void showAddExerciseModal(BuildContext context, ExercisesController controller) 
                   controller.ejercicio.refresh(); // Refresca el observable para reflejar los cambios
                 },
                 hint: const Text(
-                  "Select a category",
+                  "Seleccionar categoría",
                   style: TextStyle(color: Colors.white70),
                 ),
               );

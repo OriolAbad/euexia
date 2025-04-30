@@ -15,9 +15,9 @@ class ChallengesView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("CHALLENGES", style: TextStyle(color: Colors.white)),
+        title: const Text("Retos", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
-        centerTitle: true,
+        centerTitle: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () =>  Get.offNamed(Routes.HOME), // Vuelve al home
