@@ -3,18 +3,17 @@ import 'package:euexia/app/modules/stats/views/stats_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/profile_controller.dart';
-import 'package:euexia/app/modules/account/views/account_view.dart';
 import 'package:euexia/app/modules/gallery/views/gallery_view.dart';
-import 'package:euexia/app/modules/home/views/home_view.dart'; 
+import 'package:euexia/app/modules/home/views/home_view.dart';
 
 class ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ProfileController controller = Get.find();
-    
+
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Column( 
+      body: Column(
         children: [
           Stack(
             children: [
@@ -34,35 +33,32 @@ class ProfileView extends StatelessWidget {
                 child: IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Get.off(() => HomeView()); 
+                    Get.off(() => HomeView());
                   },
                 ),
               ),
               Positioned(
                 bottom: 16,
                 left: 16,
-                child: Obx(() => Text(
-                  "Hi ${controller.username}!",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )),
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return const SizedBox.shrink();
+                  }
+                  return Text(
+                    "Hi ${controller.username}!", // Muestra el nombre del usuario
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                }),
               ),
             ],
           ),
           SizedBox(height: 20),
           _buildButton("Stats", () => Get.to(() => StatsView())),
           _buildButton("Gallery", () => Get.to(() => GalleryView())),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {},
-            child: Text("Log out"),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey,
-            ),
-          ),
         ],
       ),
     );

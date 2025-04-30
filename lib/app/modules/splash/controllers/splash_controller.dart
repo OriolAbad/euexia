@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:euexia/app/modules/home/controllers/home_controller.dart';
 import 'package:euexia/app/routes/app_pages.dart';
 
 class SplashController extends GetxController {

@@ -1,9 +1,7 @@
 import 'package:euexia/app/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter/foundation.dart';
 import 'package:euexia/app/data/help/response.dart' as custom_response;
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginController extends GetxController {

@@ -116,7 +116,8 @@ class _GalleryViewState extends State<GalleryView> {
                   },
                   child: Text("Camera"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: Color(0xFFD32F2F),
+                    foregroundColor: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32),
                   ),
                 ),
@@ -124,7 +125,8 @@ class _GalleryViewState extends State<GalleryView> {
                   onPressed: () => controller.pickAndUploadPhoto(),
                   child: Text("Upload"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Color(0xFFD32F2F),
+                    foregroundColor: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32),
                   ),
                 ),

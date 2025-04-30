@@ -4,7 +4,6 @@ import 'package:euexia/app/data/models/retos.dart';
 import 'package:euexia/app/data/models/usuarios.dart';
 import 'package:euexia/app/data/models/usuarios_retos.dart';
 import 'package:euexia/app/services/service.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class RetoState {
